@@ -10,10 +10,9 @@ import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.example.savethecat_colormatching.Controllers.AudioController
 
 
 class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListener {
@@ -25,6 +24,12 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var isInternetReachable:Boolean = false
         var aspectRatio:ARatio? = null
         var decorView:View? = null
+        // Display properties
+        var dWidth:Double = 0.0
+        var dHeight:Double = 0.0
+        var dUnitWidth:Double = 0.0
+        var dUnitHeight:Double = 0.0
+
     }
 
     private fun setCurrentTheme() {
@@ -82,6 +87,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setCurrentTheme()
         setupReachability()
         setupAspectRatio()
+        setupSounds()
     }
 
     private fun setupDecorView() {
@@ -98,7 +104,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private val displayMetrics:DisplayMetrics = DisplayMetrics()
     private var screenAspectRatio:Double = 0.0;
     private fun setupAspectRatio() {
-
         fun getNavigationBarHeight(): Int {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 val metrics = DisplayMetrics()
@@ -110,9 +115,17 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             }
             return 0
         }
-
+        fun setupScreenDimension() {
+            dWidth = displayMetrics.widthPixels.toDouble()
+            dHeight = displayMetrics.heightPixels.toDouble() + getNavigationBarHeight()
+        }
+        fun setupUnitScreenDimension() {
+            dUnitWidth = dWidth / 18.0
+            dUnitHeight = dHeight / 18.0
+        }
+        setupScreenDimension()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
-        screenAspectRatio = (displayMetrics.heightPixels.toDouble() + getNavigationBarHeight().toDouble()) / (displayMetrics.widthPixels)
+        screenAspectRatio = (dHeight / dWidth)
         when {
             screenAspectRatio > 2.16 -> {
                 aspectRatio = ARatio.ar19point5by9
@@ -149,5 +162,15 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                 aspectRatio = ARatio.ar4by3
             }
         }
+        if (aspectRatio != ARatio.ar19point5by9) {
+            dHeight *= 1.2
+            setupUnitScreenDimension()
+        }
     }
+
+    private fun setupSounds() {
+        AudioController.setupMozartSonata(this)
+        AudioController.mozartSonata(play = true, startOver = false)
+    }
+
 }
