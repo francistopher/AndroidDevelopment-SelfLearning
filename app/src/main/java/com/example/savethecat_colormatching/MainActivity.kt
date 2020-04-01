@@ -24,6 +24,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var isThemeDark:Boolean = true
         var isInternetReachable:Boolean = false
         var aspectRatio:ARatio? = null
+        var decorView:View? = null
     }
 
     private fun setCurrentTheme() {
@@ -58,15 +59,24 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        super.onCreate(savedInstanceState)
-        window.decorView.apply {
-            systemUiVisibility = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                    View.SYSTEM_UI_FLAG_FULLSCREEN
+    fun hideSystemBars(): Int {
+        return View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                View.SYSTEM_UI_FLAG_IMMERSIVE
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            decorView!!.systemUiVisibility = hideSystemBars()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setupDecorView()
         rootView = window.decorView.rootView
         staticSelf = this
         setCurrentTheme()
@@ -74,30 +84,35 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupAspectRatio()
     }
 
-    private fun setupReachability() {
-        registerReceiver(Reachability(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
+    private fun setupDecorView() {
+        decorView = window.decorView
+        decorView!!.setOnSystemUiVisibilityChangeListener {
+            decorView!!.systemUiVisibility = hideSystemBars()
+        }
     }
 
-    private fun getNavigationBarHeight(): Int {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            val metrics = DisplayMetrics()
-            windowManager.defaultDisplay.getMetrics(metrics)
-            val usableHeight = metrics.heightPixels
-            windowManager.defaultDisplay.getRealMetrics(metrics)
-            val realHeight = metrics.heightPixels
-            return if (realHeight > usableHeight) realHeight - usableHeight else 0
-        }
-        return 0
+    private fun setupReachability() {
+        registerReceiver(Reachability(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
     }
 
     private val displayMetrics:DisplayMetrics = DisplayMetrics()
     private var screenAspectRatio:Double = 0.0;
     private fun setupAspectRatio() {
+
+        fun getNavigationBarHeight(): Int {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                val metrics = DisplayMetrics()
+                windowManager.defaultDisplay.getMetrics(metrics)
+                val usableHeight = metrics.heightPixels
+                windowManager.defaultDisplay.getRealMetrics(metrics)
+                val realHeight = metrics.heightPixels
+                return if (realHeight > usableHeight) realHeight - usableHeight else 0
+            }
+            return 0
+        }
+
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         screenAspectRatio = (displayMetrics.heightPixels.toDouble() + getNavigationBarHeight().toDouble()) / (displayMetrics.widthPixels)
-        Log.i("Screen Width", "${displayMetrics.widthPixels}")
-        Log.i("Screen Height", "${displayMetrics.heightPixels}")
-        Log.i("Screen Aspect Ratio", "$screenAspectRatio")
         when {
             screenAspectRatio > 2.16 -> {
                 aspectRatio = ARatio.ar19point5by9
