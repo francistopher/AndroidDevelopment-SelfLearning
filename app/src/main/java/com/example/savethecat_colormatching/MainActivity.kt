@@ -1,6 +1,7 @@
 package com.example.savethecat_colormatching
 
 import android.content.res.Configuration
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +20,11 @@ class MainActivity : AppCompatActivity() {
         when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_NO -> isThemeDark = false
             Configuration.UI_MODE_NIGHT_UNDEFINED -> isThemeDark = false
+        }
+        if (isThemeDark) {
+            rootView?.setBackgroundColor(Color.BLACK)
+        } else {
+            rootView?.setBackgroundColor(Color.WHITE)
         }
         Log.i("Color?", "${isThemeDark}")
     }
