@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     fun setCurrentTheme() {
         when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_NO -> isThemeDark = false
+            Configuration.UI_MODE_NIGHT_YES -> isThemeDark = true
             Configuration.UI_MODE_NIGHT_UNDEFINED -> isThemeDark = false
         }
         if (isThemeDark) {
@@ -26,7 +27,6 @@ class MainActivity : AppCompatActivity() {
         } else {
             rootView?.setBackgroundColor(Color.WHITE)
         }
-        Log.i("Color?", "${isThemeDark}")
     }
 
 
