@@ -17,9 +17,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Controllers.AudioController
+import com.example.savethecat_colormatching.Controllers.CenterController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.CustomViews.CLabel
+import com.example.savethecat_colormatching.ParticularViews.IntroView
 
 
 class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListener {
@@ -38,9 +40,11 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var dUnitHeight:Double = 0.0
         // Custom Font
         var rootLayout:AbsoluteLayout? = null
-
-
+        // Absolute Layout Params
+        var params:AbsoluteLayout.LayoutParams? = null
     }
+
+    var introAnimation:IntroView? = null
 
     private fun setCurrentTheme() {
 //        mainFont = ResourcesCompat.getFont(this, R.font.sleepyfatcat)
@@ -101,8 +105,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupReachability()
         setupAspectRatio()
         setupSounds()
-
         setupSomething()
+        setupIntroAnimation()
         AudioController.mozartSonata(true, false)
     }
 
@@ -133,14 +137,14 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
         fun setupScreenDimension() {
             dWidth = displayMetrics.widthPixels.toDouble()
-            dHeight = displayMetrics.heightPixels.toDouble() + getNavigationBarHeight()
+            dHeight = displayMetrics.heightPixels.toDouble()
         }
         fun setupUnitScreenDimension() {
             dUnitWidth = dWidth / 18.0
             dUnitHeight = dHeight / 18.0
         }
-        setupScreenDimension()
         windowManager.defaultDisplay.getMetrics(displayMetrics)
+
         screenAspectRatio = (dHeight / dWidth)
         when {
             screenAspectRatio > 2.16 -> {
@@ -180,6 +184,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
         if (aspectRatio != ARatio.ar19point5by9) {
             dHeight *= 1.2
+            setupScreenDimension()
+            params = AbsoluteLayout.LayoutParams(dWidth.toInt(), dHeight.toInt(), 0, 0)
             setupUnitScreenDimension()
         }
     }
@@ -195,15 +201,19 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         AudioController.setupMozartSonata(this)
     }
 
+    private fun setupIntroAnimation() {
+        val width:Double = dUnitWidth * 9.0
+        introAnimation = IntroView(imageView = ImageView(this), parentLayout = rootLayout!!,
+            params = AbsoluteLayout.LayoutParams(width.toInt(), width.toInt(), 0, 0))
+        introAnimation!!.loadTextImages(lightTextImageR = R.drawable.darkintrotext, darkTextImageR = R.drawable.lightintrotext,
+            lightCatImageR = R.drawable.darkcat, darkCatImageR = R.drawable.lightcat)
+        CenterController.center(introAnimation!!.getTextImage(), introAnimation!!.getTextParams(), params!!)
+        CenterController.center(introAnimation!!.getCatImage(), introAnimation!!.getCatParams(), params!!)
+        setContentView(rootLayout!!)
+        introAnimation!!.start()
+    }
+
     private fun setupSomething() {
-//        var clabel:CLabel = CLabel(textView = TextView(this), parentLayout = rootLayout!!, params = AbsoluteLayout.LayoutParams(500, 100, 10, 200))
-//        clabel.setTextSize(clabel.getOriginalParams().height * 0.4f)
-//        clabel.setCornerRadiusAndBorderWidth(15, 0)
-//        clabel.setText("Save The Cat!")
-//        setContentView(rootLayout!!)
-//        clabel.getThis().alpha = 0f
-
-
 
 
     }

@@ -62,7 +62,6 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutPara
          if (In) {
              fadeAnimator = textView!!.animate().alpha(1.0f)
              fadeAnimator!!.interpolator = FastOutSlowInInterpolator()
-
         }
         if (Out and !In) {
             fadeAnimator = textView!!.animate().alpha(0.0f)
@@ -70,8 +69,6 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutPara
         }
         fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeAnimator!!.duration = (1000.0f * Duration).toLong()
-
-
         fadeAnimator!!.withStartAction {
             fadeAnimatorIsRunning = true
         }
