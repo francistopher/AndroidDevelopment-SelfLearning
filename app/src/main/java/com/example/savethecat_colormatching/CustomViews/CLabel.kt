@@ -1,37 +1,43 @@
 package com.example.savethecat_colormatching.CustomViews
 
-import android.app.ActionBar
 import android.graphics.Color
-import android.view.View
-import android.widget.FrameLayout
+import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.GradientDrawable.*
+import android.view.ViewGroup
+import android.widget.AbsoluteLayout
 import android.widget.TextView
-import android.widget.LinearLayout.LayoutParams
+import android.widget.AbsoluteLayout.LayoutParams
+import com.example.savethecat_colormatching.MainActivity
 
-class CLabel(textView: TextView, parentView: View, parameter:List<Double>, backgroundColor: Color) {
+class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:ViewGroup.LayoutParams) {
 
-    var isInverted:Boolean = false
+    private var isInverted:Boolean = false
 
-    var originalFrame:LayoutParams? = null
-    var reducedFrame:LayoutParams? = null
-    var shrunkFrame:LayoutParams? = null
+    private var originalParams:LayoutParams? = null
+    private var shrunkParams:LayoutParams? = null
 
-    var textView:TextView? = null
+    private var textView:TextView? = null
 
     init {
         this.textView = textView
-        setFrameParameters()
+        this.textView!!.layoutParams = params
+        parentLayout.addView(this.textView)
+        setOriginalParams(params = params)
+        setStyle()
     }
 
-    fun setFrameParameters() {
-
+    fun getThis():TextView {
+        return textView!!
     }
 
-    fun setOriginalFrame() {
-
+    private fun setOriginalParams(params:ViewGroup.LayoutParams) {
+        originalParams = params as LayoutParams?
     }
 
-    fun setShrunkFrame() {
-
+    private fun setShrunkParams() {
+        shrunkParams = AbsoluteLayout.LayoutParams(originalParams!!.x / 2, originalParams!!.y / 2, 1, 1)
     }
 
     fun shrink(removeFromViewParent:Boolean) {
@@ -54,8 +60,24 @@ class CLabel(textView: TextView, parentView: View, parameter:List<Double>, backg
 
     }
 
-    fun setStyle() {
+    var shape:GradientDrawable? = null
+    fun setCornerRadius(radius:Int) {
+        shape = GradientDrawable()
+        shape!!.shape = RECTANGLE
+        shape!!.setColor((textView!!.background as ColorDrawable).color)
+        shape!!.setStroke(3, Color.BLUE)
+        shape!!.cornerRadius = radius.toFloat()
+        textView!!.setBackgroundDrawable(shape)
+    }
 
+    fun setStyle() {
+        if (MainActivity.isThemeDark) {
+            textView!!.setBackgroundColor(Color.WHITE)
+            textView!!.setTextColor(Color.BLACK)
+        } else {
+            textView!!.setBackgroundColor(Color.BLACK)
+            textView!!.setTextColor(Color.WHITE)
+        }
     }
 
 }

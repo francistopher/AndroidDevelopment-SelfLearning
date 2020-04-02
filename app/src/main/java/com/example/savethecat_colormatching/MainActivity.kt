@@ -18,6 +18,7 @@ import android.widget.AbsoluteLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Controllers.AudioController
+import com.example.savethecat_colormatching.CustomViews.CLabel
 
 
 class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListener {
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var dUnitWidth:Double = 0.0
         var dUnitHeight:Double = 0.0
         // Custom Font
-        var mainFont:Typeface? = null
+        var rootLayout:AbsoluteLayout? = null
 
 
     }
@@ -93,6 +94,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setContentView(R.layout.activity_main)
         setupDecorView()
         rootView = window.decorView.rootView
+        rootLayout = AbsoluteLayout(this)
         staticSelf = this
         setCurrentTheme()
         setupReachability()
@@ -191,27 +193,18 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         AudioController.setupChopinPrelude(this)
         AudioController.setupMozartSonata(this)
     }
-    lateinit var al:AbsoluteLayout
+
     private fun setupSomething() {
-        // Root absolute layout
-       al = AbsoluteLayout(this)
 
-//         Text View Itself
-        val textView = TextView(this)
-//         Setup the margins
 
-        // Set the text
-        // set the font size
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
-        textView.setTextColor(Color.MAGENTA)
-        // set background and text color
-        textView.setBackgroundColor(Color.BLUE)
-        textView.text = "Save The Cat!"
-
-        textView.layoutParams = AbsoluteLayout.LayoutParams(200, 100, 200, 200)
-        al.addView(textView)
-        setContentView(al)
+        var clabel:CLabel = CLabel(textView = TextView(this), parentLayout = rootLayout!!, params = AbsoluteLayout.LayoutParams(200, 100, 200, 200))
+        clabel.getThis().setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
+        clabel.getThis().text = "Save The Cat!"
+        clabel.setCornerRadius(15)
+        setContentView(rootLayout!!)
 
     }
+
+
 
 }
