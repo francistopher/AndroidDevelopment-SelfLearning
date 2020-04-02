@@ -6,14 +6,11 @@ import Reachability
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.TypedValue
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AbsoluteLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -195,13 +192,12 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     private fun setupSomething() {
-
-
-        var clabel:CLabel = CLabel(textView = TextView(this), parentLayout = rootLayout!!, params = AbsoluteLayout.LayoutParams(200, 100, 200, 200))
-        clabel.getThis().setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
-        clabel.getThis().text = "Save The Cat!"
-        clabel.setCornerRadius(15)
+        var clabel:CLabel = CLabel(textView = TextView(this), parentLayout = rootLayout!!, params = AbsoluteLayout.LayoutParams(500, 100, 10, 200))
+        clabel.setTextSize(clabel.getOriginalParams().height * 0.4f)
+        clabel.setCornerRadiusAndBorderWidth(15, 0)
+        clabel.setText("Save The Cat!")
         setContentView(rootLayout!!)
+        clabel.getThis().alpha = 0f
 
     }
 
