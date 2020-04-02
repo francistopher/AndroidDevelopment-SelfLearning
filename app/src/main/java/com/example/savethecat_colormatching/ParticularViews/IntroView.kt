@@ -47,4 +47,9 @@ class IntroView(imageView: ImageView, parentLayout:AbsoluteLayout, params: Absol
         return catImageView!!.getOriginalParams()
     }
 
+    fun setStyle() {
+        textImageView!!.setStyle()
+        catImageView!!.setStyle()
+    }
+
 }

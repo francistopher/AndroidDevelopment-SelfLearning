@@ -129,7 +129,7 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
                     AudioController.kittenMeow()
                 }
                 stopRotation = true
-                this.fade(In = false, Out = true, Duration =(Duration * 0.8f), Delay = 0.0f)
+                this.fade(In = false, Out = true, Duration =(Duration * 0.75f), Delay = 0.0f)
             } else {
                 fadeAnimator!!.cancel()
                 fadeAnimatorIsRunning = false

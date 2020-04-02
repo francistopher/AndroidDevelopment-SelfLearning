@@ -6,6 +6,9 @@ import Reachability
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
+import android.graphics.fonts.Font
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
@@ -16,6 +19,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
 import com.example.savethecat_colormatching.CustomViews.CButton
@@ -53,11 +57,16 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             Configuration.UI_MODE_NIGHT_YES -> isThemeDark = true
             Configuration.UI_MODE_NIGHT_UNDEFINED -> isThemeDark = false
         }
+        updateTheme()
+    }
+
+    private fun updateTheme() {
         if (isThemeDark) {
             rootView?.setBackgroundColor(Color.BLACK)
         } else {
             rootView?.setBackgroundColor(Color.WHITE)
         }
+        introAnimation!!.setStyle()
     }
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
@@ -93,7 +102,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -101,11 +109,15 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         rootView = window.decorView.rootView
         rootLayout = AbsoluteLayout(this)
         staticSelf = this
-        setCurrentTheme()
         setupReachability()
         setupAspectRatio()
+        setupSaveTheCat()
+        setCurrentTheme()
+    }
+
+    private fun setupSaveTheCat() {
         setupSounds()
-        setupSomething()
+        setSuccessGradientViewAndLayer()
         setupIntroAnimation()
         AudioController.mozartSonata(true, false)
     }
@@ -213,11 +225,15 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         introAnimation!!.start()
     }
 
-    private fun setupSomething() {
+    private fun setSuccessGradientViewAndLayer() {
+        var view:View = View(rootView!!.context)
+        view.layoutParams = AbsoluteLayout.LayoutParams(dWidth.toInt(), (dHeight * 0.15).toInt(), 0, 0)
+        view.setBackgroundColor(Color.TRANSPARENT)
+        rootLayout!!.addView(view)
 
-
+        var gradient:GradientDrawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(Color.parseColor("#fcd340"), Color.TRANSPARENT))
+        view.setBackgroundDrawable(gradient)
     }
-
-
 
 }
