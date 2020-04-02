@@ -202,6 +202,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 //        clabel.getThis().alpha = 0f
 
 
+
     }
 
 

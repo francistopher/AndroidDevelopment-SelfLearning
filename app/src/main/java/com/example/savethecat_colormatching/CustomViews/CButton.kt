@@ -82,7 +82,4 @@ class CButton(button:Button, parentLayout:AbsoluteLayout, params:LayoutParams) {
             }
         }
     }
-
-
-
 }
