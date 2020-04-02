@@ -6,7 +6,6 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.GradientDrawable.*
 import android.util.Log
 import android.util.TypedValue
-import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.widget.AbsoluteLayout
 import android.widget.TextView
@@ -15,7 +14,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.example.savethecat_colormatching.MainActivity
 
-class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:ViewGroup.LayoutParams) {
+class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutParams) {
 
     private var isInverted:Boolean = false
 
@@ -37,8 +36,8 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:ViewGroup.
         return textView!!
     }
 
-    private fun setOriginalParams(params:ViewGroup.LayoutParams) {
-        originalParams = params as LayoutParams?
+    private fun setOriginalParams(params:LayoutParams) {
+        originalParams = params
     }
 
     private fun setShrunkParams() {
@@ -63,12 +62,11 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:ViewGroup.
          if (In) {
              fadeAnimator = textView!!.animate().alpha(1.0f)
              fadeAnimator!!.interpolator = FastOutSlowInInterpolator()
-             Log.i("Animation", "FADEIN")
+
         }
         if (Out and !In) {
             fadeAnimator = textView!!.animate().alpha(0.0f)
             fadeAnimator!!.interpolator = LinearOutSlowInInterpolator()
-            Log.i("Animation", "FADEOUT")
         }
         fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeAnimator!!.duration = (1000.0f * Duration).toLong()

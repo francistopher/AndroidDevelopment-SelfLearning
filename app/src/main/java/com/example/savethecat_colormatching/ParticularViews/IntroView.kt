@@ -1,4 +1,4 @@
-package com.example.savethecat_colormatching.CustomViews
+package com.example.savethecat_colormatching.ParticularViews
 
 import android.widget.AbsoluteLayout
 import android.widget.TextView

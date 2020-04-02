@@ -12,9 +12,11 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.AbsoluteLayout
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Controllers.AudioController
+import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.CLabel
 
 
@@ -192,12 +194,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     private fun setupSomething() {
-        var clabel:CLabel = CLabel(textView = TextView(this), parentLayout = rootLayout!!, params = AbsoluteLayout.LayoutParams(500, 100, 10, 200))
-        clabel.setTextSize(clabel.getOriginalParams().height * 0.4f)
-        clabel.setCornerRadiusAndBorderWidth(15, 0)
-        clabel.setText("Save The Cat!")
-        setContentView(rootLayout!!)
-        clabel.getThis().alpha = 0f
+//        var clabel:CLabel = CLabel(textView = TextView(this), parentLayout = rootLayout!!, params = AbsoluteLayout.LayoutParams(500, 100, 10, 200))
+//        clabel.setTextSize(clabel.getOriginalParams().height * 0.4f)
+//        clabel.setCornerRadiusAndBorderWidth(15, 0)
+//        clabel.setText("Save The Cat!")
+//        setContentView(rootLayout!!)
+//        clabel.getThis().alpha = 0f
+
 
     }
 
