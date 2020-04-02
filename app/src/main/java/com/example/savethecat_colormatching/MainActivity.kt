@@ -6,11 +6,16 @@ import Reachability
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Typeface
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
+import android.widget.AbsoluteLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Controllers.AudioController
 
@@ -29,10 +34,14 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var dHeight:Double = 0.0
         var dUnitWidth:Double = 0.0
         var dUnitHeight:Double = 0.0
+        // Custom Font
+        var mainFont:Typeface? = null
+
 
     }
 
     private fun setCurrentTheme() {
+//        mainFont = ResourcesCompat.getFont(this, R.font.sleepyfatcat)
         when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_NO -> isThemeDark = false
             Configuration.UI_MODE_NIGHT_YES -> isThemeDark = true
@@ -78,6 +87,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
     }
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -88,6 +98,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupReachability()
         setupAspectRatio()
         setupSounds()
+
+        setupSomething()
+        AudioController.mozartSonata(true, false)
     }
 
     private fun setupDecorView() {
@@ -169,8 +182,36 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     private fun setupSounds() {
+        AudioController.setupGearSpinning(this)
+        AudioController.setupHeaven(this)
+        AudioController.setupAnimeWowPlayer(this)
+        AudioController.setupCoinEarnedPlayer(this)
+        AudioController.setupKittenMeowPlayer(this)
+        AudioController.setupKittenDiePlayer(this)
+        AudioController.setupChopinPrelude(this)
         AudioController.setupMozartSonata(this)
-        AudioController.mozartSonata(play = true, startOver = false)
+    }
+    lateinit var al:AbsoluteLayout
+    private fun setupSomething() {
+        // Root absolute layout
+       al = AbsoluteLayout(this)
+
+//         Text View Itself
+        val textView = TextView(this)
+//         Setup the margins
+
+        // Set the text
+        // set the font size
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 40f)
+        textView.setTextColor(Color.MAGENTA)
+        // set background and text color
+        textView.setBackgroundColor(Color.BLUE)
+        textView.text = "Save The Cat!"
+
+        textView.layoutParams = AbsoluteLayout.LayoutParams(200, 100, 200, 200)
+        al.addView(textView)
+        setContentView(al)
+
     }
 
 }
