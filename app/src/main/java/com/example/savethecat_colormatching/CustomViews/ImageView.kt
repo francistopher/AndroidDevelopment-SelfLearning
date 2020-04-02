@@ -13,7 +13,7 @@ import com.example.savethecat_colormatching.MainActivity
 
 class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams, lightImageR:Int, darkImageR:Int) {
 
-    private var isInverted:Boolean = false
+    var isInverted:Boolean = false
 
     private var originalParams: AbsoluteLayout.LayoutParams? = null
     private var shrunkParams: AbsoluteLayout.LayoutParams? = null

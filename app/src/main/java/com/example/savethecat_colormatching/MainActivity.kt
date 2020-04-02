@@ -13,10 +13,12 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CButton
+import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.CustomViews.CLabel
 
 
@@ -202,6 +204,12 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 //        clabel.getThis().alpha = 0f
 
 
+        var iv:CImageView = CImageView(imageView = ImageView(this), parentLayout = rootLayout!!,
+            params = AbsoluteLayout.LayoutParams(300, 300, 25, 25),
+            lightImageR = R.drawable.lightintrotext, darkImageR = R.drawable.darkintrotext)
+        iv.isInverted = true
+        iv.setStyle()
+        setContentView(rootLayout!!)
 
     }
 
