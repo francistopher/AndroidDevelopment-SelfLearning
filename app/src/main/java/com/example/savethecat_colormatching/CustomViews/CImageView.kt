@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import com.example.savethecat_colormatching.MainActivity
 
-class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams, lightImageR:Int, darkImageR:Int) {
+class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
 
     var isInverted:Boolean = false
 
@@ -25,11 +25,14 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
     init {
         this.imageView = imageView
         this.imageView!!.layoutParams = params
-        this.lightImageR = lightImageR
-        this.darkImageR = darkImageR
         parentLayout.addView(imageView)
         setOriginalParams(params=params)
         setShrunkParams()
+    }
+
+    fun setupImage(lightImageR:Int, darkImageR:Int) {
+        this.lightImageR = lightImageR
+        this.darkImageR = darkImageR
         setStyle()
     }
 
@@ -45,23 +48,13 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
         fun lightDominant() {
             imageView!!.setImageResource(lightImageR)
         }
-
         fun darkDominant() {
             imageView!!.setImageResource(darkImageR)
         }
-
         if (MainActivity.isThemeDark) {
-            if (isInverted) {
-                lightDominant()
-            } else {
-                darkDominant()
-            }
+            darkDominant()
         } else {
-            if (isInverted) {
-                darkDominant()
-            } else {
-                lightDominant()
-            }
+            lightDominant()
         }
     }
 }

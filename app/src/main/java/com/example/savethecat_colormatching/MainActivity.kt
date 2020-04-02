@@ -204,12 +204,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 //        clabel.getThis().alpha = 0f
 
 
-        var iv:CImageView = CImageView(imageView = ImageView(this), parentLayout = rootLayout!!,
-            params = AbsoluteLayout.LayoutParams(300, 300, 25, 25),
-            lightImageR = R.drawable.lightintrotext, darkImageR = R.drawable.darkintrotext)
-        iv.isInverted = true
-        iv.setStyle()
-        setContentView(rootLayout!!)
+
 
     }
 
