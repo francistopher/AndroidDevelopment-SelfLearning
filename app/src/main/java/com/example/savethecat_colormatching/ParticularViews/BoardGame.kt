@@ -11,6 +11,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     private var originalParams: LayoutParams? = null
 
     private var currentStage:Int = 1
+    private  var gridColors: Array<IntArray>? = null
 
     companion object {
         var rowsAndColumns = Pair(0, 0)
@@ -37,8 +38,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     fun buildGame() {
         rowsAndColumns = getRowsAndColumns(currentStage = currentStage)
         ColorOptions.setSelectionColors()
-
-        Log.i("Selected color", ColorOptions.selectionColors.toString())
+        buildGridColors()
     }
 
     private var initialStage:Int = 0
@@ -58,4 +58,37 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
         return Pair(rows, columns)
     }
+
+    var gridColorRowIndex:Int = 0
+    var gridColorColumnIndex:Int = 0
+    var randomGridColor:Int = 0
+    var previousGridColumnColor:Int = 0
+    var previousGridRowColor:Int = 0
+    private fun buildGridColors() {
+        gridColors = Array(rowsAndColumns.first){ IntArray(rowsAndColumns.second) }
+        gridColorRowIndex = 0
+        while (gridColorRowIndex < gridColors!!.size) {
+            gridColorColumnIndex = 0
+            while(gridColorColumnIndex < gridColors!![0].size) {
+                randomGridColor = ColorOptions.selectionColors!!.random()
+                if (gridColorRowIndex > 0) {
+                    previousGridColumnColor = gridColors!![gridColorRowIndex - 1][gridColorColumnIndex]
+                    if (previousGridColumnColor == randomGridColor) {
+                        gridColorRowIndex -= 1
+                    }
+                }
+                if (gridColorColumnIndex > 0) {
+                    previousGridRowColor = gridColors!![gridColorRowIndex][gridColorColumnIndex - 1]
+                    if (previousGridRowColor == randomGridColor && (0..1).random() == 0) {
+                        gridColorColumnIndex -= 1
+                    }
+                }
+                gridColors!![gridColorRowIndex][gridColorColumnIndex] = randomGridColor
+                gridColorColumnIndex += 1
+            }
+            gridColorRowIndex += 1
+        }
+    }
+
+
 }
