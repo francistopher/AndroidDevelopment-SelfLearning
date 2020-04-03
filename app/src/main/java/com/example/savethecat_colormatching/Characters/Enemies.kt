@@ -74,4 +74,10 @@ class Enemies {
             enemy.fadeIn()
         }
     }
+
+    fun hide() {
+        for (enemy in enemies) {
+            enemy.getThis().alpha = 0.0f
+        }
+    }
 }

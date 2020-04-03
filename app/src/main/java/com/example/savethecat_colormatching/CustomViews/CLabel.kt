@@ -43,7 +43,7 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutPara
     }
 
     private fun setShrunkParams() {
-        shrunkParams = AbsoluteLayout.LayoutParams(originalParams!!.x / 2, originalParams!!.y / 2, 1, 1)
+        shrunkParams = LayoutParams(originalParams!!.x / 2, originalParams!!.y / 2, 1, 1)
     }
 
     fun shrunk() {

@@ -52,4 +52,9 @@ class IntroView(imageView: ImageView, parentLayout:AbsoluteLayout, params: Absol
         catImageView!!.setStyle()
     }
 
+    fun hide() {
+        textImageView!!.getThis().alpha = 0.0f
+        catImageView!!.getThis().alpha = 0.0f
+    }
+
 }

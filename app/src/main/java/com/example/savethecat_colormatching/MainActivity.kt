@@ -10,7 +10,6 @@ import android.graphics.drawable.GradientDrawable
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.ImageView
@@ -19,6 +18,7 @@ import com.example.savethecat_colormatching.Characters.Enemies
 import com.example.savethecat_colormatching.Controllers.AspectRatio
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
+import com.example.savethecat_colormatching.ParticularViews.BoardGame
 import com.example.savethecat_colormatching.ParticularViews.IntroView
 import com.google.android.gms.ads.*
 import java.util.*
@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var params:AbsoluteLayout.LayoutParams? = null
         var successGradientView:View? = null
         var enemies:Enemies? = null
+        // Board Game
     }
 
     var introAnimation:IntroView? = null
@@ -123,7 +124,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setSuccessGradientViewAndLayer()
         setupEnemies()
         setupIntroAnimation()
-        setupAds()
+        setupAdvertisement()
+        setupBoardGame()
         AudioController.mozartSonata(play = true, startOver = false)
     }
 
@@ -172,9 +174,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupEnemies() {
         enemies = Enemies()
+        enemies!!.hide()
     }
 
-    private fun setupAds() {
+    private fun setupAdvertisement() {
         MobileAds.initialize(this) {}
         setupBannerAds()
     }
@@ -200,12 +203,22 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         adView!!.adUnitId = "ca-app-pub-3940256099942544/6300978111"
         adView!!.adSize = getAdaptiveBannerAdSize()
         // Resetting position
-        adView!!.layoutParams = AbsoluteLayout.LayoutParams((adView!!.adSize.width * 2) + 1, (adView!!.adSize.height * 2) + 1, 0, (dHeight - (adView!!.adSize.height * 0.25)).toInt())
+        adView!!.layoutParams = AbsoluteLayout.LayoutParams((adView!!.adSize.width * 2) + 1,
+            (adView!!.adSize.height * 2) + 1, 0, (dHeight - (adView!!.adSize.height * 0.25)).toInt())
         adRequest = AdRequest.Builder().build()
         adView!!.loadAd(adRequest)
         rootLayout!!.addView(adView)
+    }
 
-        Log.i("Height", "fgsd")
+    fun setupBoardGame() {
+        val sideLength:Float = (dUnitHeight * 8.5).toFloat()
+        val boardGame = BoardGame(boardView = View(this),
+            parentLayout = rootLayout!!, params = AbsoluteLayout.LayoutParams(sideLength.toInt(),
+                sideLength.toInt(), 0,0))
+        boardGame.getThis().setBackgroundColor(Color.RED)
+        CenterController.centerView(childView = boardGame.getThis(),
+            childParams = boardGame.getOriginalParams(),
+            parentParams = AbsoluteLayout.LayoutParams(dWidth.toInt(), dHeight.toInt(), 0, 0))
     }
 
 }
