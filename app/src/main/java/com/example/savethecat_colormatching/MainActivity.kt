@@ -200,7 +200,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         adView!!.adUnitId = "ca-app-pub-3940256099942544/6300978111"
         adView!!.adSize = getAdaptiveBannerAdSize()
         // Resetting position
-        adView!!.layoutParams = AbsoluteLayout.LayoutParams(adView!!.adSize.width * 2, adView!!.adSize.height * 2, 0, (dHeight - (adView!!.adSize.height * 0.25)).toInt())
+        adView!!.layoutParams = AbsoluteLayout.LayoutParams((adView!!.adSize.width * 2) + 1, (adView!!.adSize.height * 2) + 1, 0, (dHeight - (adView!!.adSize.height * 0.25)).toInt())
         adRequest = AdRequest.Builder().build()
         adView!!.loadAd(adRequest)
         rootLayout!!.addView(adView)
