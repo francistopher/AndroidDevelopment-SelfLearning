@@ -12,6 +12,8 @@ import android.widget.TextView
 import android.widget.AbsoluteLayout.LayoutParams
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import com.daasuu.ei.Ease
+import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 
 class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutParams) {
@@ -61,11 +63,11 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutPara
         Log.i("Animation", "RUNNING")
          if (In) {
              fadeAnimator = textView!!.animate().alpha(1.0f)
-             fadeAnimator!!.interpolator = FastOutSlowInInterpolator()
+             fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         }
         if (Out and !In) {
             fadeAnimator = textView!!.animate().alpha(0.0f)
-            fadeAnimator!!.interpolator = LinearOutSlowInInterpolator()
+            fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         }
         fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeAnimator!!.duration = (1000.0f * Duration).toLong()

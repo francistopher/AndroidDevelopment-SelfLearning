@@ -8,7 +8,7 @@ import com.example.savethecat_colormatching.R
 
 class Enemies {
 
-    var enemies = mutableListOf<Enemy>()
+    private var enemies = mutableListOf<Enemy>()
 
     init{
         buildEnemies()
@@ -54,10 +54,8 @@ class Enemies {
                         x.toInt(), y.toInt()))
                 enemy!!.loadImages(lightImageR = R.drawable.lighthairball, darkImageR = R.drawable.darkhairball)
                 enemy!!.setStyle()
-                enemy!!.getThis().alpha = 0.0f
                 enemy!!.sway()
                 enemies.add(enemy!!)
-                MainActivity.staticSelf!!.setContentView(MainActivity.rootLayout!!)
                 y += sideLength
             }
             x += sideLength
@@ -68,6 +66,12 @@ class Enemies {
     fun setStyle() {
         for (enemy in enemies){
             enemy.setStyle()
+        }
+    }
+
+    fun fadeIn() {
+        for (enemy in enemies) {
+            enemy.fadeIn()
         }
     }
 }

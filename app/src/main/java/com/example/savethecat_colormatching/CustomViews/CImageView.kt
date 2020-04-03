@@ -111,11 +111,11 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
         }
         if (In) {
             fadeAnimator = imageView!!.animate().alpha(1.0f)
-            fadeAnimator!!.interpolator = EasingInterpolator(Ease.SINE_IN_OUT)
+            fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         }
         if (Out and !In) {
             fadeAnimator = imageView!!.animate().alpha(0.0f)
-            fadeAnimator!!.interpolator = EasingInterpolator(Ease.SINE_IN_OUT)
+            fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         }
         fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeAnimator!!.duration = (1000.0f * Duration).toLong()

@@ -1,33 +1,27 @@
 package com.example.savethecat_colormatching
 
 
-import ARatio
+import com.example.savethecat_colormatching.Controllers.AREnum
 import Reachability
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
-import android.graphics.fonts.Font
 import android.net.ConnectivityManager
-import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import com.example.savethecat_colormatching.Characters.Enemies
+import com.example.savethecat_colormatching.Controllers.AspectRatio
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
-import com.example.savethecat_colormatching.CustomViews.CButton
-import com.example.savethecat_colormatching.CustomViews.CImageView
-import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.ParticularViews.IntroView
+import com.google.android.gms.ads.*
+import java.util.*
 
 
 class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListener {
@@ -37,7 +31,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var rootView: View? = null
         var isThemeDark:Boolean = true
         var isInternetReachable:Boolean = false
-        var aspectRatio:ARatio? = null
+        var aspectRatio: AREnum? = null
         var decorView:View? = null
         // Display properties
         var dWidth:Double = 0.0
@@ -93,7 +87,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
     }
 
-    fun hideSystemBars(): Int {
+    private fun hideSystemBars(): Int {
         return View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
                 View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
@@ -108,6 +102,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val testDeviceIds = Arrays.asList("33BE2250B43518CCDA7DE426D04EE231")
+        val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
+        MobileAds.setRequestConfiguration(configuration)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupDecorView()
@@ -115,17 +112,19 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         rootLayout = AbsoluteLayout(this)
         staticSelf = this
         setupReachability()
-        setupAspectRatio()
+        AspectRatio.setupAspectRatio()
         setupSaveTheCat()
         setCurrentTheme()
+        setContentView(rootLayout!!)
     }
 
     private fun setupSaveTheCat() {
         setupSounds()
         setSuccessGradientViewAndLayer()
-        setupIntroAnimation()
         setupEnemies()
-        AudioController.mozartSonata(true, false)
+        setupIntroAnimation()
+        setupAds()
+        AudioController.mozartSonata(play = true, startOver = false)
     }
 
     private fun setupDecorView() {
@@ -137,74 +136,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupReachability() {
         registerReceiver(Reachability(), IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION))
-    }
-
-    private val displayMetrics:DisplayMetrics = DisplayMetrics()
-    private var screenAspectRatio:Double = 0.0;
-    private fun setupAspectRatio() {
-        fun getStatusBarHeight():Double {
-            var result = 0.0
-            val resourceId:Int = resources.getIdentifier("status_bar_height", "dimen", "android")
-            if (resourceId > 0) {
-                result = resources.getDimensionPixelSize(resourceId).toDouble()
-            }
-            return result
-        }
-
-        dNavigationBarHeight = getStatusBarHeight() * 0.5
-        fun setupScreenDimension() {
-            dWidth = displayMetrics.widthPixels.toDouble()
-            dHeight = displayMetrics.heightPixels.toDouble()
-        }
-        fun setupUnitScreenDimension() {
-            dUnitWidth = dWidth / 18.0
-            dUnitHeight = dHeight / 18.0
-        }
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
-
-        screenAspectRatio = (dHeight / dWidth)
-        when {
-            screenAspectRatio > 2.16 -> {
-                aspectRatio = ARatio.ar19point5by9
-            }
-            screenAspectRatio > 2.09 -> {
-                aspectRatio = ARatio.ar19by9
-            }
-            screenAspectRatio > 2.07 -> {
-                aspectRatio = ARatio.ar18point7by9
-            }
-            screenAspectRatio > 2.05 -> {
-                aspectRatio = ARatio.ar18point5by9
-            }
-            screenAspectRatio > 1.9 -> {
-                aspectRatio = ARatio.ar18by9
-            }
-            screenAspectRatio > 1.8 -> {
-                aspectRatio = ARatio.ar19by10
-            }
-            screenAspectRatio > 1.7 -> {
-                aspectRatio = ARatio.ar16by9
-            }
-            screenAspectRatio > 1.66 -> {
-                aspectRatio = ARatio.ar5by3
-            }
-            screenAspectRatio > 1.5 -> {
-                aspectRatio = ARatio.ar16by10
-            }
-            screenAspectRatio > 1.4 -> {
-                aspectRatio = ARatio.ar3by2
-            }
-            else -> {
-                // screen aspect ratio > 1.3
-                aspectRatio = ARatio.ar4by3
-            }
-        }
-        if (aspectRatio != ARatio.ar19point5by9) {
-            dHeight *= 1.2
-            setupScreenDimension()
-            params = AbsoluteLayout.LayoutParams(dWidth.toInt(), dHeight.toInt(), 0, 0)
-            setupUnitScreenDimension()
-        }
     }
 
     private fun setupSounds() {
@@ -241,6 +172,40 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupEnemies() {
         enemies = Enemies()
+    }
+
+    private fun setupAds() {
+        MobileAds.initialize(this) {}
+        setupBannerAds()
+    }
+
+    private var adView:AdView? = null
+    private var adRequest:AdRequest? = null
+    private fun setupBannerAds() {
+
+        fun getAdaptiveBannerAdSize():AdSize {
+            val display = windowManager.defaultDisplay
+            val outMetrics = DisplayMetrics()
+            display.getMetrics(outMetrics)
+            val density = outMetrics.density
+            var adWidthPixels = rootLayout!!.width.toFloat()
+            if (adWidthPixels == 0f) {
+                adWidthPixels = outMetrics.widthPixels.toFloat()
+            }
+            val adWidth = (adWidthPixels / density).toInt()
+            return AdSize.getCurrentOrientationBannerAdSizeWithWidth(this, adWidth)
+        }
+
+        adView = AdView(this)
+        adView!!.adUnitId = "ca-app-pub-3940256099942544/6300978111"
+        adView!!.adSize = getAdaptiveBannerAdSize()
+        // Resetting position
+        adView!!.layoutParams = AbsoluteLayout.LayoutParams(adView!!.adSize.width * 2, adView!!.adSize.height * 2, 0, (dHeight - (adView!!.adSize.height * 0.25)).toInt())
+        adRequest = AdRequest.Builder().build()
+        adView!!.loadAd(adRequest)
+        rootLayout!!.addView(adView)
+
+        Log.i("Height", "fgsd")
     }
 
 }
