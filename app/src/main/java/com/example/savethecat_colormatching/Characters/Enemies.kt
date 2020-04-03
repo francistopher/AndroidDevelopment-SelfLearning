@@ -1,15 +1,14 @@
 package com.example.savethecat_colormatching.Characters
 
-import android.graphics.Color
 import android.util.Log
 import android.widget.AbsoluteLayout
-import android.widget.TextView
-import com.example.savethecat_colormatching.CustomViews.CLabel
+import android.widget.ImageView
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.R
 
 class Enemies {
 
-    var enemies = mutableListOf<CLabel>()
+    var enemies = mutableListOf<Enemy>()
 
     init{
         buildEnemies()
@@ -22,7 +21,7 @@ class Enemies {
     // Enemy Spacing
     var enemyWidthSpacing:Float = 0.0f
     var enemyHeightSpacing:Float = 0.0f
-    var label:CLabel? = null
+    var enemy:Enemy? = null
     // Starting coordinates
     var x:Float = 0.0f
     var y:Float = 0.0f
@@ -48,12 +47,15 @@ class Enemies {
                     break
                 }
                 y += enemyHeightSpacing
-                label = null
-                label = CLabel(textView = TextView(MainActivity.staticSelf!!),
+                enemy = null
+                enemy = Enemy(imageView = ImageView(MainActivity.staticSelf!!),
                     parentLayout = MainActivity.rootLayout!!,
                     params = AbsoluteLayout.LayoutParams(sideLength.toInt(), sideLength.toInt(),
                         x.toInt(), y.toInt()))
-                enemies.add(label!!)
+                enemy!!.loadImages(lightImageR = R.drawable.lighthairball, darkImageR = R.drawable.darkhairball)
+                enemy!!.setStyle()
+                enemies.add(enemy!!)
+
                 MainActivity.staticSelf!!.setContentView(MainActivity.rootLayout!!)
                 y += sideLength
             }

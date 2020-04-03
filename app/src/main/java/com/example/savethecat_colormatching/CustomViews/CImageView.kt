@@ -41,7 +41,6 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
         var stopRotation:Boolean = false
     }
 
-
     fun loadImages(lightImageR:Int, darkImageR:Int) {
         this.lightImageR = lightImageR
         this.darkImageR = darkImageR
@@ -109,7 +108,6 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
                 fadeAnimator = null
             }
         }
-        Log.i("Animation", "RUNNING")
         if (In) {
             fadeAnimator = imageView!!.animate().alpha(1.0f)
             fadeAnimator!!.interpolator = FastOutSlowInInterpolator()
