@@ -14,17 +14,17 @@ class Enemies {
         buildEnemies()
     }
 
-    var sideLength:Float = 0.0f
+    private var sideLength:Float = 0.0f
     // Total Spacing
-    var totalWidthSpacing:Float = 0.0f
-    var totalHeightSpacing:Float = 0.0f
+    private var totalWidthSpacing:Float = 0.0f
+    private var totalHeightSpacing:Float = 0.0f
     // Enemy Spacing
-    var enemyWidthSpacing:Float = 0.0f
-    var enemyHeightSpacing:Float = 0.0f
-    var enemy:Enemy? = null
+    private var enemyWidthSpacing:Float = 0.0f
+    private var enemyHeightSpacing:Float = 0.0f
+    private var enemy:Enemy? = null
     // Starting coordinates
-    var x:Float = 0.0f
-    var y:Float = 0.0f
+    private var x:Float = 0.0f
+    private var y:Float = 0.0f
 
     private fun buildEnemies(){
         sideLength = (MainActivity.dUnitHeight * 2.0).toFloat()
@@ -54,6 +54,7 @@ class Enemies {
                         x.toInt(), y.toInt()))
                 enemy!!.loadImages(lightImageR = R.drawable.lighthairball, darkImageR = R.drawable.darkhairball)
                 enemy!!.setStyle()
+                enemy!!.getThis().alpha = 0.0f
                 enemy!!.sway()
                 enemies.add(enemy!!)
                 MainActivity.staticSelf!!.setContentView(MainActivity.rootLayout!!)

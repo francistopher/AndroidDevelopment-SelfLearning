@@ -15,6 +15,8 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import com.daasuu.ei.Ease
+import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.MainActivity
 
@@ -77,11 +79,10 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
             rotationAnimator = null
         }
 
-        Log.i("Animation", "Set rotation true")
-        if (stopRotation) {
-            rotationAnimator = imageView!!.animate().rotation(rotation).alpha(0.0f)
+        rotationAnimator = if (stopRotation) {
+            imageView!!.animate().rotation(rotation).alpha(0.0f)
         } else {
-            rotationAnimator = imageView!!.animate().rotation(rotation)
+            imageView!!.animate().rotation(rotation).alpha( 1.0f)
         }
         rotationAnimator!!.interpolator = LinearInterpolator()
         if (startRotation) {
@@ -110,11 +111,11 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
         }
         if (In) {
             fadeAnimator = imageView!!.animate().alpha(1.0f)
-            fadeAnimator!!.interpolator = FastOutSlowInInterpolator()
+            fadeAnimator!!.interpolator = EasingInterpolator(Ease.SINE_IN_OUT)
         }
         if (Out and !In) {
             fadeAnimator = imageView!!.animate().alpha(0.0f)
-            fadeAnimator!!.interpolator = LinearOutSlowInInterpolator()
+            fadeAnimator!!.interpolator = EasingInterpolator(Ease.SINE_IN_OUT)
         }
         fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeAnimator!!.duration = (1000.0f * Duration).toLong()
@@ -125,9 +126,12 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
             if (In and Out) {
                 if (isCatImage) {
                     AudioController.kittenMeow()
+                    this.fade(In = false, Out = true, Duration =(Duration * 0.805f), Delay = 0.0f)
+                } else {
+                    this.fade(In = false, Out = true, Duration =(Duration), Delay = 0.0f)
                 }
                 stopRotation = true
-                this.fade(In = false, Out = true, Duration =(Duration * 0.75f), Delay = 0.0f)
+
             } else {
                 fadeAnimator!!.cancel()
                 fadeAnimatorIsRunning = false

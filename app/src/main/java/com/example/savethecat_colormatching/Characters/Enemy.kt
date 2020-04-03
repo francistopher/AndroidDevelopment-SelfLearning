@@ -11,6 +11,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import com.daasuu.ei.Ease
+import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
@@ -24,8 +26,8 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
 
     private var lightImageR:Int = 0
     private var darkImageR:Int = 0
-    private var verticalSignFloat:Float = 0f
-    private var horizontalSignFloat:Float = 0f
+    private var verticalSignFloat:Float = randomSign1Float()
+    private var horizontalSignFloat:Float = randomSign1Float()
     init {
 
         this.enemyImage = imageView
@@ -41,6 +43,10 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
 
     fun getOriginalParams():LayoutParams {
         return originalParams!!
+    }
+
+    fun getThis():ImageView {
+        return enemyImage!!
     }
 
     fun loadImages(lightImageR:Int, darkImageR:Int) {
@@ -60,11 +66,11 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
         }
         if (In) {
             fadeAnimator = enemyImage!!.animate().alpha(1.0f)
-            fadeAnimator!!.interpolator = FastOutSlowInInterpolator()
+            fadeAnimator!!.interpolator = EasingInterpolator(Ease.SINE_IN_OUT)
         }
         if (Out and !In) {
             fadeAnimator = enemyImage!!.animate().alpha(0.0f)
-            fadeAnimator!!.interpolator = LinearOutSlowInInterpolator()
+            fadeAnimator!!.interpolator =  EasingInterpolator(Ease.SINE_IN_OUT)
         }
         fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeAnimator!!.duration = (1000.0f * Duration).toLong()
@@ -118,9 +124,9 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
         swayAnimator = enemyImage!!.animate().translationXBy(horizontalSignFloat * (this.originalParams!!.width/ 7.5).
         toFloat()).translationYBy(verticalSignFloat * (this.originalParams!!.width/ 7.5).toFloat())
         if (horizontalSignFloat > 0) {
-            swayAnimator!!.interpolator = LinearInterpolator()
+            swayAnimator!!.interpolator = EasingInterpolator(Ease.SINE_IN_OUT)
         } else {
-            swayAnimator!!.interpolator = LinearInterpolator()
+            swayAnimator!!.interpolator = EasingInterpolator(Ease.SINE_IN_OUT)
         }
         swayAnimator!!.startDelay = 0
         swayAnimator!!.duration = 875
