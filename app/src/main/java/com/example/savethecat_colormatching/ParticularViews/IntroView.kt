@@ -22,8 +22,8 @@ class IntroView(imageView: ImageView, parentLayout:AbsoluteLayout, params: Absol
 
     fun start() {
         textImageView!!.rotateText()
-        textImageView!!.fade(In = true, Out = true, Duration = 2.0f, Delay = 0.5f)
-        catImageView!!.fade(In = true, Out = true, Duration = 2.0f, Delay = 0.5f)
+        textImageView!!.fade(In = true, Out = true, Duration = 2.4f, Delay = 0.5f)
+        catImageView!!.fade(In = true, Out = true, Duration = 2.4f, Delay = 0.5f)
     }
 
     fun loadTextImages(lightTextImageR:Int, darkTextImageR:Int, lightCatImageR:Int, darkCatImageR:Int) {

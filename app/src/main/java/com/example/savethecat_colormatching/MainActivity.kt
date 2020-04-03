@@ -20,6 +20,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import com.example.savethecat_colormatching.Characters.Enemies
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
 import com.example.savethecat_colormatching.CustomViews.CButton
@@ -42,10 +43,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var dHeight:Double = 0.0
         var dUnitWidth:Double = 0.0
         var dUnitHeight:Double = 0.0
+        var dNavigationBarHeight:Double = 0.0
         // Custom Font
         var rootLayout:AbsoluteLayout? = null
         // Absolute Layout Params
         var params:AbsoluteLayout.LayoutParams? = null
+        var successGradientView:View? = null
+        var enemies:Enemies? = null
     }
 
     var introAnimation:IntroView? = null
@@ -119,6 +123,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupSounds()
         setSuccessGradientViewAndLayer()
         setupIntroAnimation()
+        setupEnemies()
         AudioController.mozartSonata(true, false)
     }
 
@@ -136,17 +141,16 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private val displayMetrics:DisplayMetrics = DisplayMetrics()
     private var screenAspectRatio:Double = 0.0;
     private fun setupAspectRatio() {
-        fun getNavigationBarHeight(): Int {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                val metrics = DisplayMetrics()
-                windowManager.defaultDisplay.getMetrics(metrics)
-                val usableHeight = metrics.heightPixels
-                windowManager.defaultDisplay.getRealMetrics(metrics)
-                val realHeight = metrics.heightPixels
-                return if (realHeight > usableHeight) realHeight - usableHeight else 0
+        fun getStatusBarHeight():Double {
+            var result = 0.0
+            val resourceId:Int = resources.getIdentifier("status_bar_height", "dimen", "android")
+            if (resourceId > 0) {
+                result = resources.getDimensionPixelSize(resourceId).toDouble()
             }
-            return 0
+            return result
         }
+
+        dNavigationBarHeight = getStatusBarHeight() * 0.5
         fun setupScreenDimension() {
             dWidth = displayMetrics.widthPixels.toDouble()
             dHeight = displayMetrics.heightPixels.toDouble()
@@ -221,19 +225,21 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             lightCatImageR = R.drawable.darkcat, darkCatImageR = R.drawable.lightcat)
         CenterController.center(introAnimation!!.getTextImage(), introAnimation!!.getTextParams(), params!!)
         CenterController.center(introAnimation!!.getCatImage(), introAnimation!!.getCatParams(), params!!)
-        setContentView(rootLayout!!)
         introAnimation!!.start()
     }
 
     private fun setSuccessGradientViewAndLayer() {
-        var view:View = View(rootView!!.context)
-        view.layoutParams = AbsoluteLayout.LayoutParams(dWidth.toInt(), (dHeight * 0.15).toInt(), 0, 0)
-        view.setBackgroundColor(Color.TRANSPARENT)
-        rootLayout!!.addView(view)
+        successGradientView = View(rootView!!.context)
+        successGradientView!!.layoutParams = AbsoluteLayout.LayoutParams(dWidth.toInt(), (dHeight * 0.15).toInt(), 0, 0)
+        successGradientView!!.setBackgroundColor(Color.TRANSPARENT)
+        rootLayout!!.addView(successGradientView)
+        successGradientView!!.setBackgroundDrawable( GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+            intArrayOf(Color.parseColor("#fcd340"), Color.TRANSPARENT)))
+        successGradientView!!.alpha = 0.0f
+    }
 
-        var gradient:GradientDrawable = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-            intArrayOf(Color.parseColor("#fcd340"), Color.TRANSPARENT))
-        view.setBackgroundDrawable(gradient)
+    private fun setupEnemies() {
+        enemies = Enemies()
     }
 
 }
