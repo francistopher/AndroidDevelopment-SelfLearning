@@ -54,8 +54,8 @@ class Enemies {
                         x.toInt(), y.toInt()))
                 enemy!!.loadImages(lightImageR = R.drawable.lighthairball, darkImageR = R.drawable.darkhairball)
                 enemy!!.setStyle()
+                enemy!!.sway()
                 enemies.add(enemy!!)
-
                 MainActivity.staticSelf!!.setContentView(MainActivity.rootLayout!!)
                 y += sideLength
             }
@@ -65,7 +65,7 @@ class Enemies {
     }
 
     fun setStyle() {
-        for (enemy in enemies!!){
+        for (enemy in enemies){
             enemy.setStyle()
         }
     }

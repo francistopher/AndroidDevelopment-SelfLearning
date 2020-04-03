@@ -1,6 +1,10 @@
 package com.example.savethecat_colormatching.Characters
 
+import android.view.View
 import android.view.ViewPropertyAnimator
+import android.view.animation.CycleInterpolator
+import android.view.animation.DecelerateInterpolator
+import android.view.animation.LinearInterpolator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageView
@@ -20,8 +24,10 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
 
     private var lightImageR:Int = 0
     private var darkImageR:Int = 0
-
+    private var verticalSignFloat:Float = 0f
+    private var horizontalSignFloat:Float = 0f
     init {
+
         this.enemyImage = imageView
         this.enemyImage!!.layoutParams = params
         parentLayout.addView(imageView)
@@ -78,6 +84,53 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
         if (!fadeAnimatorIsRunning) {
             fadeAnimator!!.start()
         }
+    }
+
+
+    private fun randomSign1Float():Float {
+        return if ((0..1).random() == 0) {
+            -1f
+        } else {
+            1f
+        }
+    }
+
+    var swayAnimator:ViewPropertyAnimator? = null
+    var isSwaying:Boolean = false
+    var swayBack:Boolean = false
+    fun sway() {
+        if (swayAnimator != null) {
+            if (isSwaying) {
+                swayAnimator!!.cancel()
+                isSwaying = false
+                swayAnimator = null
+            }
+        }
+        if (swayBack) {
+            horizontalSignFloat *= -1f
+            verticalSignFloat *= -1f
+            swayBack = false
+        } else {
+            horizontalSignFloat *= randomSign1Float()
+            verticalSignFloat *= randomSign1Float()
+            swayBack = true
+        }
+        swayAnimator = enemyImage!!.animate().translationXBy(horizontalSignFloat * (this.originalParams!!.width/ 7.5).
+        toFloat()).translationYBy(verticalSignFloat * (this.originalParams!!.width/ 7.5).toFloat())
+        if (horizontalSignFloat > 0) {
+            swayAnimator!!.interpolator = LinearInterpolator()
+        } else {
+            swayAnimator!!.interpolator = LinearInterpolator()
+        }
+        swayAnimator!!.startDelay = 0
+        swayAnimator!!.duration = 875
+        swayAnimator!!.withStartAction {
+            isSwaying = true
+        }
+        swayAnimator!!.withEndAction {
+            sway()
+        }
+        swayAnimator!!.start()
     }
 
     fun setStyle() {
