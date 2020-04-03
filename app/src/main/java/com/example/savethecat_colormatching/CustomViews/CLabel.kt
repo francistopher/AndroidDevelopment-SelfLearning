@@ -10,8 +10,6 @@ import android.view.ViewPropertyAnimator
 import android.widget.AbsoluteLayout
 import android.widget.TextView
 import android.widget.AbsoluteLayout.LayoutParams
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity

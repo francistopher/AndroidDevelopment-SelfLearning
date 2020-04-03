@@ -19,6 +19,7 @@ import com.example.savethecat_colormatching.Controllers.AspectRatio
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
 import com.example.savethecat_colormatching.ParticularViews.BoardGame
+import com.example.savethecat_colormatching.ParticularViews.ColorOptions
 import com.example.savethecat_colormatching.ParticularViews.IntroView
 import com.google.android.gms.ads.*
 import java.util.*
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var successGradientView:View? = null
         var enemies:Enemies? = null
         // Board Game
+        var boardGame:BoardGame? = null
     }
 
     var introAnimation:IntroView? = null
@@ -210,15 +212,16 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         rootLayout!!.addView(adView)
     }
 
-    fun setupBoardGame() {
+    private fun setupBoardGame() {
         val sideLength:Float = (dUnitHeight * 8.5).toFloat()
-        val boardGame = BoardGame(boardView = View(this),
-            parentLayout = rootLayout!!, params = AbsoluteLayout.LayoutParams(sideLength.toInt(),
+        boardGame = BoardGame(boardView = View(this), parentLayout = rootLayout!!,
+            params = AbsoluteLayout.LayoutParams(sideLength.toInt(),
                 sideLength.toInt(), 0,0))
-        boardGame.getThis().setBackgroundColor(Color.RED)
-        CenterController.centerView(childView = boardGame.getThis(),
-            childParams = boardGame.getOriginalParams(),
+        boardGame!!.getThis().setBackgroundResource(ColorOptions.red)
+        CenterController.centerView(childView = boardGame!!.getThis(),
+            childParams = boardGame!!.getOriginalParams(),
             parentParams = AbsoluteLayout.LayoutParams(dWidth.toInt(), dHeight.toInt(), 0, 0))
+        boardGame!!.buildGame()
     }
 
 }
