@@ -9,11 +9,11 @@ import com.example.savethecat_colormatching.MainActivity
 
 class Enemies {
 
+    var enemies = mutableListOf<CLabel>()
+
     init{
         buildEnemies()
     }
-
-    var enemies:ArrayList<CLabel> = ArrayList()
 
     var sideLength:Float = 0.0f
     // Total Spacing
@@ -53,6 +53,7 @@ class Enemies {
                     parentLayout = MainActivity.rootLayout!!,
                     params = AbsoluteLayout.LayoutParams(sideLength.toInt(), sideLength.toInt(),
                         x.toInt(), y.toInt()))
+                enemies.add(label!!)
                 MainActivity.staticSelf!!.setContentView(MainActivity.rootLayout!!)
                 y += sideLength
             }
@@ -62,7 +63,7 @@ class Enemies {
     }
 
     fun setStyle() {
-        for (enemy in enemies){
+        for (enemy in enemies!!){
             enemy.setStyle()
         }
     }
