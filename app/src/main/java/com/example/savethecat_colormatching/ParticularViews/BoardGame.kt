@@ -9,6 +9,7 @@ import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
 import com.example.savethecat_colormatching.Characters.CatButton
 import com.example.savethecat_colormatching.Characters.CatButtons
+import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.MainActivity
 
 class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -16,10 +17,12 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     private var boardView: View? = null
     private var originalParams: LayoutParams? = null
 
-    private var currentStage:Int = 3
+    private var currentStage:Int = 1
     private var gridColors: Array<IntArray>? = null
 
     private var catButtons:CatButtons? = null
+    private var singlePlayerButton:CButton? = null
+    private var twoPlayerButton:CButton? = null
 
     companion object {
         var rowsAndColumns = Pair(0, 0)
@@ -35,7 +38,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         parentLayout.addView(this.boardView!!)
         setOriginalParams(params = params)
         catButtons = CatButtons()
-        recordGridColorsUsed()
+
     }
 
     fun getThis(): View {
@@ -57,7 +60,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         buildGridButtons()
         catButtons!!.loadPreviousCats()
         recordGridColorsUsed()
-        Log.i("Color Count", gridColorsCount.toString())
     }
 
     private var initialStage:Int = 0
@@ -131,7 +133,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             gridButtonX = 0.0f
             for (columnIndex in (0 until rowsAndColumns.second)) {
                 gridButtonX += gridButtonColumnGap
-                Log.i("Coordinates", " ${gridButtonX} ${gridButtonY}")
                 catButton = catButtons!!.buildCatButton(button = Button(boardGameContext!!),
                     parentLayout = boardGameLayout!!, params = LayoutParams(gridButtonWidth.toInt(),
                         gridButtonHeight.toInt(), (gridButtonX + originalParams!!.x).toInt(),
@@ -160,4 +161,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             }
         }
     }
+
+//    private fun setupSingleAndTwoPlayerButton() {
+//        singlePlayerButton = CButton(button = Button(boardGameContext),)
+//    }
 }

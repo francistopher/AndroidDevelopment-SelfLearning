@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var enemies:Enemies? = null
         // Board Game
         var boardGame:BoardGame? = null
+        var colorOptions:ColorOptions? = null
     }
 
     var introAnimation:IntroView? = null
@@ -130,7 +131,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupIntroAnimation()
         setupAdvertisement()
         setupBoardGame()
-        AudioController.mozartSonata(play = true, startOver = false)
+        setupColorOptions()
+//        AudioController.mozartSonata(play = true, startOver = false)
     }
 
     private fun setupDecorView() {
@@ -213,10 +215,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     private fun setupBoardGame() {
-        val sideLength:Float = (dUnitHeight * 8.5).toFloat()
+        val boardGameSideLength:Float = (dUnitHeight * 8.5).toFloat()
         boardGame = BoardGame(boardView = View(this), parentLayout = rootLayout!!,
-            params = AbsoluteLayout.LayoutParams(sideLength.toInt(),
-                sideLength.toInt(), 0,0))
+            params = AbsoluteLayout.LayoutParams(boardGameSideLength.toInt(),
+                boardGameSideLength.toInt(), 0,0))
         boardGame!!.getThis().setBackgroundColor(Color.TRANSPARENT)
         CenterController.centerView(childView = boardGame!!.getThis(),
             childParams = boardGame!!.getOriginalParams(),
@@ -224,6 +226,18 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         boardGame!!.setOriginalParams(boardGame!!.getThis().layoutParams as AbsoluteLayout.LayoutParams)
         boardGame!!.buildGame()
         rootLayout!!.addView(BoardGame.boardGameLayout)
+    }
+
+    private fun setupColorOptions() {
+        val boardGameSideLength:Float = (dUnitHeight * 8.5).toFloat()
+        colorOptions = ColorOptions(view = View(this), parentLayout = rootLayout!!, params =
+        AbsoluteLayout.LayoutParams(boardGameSideLength.toInt(), (dUnitHeight * 1.5).toInt(),
+            boardGame!!.getOriginalParams().x, boardGame!!.getOriginalParams().y + boardGame!!.
+            getOriginalParams().height))
+        CenterController.centerViewHorizontally(colorOptions!!.getThis(), parentParams = AbsoluteLayout.
+        LayoutParams(dWidth.toInt(), (adHeight * 1.05).toInt(), 0, 0), childParams =
+        colorOptions!!.getOriginalParams())
+
     }
 
 }

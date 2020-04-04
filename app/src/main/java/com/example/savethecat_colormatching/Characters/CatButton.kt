@@ -56,7 +56,7 @@ class CatButton(button: Button, parentLayout: AbsoluteLayout, params: AbsoluteLa
         return originalBackgroundColor
     }
 
-    fun getThis() :Button {
+    fun getThis():Button {
         return button!!
     }
 
