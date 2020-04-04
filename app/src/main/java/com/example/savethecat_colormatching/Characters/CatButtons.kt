@@ -2,6 +2,7 @@ package com.example.savethecat_colormatching.Characters
 
 import android.widget.AbsoluteLayout
 import android.widget.Button
+import java.lang.Math.sqrt
 
 class CatButtons {
 
@@ -16,6 +17,8 @@ class CatButtons {
                        params: AbsoluteLayout.LayoutParams, backgroundColor:Int): CatButton {
         catButton = CatButton(button=button, parentLayout=parentLayout, params=params,
             backgroundColor = backgroundColor)
+        catButton!!.setCornerRadiusAndBorderWidth((params.height.toDouble() / 5.0).toInt(),
+            ((kotlin.math.sqrt(params.width * 0.01) * 10.0) * 0.35).toInt())
         // If cat button is pressed fade out cat button
         currentCatButtons!!.add(catButton!!)
         return catButton!!

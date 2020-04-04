@@ -34,7 +34,12 @@ class CatButton(button: Button, parentLayout: AbsoluteLayout, params: AbsoluteLa
         shape!!.shape = GradientDrawable.RECTANGLE
         shape!!.setColor((button!!.background as ColorDrawable).color)
         if (borderWidth > 0) {
-            shape!!.setStroke(borderWidth, Color.BLUE)
+            if (MainActivity.isThemeDark) {
+                shape!!.setStroke(borderWidth, Color.WHITE)
+
+            } else {
+                shape!!.setStroke(borderWidth, Color.BLACK)
+            }
         }
         shape!!.cornerRadius = radius.toFloat()
         button!!.setBackgroundDrawable(shape)
