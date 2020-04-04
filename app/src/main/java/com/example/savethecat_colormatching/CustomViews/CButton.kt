@@ -8,7 +8,9 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.renderscript.Sampler
+import android.util.Log
 import android.util.TypedValue
+import android.view.ViewPropertyAnimator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
@@ -78,7 +80,8 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     private var growWidthAndChangeColor: AnimatorSet? = null
     private var growWidthAnimator: ValueAnimator? = null
     private var changeColorAnimator: ValueAnimator? = null
-    private var growWidthAndChangeColorIsRunning: Boolean = false
+    private var fadeOutAnimator:ValueAnimator? = null
+    var growWidthAndChangeColorIsRunning: Boolean = false
     fun growWidth(width: Float) {
         if (growWidthAndChangeColor != null) {
             if (growWidthAndChangeColorIsRunning) {
@@ -109,6 +112,16 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         growWidthAndChangeColor!!.startDelay = 125
         growWidthAndChangeColorIsRunning = true
         growWidthAndChangeColor!!.start()
+
+        fadeOutAnimator = ValueAnimator.ofFloat(1f, 0f)
+        fadeOutAnimator!!.addUpdateListener{
+            button!!.alpha = it.animatedValue as Float
+        }
+        fadeOutAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        fadeOutAnimator!!.startDelay = 1250
+        fadeOutAnimator!!.duration = 750
+        fadeOutAnimator!!.start()
+
     }
 
     private var x: Float = 0f
@@ -167,6 +180,44 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         shrinkAnimationSet!!.play(translateXAnimator!!).with(shrinkWidthAnimator)
         shrinkAnimationSet!!.duration = duration.toLong()
         shrinkAnimationSet!!.start()
+    }
+
+    private var fadeAnimator: ViewPropertyAnimator? = null
+    private var fadeAnimatorIsRunning:Boolean = false
+    fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        if (fadeAnimator != null) {
+            if (fadeAnimatorIsRunning) {
+                fadeAnimator!!.cancel()
+                fadeAnimatorIsRunning = false
+                fadeAnimator = null
+            }
+        }
+        if (In) {
+            fadeAnimator = button!!.animate().alpha(1.0f)
+            fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        }
+        if (Out and !In) {
+            fadeAnimator = button!!.animate().alpha(0.0f)
+            fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        }
+        fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
+        fadeAnimator!!.duration = (1000.0f * Duration).toLong()
+        fadeAnimator!!.withStartAction {
+            fadeAnimatorIsRunning = true
+        }
+        fadeAnimator!!.withEndAction {
+            if (In and Out) {
+                this.fade(In = false, Out = true, Duration = Duration, Delay = 0.0f)
+            } else {
+                fadeAnimator!!.cancel()
+                fadeAnimatorIsRunning = false
+                fadeAnimator = null
+            }
+        }
+        if (!fadeAnimatorIsRunning) {
+            Log.i("Animation", "Fade")
+            fadeAnimator!!.start()
+        }
     }
 
     private fun getBackgroundColor(): Int {

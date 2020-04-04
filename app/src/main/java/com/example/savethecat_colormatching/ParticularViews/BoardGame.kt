@@ -12,6 +12,13 @@ import com.example.savethecat_colormatching.Characters.CatButtons
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.ParticularViews.BoardGame.Companion.boardGameContext
+import com.example.savethecat_colormatching.ParticularViews.BoardGame.Companion.boardGameLayout
+import java.util.*
+import java.util.concurrent.Executors
+import java.util.concurrent.TimeUnit
+import java.util.logging.Handler
+import kotlin.concurrent.schedule
 
 class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
@@ -175,9 +182,11 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
-            singlePlayerButton!!.targetBackgroundColor = gridColors!![0][0]
-            singlePlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
-            twoPlayerButton!!.shrink(false)
+            if (!singlePlayerButton!!.growWidthAndChangeColorIsRunning) {
+                singlePlayerButton!!.targetBackgroundColor = gridColors!![0][0]
+                singlePlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
+                twoPlayerButton!!.shrink(false)
+            }
         }
     }
 
