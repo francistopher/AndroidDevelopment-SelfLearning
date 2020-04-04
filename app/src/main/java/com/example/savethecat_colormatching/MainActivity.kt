@@ -226,6 +226,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         boardGame!!.setOriginalParams(boardGame!!.getThis().layoutParams as AbsoluteLayout.LayoutParams)
         boardGame!!.buildGame()
         rootLayout!!.addView(BoardGame.boardGameLayout)
+        // Setup single and two player buttons
+        boardGame!!.setupSinglePlayerButton()
+        boardGame!!.setupTwoPlayerButton()
+
     }
 
     private fun setupColorOptions() {

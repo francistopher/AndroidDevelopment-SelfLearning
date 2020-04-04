@@ -11,13 +11,14 @@ import com.example.savethecat_colormatching.Characters.CatButton
 import com.example.savethecat_colormatching.Characters.CatButtons
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.MainActivity
+import java.lang.Math.sqrt
 
 class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
     private var boardView: View? = null
     private var originalParams: LayoutParams? = null
 
-    private var currentStage:Int = 1
+    private var currentStage:Int = 5
     private var gridColors: Array<IntArray>? = null
 
     private var catButtons:CatButtons? = null
@@ -38,7 +39,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         parentLayout.addView(this.boardView!!)
         setOriginalParams(params = params)
         catButtons = CatButtons()
-
     }
 
     fun getThis(): View {
@@ -160,6 +160,34 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 gridColorsCount!![recordedColor] = gridColorsCount!![recordedColor]!! + 1
             }
         }
+    }
+
+    fun setupSinglePlayerButton() {
+        singlePlayerButton = CButton(button = Button(boardGameContext), parentLayout = boardGameLayout!!,
+            params = LayoutParams((originalParams!!.width * 0.425).toInt(), (MainActivity.dUnitHeight
+                    * 1.5 * 0.8).toInt(), (originalParams!!.x + (originalParams!!.
+            width * 0.05)).toInt(), (originalParams!!.y + originalParams!!.height + (-MainActivity.
+            dUnitHeight * 1.5 * 0.4) + (originalParams!!.height * 0.1)).toInt()))
+        singlePlayerButton!!.setCornerRadiusAndBorderWidth((singlePlayerButton!!.
+        getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(singlePlayerButton!!.
+        getOriginalParams().width * 0.01) * 10.0) * 0.35).toInt())
+        singlePlayerButton!!.setTextSize((singlePlayerButton!!.getOriginalParams().height * 0.15).
+        toFloat())
+        singlePlayerButton!!.setText("Single Player")
+    }
+
+    fun setupTwoPlayerButton() {
+        twoPlayerButton = CButton(button = Button(boardGameContext), parentLayout = boardGameLayout!!,
+            params = LayoutParams((originalParams!!.width * 0.425).toInt(), (MainActivity.dUnitHeight
+                    * 1.5 * 0.8).toInt(), (originalParams!!.x + (originalParams!!.width * 0.525)).
+            toInt(), (originalParams!!.y + (-MainActivity.dUnitHeight * 1.5 * 0.4) +originalParams!!.
+            height + (originalParams!!.height * 0.1)).toInt()))
+        twoPlayerButton!!.setCornerRadiusAndBorderWidth((twoPlayerButton!!.
+        getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(twoPlayerButton!!.
+        getOriginalParams().width * 0.01) * 10.0) * 0.35).toInt())
+        twoPlayerButton!!.setTextSize((twoPlayerButton!!.getOriginalParams().height * 0.15).
+        toFloat())
+        twoPlayerButton!!.setText("Two Player")
     }
 
 //    private fun setupSingleAndTwoPlayerButton() {

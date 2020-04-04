@@ -22,7 +22,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         parentLayout.addView(view)
         setOriginalParams(params)
         setShrunkParams()
-        this.view!!.setBackgroundColor(Color.RED)
+        this.view!!.setBackgroundColor(Color.TRANSPARENT)
     }
 
     private fun setOriginalParams(params:LayoutParams) {
