@@ -6,8 +6,7 @@ import android.widget.AbsoluteLayout.LayoutParams
 import com.example.savethecat_colormatching.R
 
 class ColorOptions(colorOptionView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
-    private var colors = mutableListOf(green, yellow,
-        orange, red, purple, blue)
+    private var colors = mutableListOf(green, yellow, orange, red, purple, blue)
 
     companion object {
 

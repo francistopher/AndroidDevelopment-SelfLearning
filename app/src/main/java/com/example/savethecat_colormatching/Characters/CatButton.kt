@@ -3,7 +3,6 @@ package com.example.savethecat_colormatching.Characters
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
-import android.util.TypedValue
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
@@ -51,6 +50,10 @@ class CatButton(button: Button, parentLayout: AbsoluteLayout, params: AbsoluteLa
 
     private fun setShrunkParams() {
         shrunkParams = AbsoluteLayout.LayoutParams(originalParams!!.x / 2, originalParams!!.y / 2, 1, 1)
+    }
+
+    fun getOriginalBackgroundColor():Int {
+        return originalBackgroundColor
     }
 
     fun getThis() :Button {

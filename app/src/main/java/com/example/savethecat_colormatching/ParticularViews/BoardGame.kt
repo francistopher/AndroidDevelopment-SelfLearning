@@ -25,6 +25,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         var rowsAndColumns = Pair(0, 0)
         var boardGameContext:Context? = null
         var boardGameLayout:AbsoluteLayout? = null
+        var gridColorsCount:MutableMap<Int,Int>? = null
     }
     init {
         this.boardView = boardView
@@ -34,6 +35,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         parentLayout.addView(this.boardView!!)
         setOriginalParams(params = params)
         catButtons = CatButtons()
+        recordGridColorsUsed()
     }
 
     fun getThis(): View {
@@ -53,6 +55,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         ColorOptions.setSelectionColors()
         buildGridColors()
         buildGridButtons()
+        catButtons!!.loadPreviousCats()
+        recordGridColorsUsed()
+        Log.i("Color Count", gridColorsCount.toString())
     }
 
     private var initialStage:Int = 0
@@ -140,6 +145,19 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 gridButtonX += gridButtonWidth
             }
             gridButtonY += gridButtonHeight
+        }
+    }
+
+    var recordedColor:Int = 0
+    private fun recordGridColorsUsed() {
+        gridColorsCount = mutableMapOf()
+        for (catButton in catButtons!!.getCurrentCatButtons()) {
+            recordedColor = catButton.getOriginalBackgroundColor()
+            if (gridColorsCount!![recordedColor] == null) {
+                gridColorsCount!![recordedColor] = 1
+            } else {
+                gridColorsCount!![recordedColor] = gridColorsCount!![recordedColor]!! + 1
+            }
         }
     }
 }

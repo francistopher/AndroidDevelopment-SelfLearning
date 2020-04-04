@@ -7,9 +7,11 @@ import java.lang.Math.sqrt
 class CatButtons {
 
     private var currentCatButtons:MutableList<CatButton>? = null
+    private var previousCatButtons:MutableList<CatButton>? = null
 
     init {
         currentCatButtons = mutableListOf()
+        previousCatButtons = mutableListOf()
     }
 
     private var catButton:CatButton? = null
@@ -22,5 +24,15 @@ class CatButtons {
         // If cat button is pressed fade out cat button
         currentCatButtons!!.add(catButton!!)
         return catButton!!
+    }
+
+    fun loadPreviousCats() {
+        for (catButton in currentCatButtons!!) {
+            previousCatButtons!!.add(catButton)
+        }
+    }
+
+    fun getCurrentCatButtons() :MutableList<CatButton> {
+        return currentCatButtons!!
     }
 }
