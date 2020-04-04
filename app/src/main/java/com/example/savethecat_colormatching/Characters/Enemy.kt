@@ -129,7 +129,7 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
             swayAnimator!!.interpolator = EasingInterpolator(Ease.SINE_IN_OUT)
         }
         swayAnimator!!.startDelay = 0
-        swayAnimator!!.duration = 875
+        swayAnimator!!.duration = 1750
         swayAnimator!!.withStartAction {
             isSwaying = true
         }

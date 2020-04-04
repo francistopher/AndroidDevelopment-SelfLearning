@@ -1,7 +1,7 @@
 package com.example.savethecat_colormatching
 
 
-import com.example.savethecat_colormatching.Controllers.AREnum
+import com.example.savethecat_colormatching.Controllers.ARType
 import Reachability
 import android.content.IntentFilter
 import android.content.res.Configuration
@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var rootView: View? = null
         var isThemeDark:Boolean = true
         var isInternetReachable:Boolean = false
-        var aspectRatio: AREnum? = null
+        var aspectRatio: ARType? = null
         var decorView:View? = null
         // Display properties
         var dWidth:Double = 0.0

@@ -58,7 +58,6 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutPara
                 fadeAnimator = null
             }
         }
-        Log.i("Animation", "RUNNING")
          if (In) {
              fadeAnimator = textView!!.animate().alpha(1.0f)
              fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
