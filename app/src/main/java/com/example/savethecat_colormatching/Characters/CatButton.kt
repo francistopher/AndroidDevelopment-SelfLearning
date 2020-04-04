@@ -23,7 +23,7 @@ class CatButton(button: Button, parentLayout: AbsoluteLayout, params: AbsoluteLa
         parentLayout.addView(button)
         setOriginalParams(params=params)
         setShrunkParams()
-        this.button!!.setBackgroundResource(backgroundColor)
+        this.button!!.setBackgroundColor(backgroundColor)
     }
 
     private var shape: GradientDrawable? = null

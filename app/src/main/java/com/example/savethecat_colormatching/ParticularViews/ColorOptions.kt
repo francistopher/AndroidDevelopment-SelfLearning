@@ -44,12 +44,12 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     companion object {
         var selectionColors:MutableList<Int>? = null
 
-        var green:Int = R.color.Green
-        var yellow:Int = R.color.Yellow
-        var orange:Int = R.color.Orange
-        var red:Int = R.color.Red
-        var purple:Int = R.color.Purple
-        var blue:Int = R.color.Blue
+        var green = Color.rgb(94, 182, 62)
+        var yellow = Color.rgb(255, 185, 0)
+        var orange = Color.rgb(247, 130, 0)
+        var red = Color.rgb(226, 56, 56)
+        var purple = Color.rgb(151, 57, 153)
+        var blue = Color.rgb(0, 156, 223)
 
         fun setSelectionColors() {
             selectionColors = mutableListOf(green, yellow,

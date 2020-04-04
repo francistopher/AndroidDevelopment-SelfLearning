@@ -1,6 +1,7 @@
 package com.example.savethecat_colormatching.ParticularViews
 
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
@@ -174,6 +175,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
+            singlePlayerButton!!.targetBackgroundColor = gridColors!![0][0]
             singlePlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
             twoPlayerButton!!.shrink(false)
         }
@@ -195,5 +197,11 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         twoPlayerButton!!.getThis().setOnClickListener {
             Log.i("Click", "Multi Player Button")
         }
+    }
+
+    fun setStyle() {
+        singlePlayerButton!!.setStyle()
+        twoPlayerButton!!.setStyle()
+        catButtons!!.setStyle()
     }
 }

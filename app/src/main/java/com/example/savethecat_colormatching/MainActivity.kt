@@ -71,7 +71,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         } else {
             rootView?.setBackgroundColor(Color.WHITE)
         }
-        introAnimation!!.setStyle()
     }
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
@@ -119,8 +118,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         staticSelf = this
         setupReachability()
         AspectRatio.setupAspectRatio()
-        setupSaveTheCat()
         setCurrentTheme()
+        setupSaveTheCat()
         setContentView(rootLayout!!)
     }
 
@@ -132,7 +131,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupAdvertisement()
         setupBoardGame()
         setupColorOptions()
-//        AudioController.mozartSonata(play = true, startOver = false)
+        AudioController.mozartSonata(play = true, startOver = false)
     }
 
     private fun setupDecorView() {

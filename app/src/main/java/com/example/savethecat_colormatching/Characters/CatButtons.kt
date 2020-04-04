@@ -32,6 +32,12 @@ class CatButtons {
         }
     }
 
+    fun setStyle() {
+        for (catButton in currentCatButtons!!) {
+            catButton.setStyle()
+        }
+    }
+
     fun getCurrentCatButtons() :MutableList<CatButton> {
         return currentCatButtons!!
     }
