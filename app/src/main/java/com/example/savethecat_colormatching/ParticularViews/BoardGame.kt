@@ -1,33 +1,46 @@
 package com.example.savethecat_colormatching.ParticularViews
 
+import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.Button
+import com.example.savethecat_colormatching.Characters.CatButton
+import com.example.savethecat_colormatching.Characters.CatButtons
+import com.example.savethecat_colormatching.MainActivity
 
 class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
     private var boardView: View? = null
     private var originalParams: LayoutParams? = null
 
-    private var currentStage:Int = 1
-    private  var gridColors: Array<IntArray>? = null
+    private var currentStage:Int = 3
+    private var gridColors: Array<IntArray>? = null
+
+    private var catButtons:CatButtons? = null
 
     companion object {
         var rowsAndColumns = Pair(0, 0)
+        var boardGameContext:Context? = null
+        var boardGameLayout:AbsoluteLayout? = null
     }
     init {
         this.boardView = boardView
+        boardGameContext = boardView.context
+        boardGameLayout = AbsoluteLayout(boardGameContext)
         this.boardView!!.layoutParams = params
         parentLayout.addView(this.boardView!!)
         setOriginalParams(params = params)
+        catButtons = CatButtons()
     }
 
     fun getThis(): View {
         return this.boardView!!
     }
 
-    private fun setOriginalParams(params: LayoutParams) {
+    fun setOriginalParams(params: LayoutParams) {
         originalParams = params
     }
 
@@ -97,6 +110,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     var gridButtonWidth:Float = 0.0f
     var gridButtonX:Float = 0.0f
     var gridButtonY:Float = 0.0f
+    var catButton:CatButton? = null
     private fun buildGridButtons() {
         gridButtonRowGap = originalParams!!.height * 0.1f / (rowsAndColumns.first + 1.0f)
         gridButtonColumnGap = originalParams!!.width * 0.1f / (rowsAndColumns.second + 1.0f)
@@ -113,7 +127,11 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             for (columnIndex in (0 until rowsAndColumns.second)) {
                 gridButtonX += gridButtonColumnGap
                 Log.i("Coordinates", " ${gridButtonX} ${gridButtonY}")
-
+                catButton = catButtons!!.buildCatButton(button = Button(boardGameContext!!),
+                    parentLayout = boardGameLayout!!, params = LayoutParams(gridButtonWidth.toInt(),
+                        gridButtonHeight.toInt(), (gridButtonX + originalParams!!.x).toInt(),
+                        (gridButtonY + originalParams!!.y).toInt()),
+                    backgroundColor = gridColors!![rowIndex][columnIndex])
 //                gridCatButton!.rowIndex = rowIndex
 //                gridCatButton!.columnIndex = columnIndex
 //                gridCatButton!.imageContainerButton!.backgroundColor = UIColor.clear;

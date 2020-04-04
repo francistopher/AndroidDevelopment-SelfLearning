@@ -20,9 +20,10 @@ class AspectRatio {
                 return result
             }
 
-            MainActivity.dNavigationBarHeight = getStatusBarHeight() * 0.5
+            MainActivity.dNavigationBarHeight = getStatusBarHeight() * 0.5f
             fun setupScreenDimension() {
                 MainActivity.dWidth = displayMetrics.widthPixels.toDouble()
+                MainActivity.adHeight = displayMetrics.heightPixels.toDouble()
                 MainActivity.dHeight = displayMetrics.heightPixels.toDouble()
             }
             fun setupUnitScreenDimension() {
@@ -69,9 +70,10 @@ class AspectRatio {
                 }
             }
             if (MainActivity.aspectRatio != AREnum.ar19point5by9) {
-                MainActivity.dHeight *= 1.2
                 setupScreenDimension()
-                MainActivity.params = AbsoluteLayout.LayoutParams(MainActivity.dWidth.toInt(), MainActivity.dHeight.toInt(), 0, 0)
+                MainActivity.dHeight *= 1.2
+                MainActivity.params = AbsoluteLayout.LayoutParams(MainActivity.dWidth.toInt(),
+                    (MainActivity.dHeight).toInt(), 0, 0)
                 setupUnitScreenDimension()
             }
         }

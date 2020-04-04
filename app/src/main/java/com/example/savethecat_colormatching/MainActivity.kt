@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         // Display properties
         var dWidth:Double = 0.0
         var dHeight:Double = 0.0
+        var adHeight:Double = 0.0
         var dUnitWidth:Double = 0.0
         var dUnitHeight:Double = 0.0
         var dNavigationBarHeight:Double = 0.0
@@ -60,6 +61,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             Configuration.UI_MODE_NIGHT_UNDEFINED -> isThemeDark = false
         }
         updateTheme()
+
     }
 
     private fun updateTheme() {
@@ -176,7 +178,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupEnemies() {
         enemies = Enemies()
-        enemies!!.hide()
+//        enemies!!.hide()
     }
 
     private fun setupAdvertisement() {
@@ -187,7 +189,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private var adView:AdView? = null
     private var adRequest:AdRequest? = null
     private fun setupBannerAds() {
-
         fun getAdaptiveBannerAdSize():AdSize {
             val display = windowManager.defaultDisplay
             val outMetrics = DisplayMetrics()
@@ -200,13 +201,12 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             val adWidth = (adWidthPixels / density).toInt()
             return AdSize.getCurrentOrientationBannerAdSizeWithWidth(this, adWidth)
         }
-
         adView = AdView(this)
         adView!!.adUnitId = "ca-app-pub-3940256099942544/6300978111"
         adView!!.adSize = getAdaptiveBannerAdSize()
         // Resetting position
         adView!!.layoutParams = AbsoluteLayout.LayoutParams((adView!!.adSize.width * 2) + 1,
-            (adView!!.adSize.height * 2) + 1, 0, (dHeight - (adView!!.adSize.height * 0.25)).toInt())
+            (adView!!.adSize.height * 2) + 1, 0, (adHeight - (adView!!.adSize.height * 0.25)).toInt())
         adRequest = AdRequest.Builder().build()
         adView!!.loadAd(adRequest)
         rootLayout!!.addView(adView)
@@ -217,11 +217,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         boardGame = BoardGame(boardView = View(this), parentLayout = rootLayout!!,
             params = AbsoluteLayout.LayoutParams(sideLength.toInt(),
                 sideLength.toInt(), 0,0))
-        boardGame!!.getThis().setBackgroundResource(ColorOptions.red)
+        boardGame!!.getThis().setBackgroundColor(Color.TRANSPARENT)
         CenterController.centerView(childView = boardGame!!.getThis(),
             childParams = boardGame!!.getOriginalParams(),
-            parentParams = AbsoluteLayout.LayoutParams(dWidth.toInt(), dHeight.toInt(), 0, 0))
+            parentParams = AbsoluteLayout.LayoutParams(dWidth.toInt(), (adHeight * 1.05).toInt(), 0, 0))
+        boardGame!!.setOriginalParams(boardGame!!.getThis().layoutParams as AbsoluteLayout.LayoutParams)
         boardGame!!.buildGame()
+        rootLayout!!.addView(BoardGame.boardGameLayout)
     }
 
 }
