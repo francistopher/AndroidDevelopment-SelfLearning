@@ -2,12 +2,12 @@ package com.example.savethecat_colormatching.ParticularViews
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
-import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.MainActivity
 
@@ -21,6 +21,8 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     private var shrunkParams:LayoutParams? = null
 
     private var selectionButtons:MutableSet<CButton>? = null
+
+    private var selectedColor:Int = Color.LTGRAY
 
     companion object {
         var selectionColors:MutableList<Int>? = null
@@ -101,7 +103,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             button!!.backgroundColor = color
             button!!.setStyle()
             button!!.getThis().setOnClickListener {
-                Log.i("Button Selection", "Pllllzzzzz")
+                colorOptionSelector(color = color)
             }
             button!!.setCornerRadiusAndBorderWidth(((kotlin.math.sqrt(button!!.getOriginalParams().
             width * 0.01) * 10.0) * 0.75).toInt(),  (button!!.getOriginalParams().height / 20.0).toInt())
@@ -110,9 +112,9 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
     }
 
-    private fun colorOptionSelector(button:CButton) {
+    private fun colorOptionSelector(color: Int) {
         for (selectionButton in selectionButtons!!) {
-            if (button == selectionButton) {
+            if (color == selectionButton.backgroundColor) {
                 Log.i("Hello", "I am this button")
             }
         }
