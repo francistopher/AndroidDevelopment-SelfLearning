@@ -1,11 +1,14 @@
 package com.example.savethecat_colormatching.ParticularViews
 
+import android.content.Context
 import android.graphics.Color
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
-import com.example.savethecat_colormatching.R
+import android.widget.Button
+import com.example.savethecat_colormatching.CustomViews.CButton
+import com.example.savethecat_colormatching.MainActivity
+import java.lang.Math.sqrt
 
 class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
@@ -16,30 +19,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     private var originalParams:LayoutParams? = null
     private var shrunkParams:LayoutParams? = null
 
-    init {
-        this.view = view
-        this.view!!.layoutParams = params
-        parentLayout.addView(view)
-        setOriginalParams(params)
-        setShrunkParams()
-        this.view!!.setBackgroundColor(Color.TRANSPARENT)
-    }
-
-    private fun setOriginalParams(params:LayoutParams) {
-        originalParams = params
-    }
-
-    fun getOriginalParams():LayoutParams {
-        return originalParams!!
-    }
-
-    private fun setShrunkParams() {
-        shrunkParams = LayoutParams(originalParams!!.x / 2, originalParams!!.y / 2, 1, 1)
-    }
-
-    fun getThis():View {
-        return this.view!!
-    }
+    private var selectionButtons:MutableSet<CButton>? = null
 
     companion object {
         var selectionColors:MutableList<Int>? = null
@@ -62,5 +42,74 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             } while (true)
         }
 
+        var colorOptionsContext: Context? = null
+        var colorOptionsLayout:AbsoluteLayout? = null
+    }
+
+    init {
+        this.view = view
+        colorOptionsContext = view.context
+        colorOptionsLayout = AbsoluteLayout(colorOptionsContext)
+        this.view!!.layoutParams = params
+        parentLayout.addView(view)
+        setOriginalParams(params)
+        setShrunkParams()
+        this.view!!.setBackgroundColor(Color.TRANSPARENT)
+        selectionButtons = mutableSetOf()
+    }
+
+    fun setOriginalParams(params:LayoutParams) {
+        originalParams = params
+    }
+
+    fun getOriginalParams():LayoutParams {
+        return originalParams!!
+    }
+
+    private fun setShrunkParams() {
+        shrunkParams = LayoutParams(originalParams!!.x / 2, originalParams!!.y / 2, 1, 1)
+    }
+
+    fun getThis():View {
+        return this.view!!
+    }
+
+    // Button parameters
+    private var numOfUniqueColors:Int = 0
+    private var columnGap:Float = 0f
+    private var rowGap:Float = 0f
+    private var buttonWidth:Float = 0f
+    private var buttonHeight:Float = 0f
+    // Button
+    private var button:CButton? = null
+    private var x:Float = 0f
+    fun buildColorOptionButtons() {
+        numOfUniqueColors = MainActivity.boardGame!!.nonZeroGridColorsCount()
+        columnGap = (originalParams!!.width * 0.01f) / (numOfUniqueColors + 1).toFloat()
+        rowGap = originalParams!!.height * 0.1f
+        buttonWidth = (originalParams!!.width - (columnGap * (numOfUniqueColors + 1).toFloat())) /
+                numOfUniqueColors.toFloat()
+        buttonHeight = (originalParams!!.height -  (rowGap * 2.0)).toFloat()
+        button = null
+        x = 0.0f
+        for ((color, count) in MainActivity.boardGame!!.getGridColorsCount()) {
+            x += columnGap
+            button = CButton(button = Button(colorOptionsContext!!), parentLayout =
+            colorOptionsLayout!!, params = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(),
+                (originalParams!!.x + columnGap).toInt(), (originalParams!!.y + rowGap * 0.9).toInt()))
+            button!!.backgroundColor = color
+            button!!.setStyle()
+            button!!.getThis().alpha = 0.0f
+            button!!.setCornerRadiusAndBorderWidth(((kotlin.math.sqrt(button!!.getOriginalParams().
+            width * 0.01) * 10.0) * 0.75).toInt(),  (button!!.getOriginalParams().height / 20.0).toInt())
+            selectionButtons!!.add(button!!)
+            x += buttonWidth
+        }
+    }
+
+    fun showColorOptionButtons() {
+        for (selectionButton in selectionButtons!!) {
+            selectionButton.getThis().alpha = 1.0f
+        }
     }
 }

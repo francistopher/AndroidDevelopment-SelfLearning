@@ -1,7 +1,6 @@
 package com.example.savethecat_colormatching.ParticularViews
 
 import android.content.Context
-import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
@@ -12,12 +11,7 @@ import com.example.savethecat_colormatching.Characters.CatButtons
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.MainActivity
-import com.example.savethecat_colormatching.ParticularViews.BoardGame.Companion.boardGameContext
-import com.example.savethecat_colormatching.ParticularViews.BoardGame.Companion.boardGameLayout
 import java.util.*
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
-import java.util.logging.Handler
 import kotlin.concurrent.schedule
 
 class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -29,14 +23,13 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     private var gridColors: Array<IntArray>? = null
 
     private var catButtons:CatButtons? = null
-    private var singlePlayerButton:CButton? = null
-    private var twoPlayerButton:CButton? = null
-
+    private var gridColorsCount:MutableMap<Int,Int>? = null
     companion object {
         var rowsAndColumns = Pair(0, 0)
         var boardGameContext:Context? = null
         var boardGameLayout:AbsoluteLayout? = null
-        var gridColorsCount:MutableMap<Int,Int>? = null
+        var singlePlayerButton:CButton? = null
+        var twoPlayerButton:CButton? = null
     }
     init {
         this.boardView = boardView
@@ -67,6 +60,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         buildGridButtons()
         catButtons!!.loadPreviousCats()
         recordGridColorsUsed()
+    }
+
+    fun getGridColorsCount(): MutableMap<Int, Int> {
+        return gridColorsCount!!
     }
 
     private var initialStage:Int = 0
@@ -156,15 +153,15 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
-    var recordedColor:Int = 0
+    private var recordedColor:Int = 0
     private fun recordGridColorsUsed() {
-        gridColorsCount = mutableMapOf()
+        this.gridColorsCount = mutableMapOf()
         for (catButton in catButtons!!.getCurrentCatButtons()) {
             recordedColor = catButton.getOriginalBackgroundColor()
-            if (gridColorsCount!![recordedColor] == null) {
-                gridColorsCount!![recordedColor] = 1
+            if (this.gridColorsCount!![recordedColor] == null) {
+                this.gridColorsCount!![recordedColor] = 1
             } else {
-                gridColorsCount!![recordedColor] = gridColorsCount!![recordedColor]!! + 1
+                this.gridColorsCount!![recordedColor] = this.gridColorsCount!![recordedColor]!! + 1
             }
         }
     }
@@ -174,7 +171,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             params = LayoutParams((originalParams!!.width * 0.425).toInt(), (MainActivity.dUnitHeight
                     * 1.5 * 0.8).toInt(), (originalParams!!.x + (originalParams!!.
             width * 0.05)).toInt(), (originalParams!!.y + originalParams!!.height + (-MainActivity.
-            dUnitHeight * 1.5 * 0.4) + (originalParams!!.height * 0.1)).toInt()))
+            dUnitHeight * 1.5 * 0.475) + (originalParams!!.height * 0.1)).toInt()))
         singlePlayerButton!!.setCornerRadiusAndBorderWidth((singlePlayerButton!!.
         getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(singlePlayerButton!!.
         getOriginalParams().width * 0.01) * 10.0) * 0.35).toInt())
@@ -182,10 +179,17 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
+            MainActivity.colorOptions!!.buildColorOptionButtons()
             if (!singlePlayerButton!!.growWidthAndChangeColorIsRunning) {
                 singlePlayerButton!!.targetBackgroundColor = gridColors!![0][0]
                 singlePlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
                 twoPlayerButton!!.shrink(false)
+                MainActivity.colorOptions!!.buildColorOptionButtons()
+                Timer().schedule(object : TimerTask() {
+                    override fun run() {
+                        MainActivity.colorOptions!!.showColorOptionButtons()
+                    }
+                }, 1125)
             }
         }
     }
@@ -194,7 +198,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         twoPlayerButton = CButton(button = Button(boardGameContext), parentLayout = boardGameLayout!!,
             params = LayoutParams((originalParams!!.width * 0.425).toInt(), (MainActivity.dUnitHeight
                     * 1.5 * 0.8).toInt(), (originalParams!!.x + (originalParams!!.width * 0.525)).
-            toInt(), (originalParams!!.y + (-MainActivity.dUnitHeight * 1.5 * 0.4) +originalParams!!.
+            toInt(), (originalParams!!.y + (-MainActivity.dUnitHeight * 1.5 * 0.475) + originalParams!!.
             height + (originalParams!!.height * 0.1)).toInt()))
         twoPlayerButton!!.setCornerRadiusAndBorderWidth((twoPlayerButton!!.
         getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(twoPlayerButton!!.
@@ -208,9 +212,14 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
-    fun setStyle() {
-        singlePlayerButton!!.setStyle()
-        twoPlayerButton!!.setStyle()
-        catButtons!!.setStyle()
+    var nonZeroCount:Int = 0
+    fun nonZeroGridColorsCount():Int {
+        nonZeroCount = 0
+        for ((_, count) in gridColorsCount!!) {
+            if (count != 0) {
+                nonZeroCount += 1
+            }
+        }
+        return nonZeroCount
     }
 }

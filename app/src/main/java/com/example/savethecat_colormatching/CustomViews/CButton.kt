@@ -5,9 +5,7 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
-import android.renderscript.Sampler
 import android.util.Log
 import android.util.TypedValue
 import android.view.ViewPropertyAnimator
@@ -27,7 +25,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     private var shrunkParams: LayoutParams? = null
 
     private var button: Button? = null
-    private var backgroundColor: Int? = null
+    var backgroundColor: Int? = null
     var targetBackgroundColor: Int? = null
     var shrinkType: ShrinkType = ShrinkType.mid
 
@@ -58,7 +56,8 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     }
 
     private var shape: GradientDrawable? = null
-    private var borderWidth: Int = 0
+    private var borderWidth:Int = 0
+    private var cornerRadius:Int = 0
     fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int) {
         shape = null
         shape = GradientDrawable()
@@ -73,6 +72,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             }
 
         }
+        cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()
         button!!.setBackgroundDrawable(shape)
     }
@@ -121,7 +121,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         fadeOutAnimator!!.startDelay = 1250
         fadeOutAnimator!!.duration = 750
         fadeOutAnimator!!.start()
-
     }
 
     private var x: Float = 0f
@@ -239,7 +238,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             }
 
         }
-        return (button!!.background as ColorDrawable).color
     }
 
     fun setOriginalParams(params: LayoutParams) {
@@ -259,7 +257,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             button!!.setBackgroundColor(Color.BLACK)
         } else {
             button!!.setBackgroundColor(backgroundColor!!)
-            button!!.setBackgroundResource(backgroundColor!!)
         }
         button!!.setTextColor(Color.WHITE)
     }
@@ -269,7 +266,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             button!!.setBackgroundColor(Color.WHITE)
         } else {
             button!!.setBackgroundColor(backgroundColor!!)
-            button!!.setBackgroundResource(backgroundColor!!)
         }
         button!!.setTextColor(Color.BLACK)
     }
@@ -288,5 +284,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 darkDominant()
             }
         }
+//        setCornerRadiusAndBorderWidth(cornerRadius, borderWidth)
     }
 }

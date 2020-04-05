@@ -224,23 +224,26 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             parentParams = AbsoluteLayout.LayoutParams(dWidth.toInt(), (adHeight * 1.05).toInt(), 0, 0))
         boardGame!!.setOriginalParams(boardGame!!.getThis().layoutParams as AbsoluteLayout.LayoutParams)
         boardGame!!.buildGame()
-        rootLayout!!.addView(BoardGame.boardGameLayout)
         // Setup single and two player buttons
-        boardGame!!.setupSinglePlayerButton()
-        boardGame!!.setupTwoPlayerButton()
 
     }
 
     private fun setupColorOptions() {
         val boardGameSideLength:Float = (dUnitHeight * 8.5).toFloat()
         colorOptions = ColorOptions(view = View(this), parentLayout = rootLayout!!, params =
-        AbsoluteLayout.LayoutParams(boardGameSideLength.toInt(), (dUnitHeight * 1.5).toInt(),
+        AbsoluteLayout.LayoutParams((boardGameSideLength * 0.91).toInt(), (dUnitHeight * 1.5).toInt(),
             boardGame!!.getOriginalParams().x, boardGame!!.getOriginalParams().y + boardGame!!.
             getOriginalParams().height))
         CenterController.centerViewHorizontally(colorOptions!!.getThis(), parentParams = AbsoluteLayout.
         LayoutParams(dWidth.toInt(), (adHeight * 1.05).toInt(), 0, 0), childParams =
         colorOptions!!.getOriginalParams())
-
+        colorOptions!!.setOriginalParams(colorOptions!!.getThis().layoutParams as AbsoluteLayout.LayoutParams)
+        rootLayout!!.addView(ColorOptions.colorOptionsLayout!!)
+        // Set board game player buttons
+        boardGame!!.setupSinglePlayerButton()
+        boardGame!!.setupTwoPlayerButton()
+        rootLayout!!.addView(BoardGame.boardGameLayout)
     }
+
 
 }
