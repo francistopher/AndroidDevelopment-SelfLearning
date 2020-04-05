@@ -2,8 +2,6 @@ package com.example.savethecat_colormatching.ParticularViews
 
 import android.content.Context
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
@@ -113,10 +111,19 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     }
 
     private fun colorOptionSelector(color: Int) {
+        clearBoardGameGridButtonsColorIndicator()
         for (selectionButton in selectionButtons!!) {
             if (color == selectionButton.backgroundColor) {
-                Log.i("Hello", "I am this button")
+                selectedColor = color
+            } else {
+                selectedColor = color
             }
+        }
+    }
+
+    private fun clearBoardGameGridButtonsColorIndicator() {
+        if (selectedColor == Color.LTGRAY) {
+            MainActivity.boardGame!!.setButtonsBackgroundColorTransparent()
         }
     }
 }

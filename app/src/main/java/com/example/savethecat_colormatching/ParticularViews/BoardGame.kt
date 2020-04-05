@@ -24,6 +24,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
 
     private var catButtons:CatButtons? = null
     private var gridColorsCount:MutableMap<Int,Int>? = null
+
     companion object {
         var rowsAndColumns = Pair(0, 0)
         var boardGameContext:Context? = null
@@ -230,5 +231,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             }
         }
         return nonZeroCount
+    }
+
+    fun setButtonsBackgroundColorTransparent() {
+        catButtons!!.setBackgroundTransparent()
     }
 }

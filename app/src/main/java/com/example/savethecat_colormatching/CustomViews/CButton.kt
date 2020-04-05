@@ -39,8 +39,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         setStyle()
     }
 
-
-
     fun getThis(): Button {
         return this.button!!
     }
@@ -82,7 +80,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
 
     private var growWidthAndChangeColor: AnimatorSet? = null
     private var growWidthAnimator: ValueAnimator? = null
-    private var changeColorAnimator: ValueAnimator? = null
+    private var transitionColorAnimator: ValueAnimator? = null
     private var fadeOutAnimator:ValueAnimator? = null
     var growWidthAndChangeColorIsRunning: Boolean = false
     fun growWidth(width: Float) {
@@ -103,14 +101,14 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             )
             button!!.layoutParams = originalParams!!
         }
-        changeColorAnimator = ValueAnimator.ofArgb(getBackgroundColor(), targetBackgroundColor!!)
-        changeColorAnimator!!.addUpdateListener {
+        transitionColorAnimator = ValueAnimator.ofArgb(getBackgroundColor(), targetBackgroundColor!!)
+        transitionColorAnimator!!.addUpdateListener {
             button!!.setBackgroundColor(it.animatedValue as Int)
             setCornerRadiusAndBorderWidth((originalParams!!.height / 5.0).toInt(), borderWidth)
         }
         growWidthAndChangeColor = AnimatorSet()
         growWidthAndChangeColor!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-        growWidthAndChangeColor!!.play(growWidthAnimator!!).with(changeColorAnimator!!)
+        growWidthAndChangeColor!!.play(growWidthAnimator!!).with(transitionColorAnimator!!)
         growWidthAndChangeColor!!.duration = 1000
         growWidthAndChangeColor!!.startDelay = 125
         growWidthAndChangeColorIsRunning = true
@@ -124,6 +122,14 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         fadeOutAnimator!!.startDelay = 1250
         fadeOutAnimator!!.duration = 750
         fadeOutAnimator!!.start()
+    }
+
+    fun select() {
+
+    }
+
+    fun unSelect() {
+
     }
 
     private var x: Float = 0f

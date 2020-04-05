@@ -1,7 +1,11 @@
 package com.example.savethecat_colormatching.Characters
 
+import android.animation.ValueAnimator
+import android.graphics.Color
 import android.widget.AbsoluteLayout
 import android.widget.Button
+import com.daasuu.ei.Ease
+import com.daasuu.ei.EasingInterpolator
 import java.lang.Math.sqrt
 
 class CatButtons {
@@ -35,6 +39,12 @@ class CatButtons {
     fun setStyle() {
         for (catButton in currentCatButtons!!) {
             catButton.setStyle()
+        }
+    }
+
+    fun setBackgroundTransparent() {
+        for (catButton in previousCatButtons!!) {
+            catButton.transitionColor(Color.TRANSPARENT)
         }
     }
 
