@@ -28,6 +28,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     var backgroundColor: Int? = null
     var targetBackgroundColor: Int? = null
     var shrinkType: ShrinkType = ShrinkType.mid
+    var isColorOptionButton:Boolean = true
 
     init {
         this.button = button
@@ -37,6 +38,8 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         setShrunkParams()
         setStyle()
     }
+
+
 
     fun getThis(): Button {
         return this.button!!

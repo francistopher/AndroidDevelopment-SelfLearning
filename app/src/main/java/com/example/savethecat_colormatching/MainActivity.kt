@@ -55,14 +55,12 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     var introAnimation:IntroView? = null
 
     private fun setCurrentTheme() {
-//        mainFont = ResourcesCompat.getFont(this, R.font.sleepyfatcat)
         when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
             Configuration.UI_MODE_NIGHT_NO -> isThemeDark = false
             Configuration.UI_MODE_NIGHT_YES -> isThemeDark = true
             Configuration.UI_MODE_NIGHT_UNDEFINED -> isThemeDark = false
         }
         updateTheme()
-
     }
 
     private fun updateTheme() {
@@ -224,8 +222,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             parentParams = AbsoluteLayout.LayoutParams(dWidth.toInt(), (adHeight * 1.05).toInt(), 0, 0))
         boardGame!!.setOriginalParams(boardGame!!.getThis().layoutParams as AbsoluteLayout.LayoutParams)
         boardGame!!.buildGame()
-        // Setup single and two player buttons
-
     }
 
     private fun setupColorOptions() {

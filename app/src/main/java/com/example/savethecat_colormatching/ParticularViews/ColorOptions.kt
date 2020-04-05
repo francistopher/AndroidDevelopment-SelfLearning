@@ -2,13 +2,14 @@ package com.example.savethecat_colormatching.ParticularViews
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
+import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.MainActivity
-import java.lang.Math.sqrt
 
 class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
@@ -92,14 +93,16 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         buttonHeight = (originalParams!!.height -  (rowGap * 2.0)).toFloat()
         button = null
         x = 0.0f
-        for ((color, count) in MainActivity.boardGame!!.getGridColorsCount()) {
+        for ((color, _) in MainActivity.boardGame!!.getGridColorsCount()) {
             x += columnGap
             button = CButton(button = Button(colorOptionsContext!!), parentLayout =
             colorOptionsLayout!!, params = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(),
                 (originalParams!!.x + columnGap).toInt(), (originalParams!!.y + rowGap * 0.9).toInt()))
             button!!.backgroundColor = color
             button!!.setStyle()
-            button!!.getThis().alpha = 0.0f
+            button!!.getThis().setOnClickListener {
+                Log.i("Button Selection", "Pllllzzzzz")
+            }
             button!!.setCornerRadiusAndBorderWidth(((kotlin.math.sqrt(button!!.getOriginalParams().
             width * 0.01) * 10.0) * 0.75).toInt(),  (button!!.getOriginalParams().height / 20.0).toInt())
             selectionButtons!!.add(button!!)
@@ -107,9 +110,11 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
     }
 
-    fun showColorOptionButtons() {
+    private fun colorOptionSelector(button:CButton) {
         for (selectionButton in selectionButtons!!) {
-            selectionButton.getThis().alpha = 1.0f
+            if (button == selectionButton) {
+                Log.i("Hello", "I am this button")
+            }
         }
     }
 }

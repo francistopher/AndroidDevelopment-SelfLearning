@@ -12,7 +12,7 @@ import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.MainActivity
 import java.util.*
-import kotlin.concurrent.schedule
+
 
 class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
@@ -179,17 +179,26 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
-            MainActivity.colorOptions!!.buildColorOptionButtons()
             if (!singlePlayerButton!!.growWidthAndChangeColorIsRunning) {
+                Log.i("Click", "Single Player Button")
                 singlePlayerButton!!.targetBackgroundColor = gridColors!![0][0]
                 singlePlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
                 twoPlayerButton!!.shrink(false)
-                MainActivity.colorOptions!!.buildColorOptionButtons()
                 Timer().schedule(object : TimerTask() {
                     override fun run() {
-                        MainActivity.colorOptions!!.showColorOptionButtons()
+                        MainActivity.staticSelf!!.runOnUiThread {
+                            MainActivity.colorOptions!!.buildColorOptionButtons()
+                        }
+                        Timer().schedule(object : TimerTask() {
+                            override fun run() {
+                                MainActivity.staticSelf!!.runOnUiThread {
+                                    boardGameLayout!!.removeView(singlePlayerButton!!.getThis())
+                                    boardGameLayout!!.removeView(twoPlayerButton!!.getThis())
+                                }
+                            }
+                        }, 750)
                     }
-                }, 1125)
+                }, 1250)
             }
         }
     }
