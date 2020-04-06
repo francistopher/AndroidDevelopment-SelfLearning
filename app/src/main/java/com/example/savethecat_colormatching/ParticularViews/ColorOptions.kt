@@ -115,8 +115,10 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         for (selectionButton in selectionButtons!!) {
             if (color == selectionButton.backgroundColor) {
                 selectedColor = color
+                selectionButton.select()
             } else {
                 selectedColor = color
+                selectionButton.unSelect()
             }
         }
     }

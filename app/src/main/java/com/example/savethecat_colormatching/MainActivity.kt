@@ -234,6 +234,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         LayoutParams(dWidth.toInt(), (adHeight * 1.05).toInt(), 0, 0), childParams =
         colorOptions!!.getOriginalParams())
         colorOptions!!.setOriginalParams(colorOptions!!.getThis().layoutParams as AbsoluteLayout.LayoutParams)
+        colorOptions!!.getThis().setBackgroundColor(Color.RED)
+        colorOptions!!.getThis().alpha = 0.5f
         rootLayout!!.addView(ColorOptions.colorOptionsLayout!!)
         // Set board game player buttons
         boardGame!!.setupSinglePlayerButton()

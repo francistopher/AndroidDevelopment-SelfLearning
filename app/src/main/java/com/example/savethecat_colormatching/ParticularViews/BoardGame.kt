@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
+import android.widget.ImageButton
 import com.example.savethecat_colormatching.Characters.CatButton
 import com.example.savethecat_colormatching.Characters.CatButtons
 import com.example.savethecat_colormatching.CustomViews.CButton
@@ -138,11 +139,14 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             gridButtonX = 0.0f
             for (columnIndex in (0 until rowsAndColumns.second)) {
                 gridButtonX += gridButtonColumnGap
-                catButton = catButtons!!.buildCatButton(button = Button(boardGameContext!!),
+                catButton = catButtons!!.buildCatButton(imageButton = ImageButton(boardGameContext!!),
                     parentLayout = boardGameLayout!!, params = LayoutParams(gridButtonWidth.toInt(),
                         gridButtonHeight.toInt(), (gridButtonX + originalParams!!.x).toInt(),
                         (gridButtonY + originalParams!!.y).toInt()),
                     backgroundColor = gridColors!![rowIndex][columnIndex])
+                catButton!!.getThis().setOnClickListener {
+
+                }
 //                gridCatButton!.rowIndex = rowIndex
 //                gridCatButton!.columnIndex = columnIndex
 //                gridCatButton!.imageContainerButton!.backgroundColor = UIColor.clear;

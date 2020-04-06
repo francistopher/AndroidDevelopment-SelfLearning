@@ -30,9 +30,12 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     var shrinkType: ShrinkType = ShrinkType.mid
     var isColorOptionButton:Boolean = true
 
+    private var parentLayout:AbsoluteLayout? = null
+
     init {
         this.button = button
         this.button!!.layoutParams = params
+        this.parentLayout = parentLayout
         parentLayout.addView(button)
         setOriginalParams(params)
         setShrunkParams()
@@ -124,12 +127,65 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         fadeOutAnimator!!.start()
     }
 
+    private var selectAnimator:ValueAnimator? = null
+    private var isSelectRunning:Boolean = false
     fun select() {
-
+        if (unSelectAnimator != null) {
+            if (isUnSelectRunning) {
+                unSelectAnimator!!.cancel()
+                isUnSelectRunning = false
+                unSelectAnimator = null
+            }
+        }
+        if (selectAnimator != null) {
+            if (isSelectRunning) {
+                selectAnimator!!.cancel()
+                isSelectRunning = false
+                selectAnimator = null
+            }
+        }
+        selectAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).height.toFloat(),
+            (button!!.layoutParams as LayoutParams).height * 1.275f)
+        selectAnimator!!.addUpdateListener {
+            button!!.layoutParams = LayoutParams(
+                originalParams!!.width, (it.animatedValue as Float).toInt(), originalParams!!.x,
+                originalParams!!.y - (((it.animatedValue as Float) -
+                        originalParams!!.height.toFloat()) * 0.5f).toInt()
+            )
+        }
+        selectAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        selectAnimator!!.startDelay = 125
+        selectAnimator!!.duration = 500
+        isSelectRunning = true
+        selectAnimator!!.start()
     }
 
+    private var unSelectAnimator:ValueAnimator? = null
+    private var isUnSelectRunning:Boolean = false
     fun unSelect() {
-
+        if (selectAnimator != null) {
+            if (isSelectRunning) {
+                selectAnimator!!.cancel()
+                isSelectRunning = false
+                selectAnimator = null
+            }
+        }
+        if (unSelectAnimator != null) {
+            if (isUnSelectRunning) {
+                unSelectAnimator!!.cancel()
+                isUnSelectRunning = false
+                unSelectAnimator = null
+            }
+        }
+        unSelectAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).height * 1.275f,
+            (button!!.layoutParams as LayoutParams).height.toFloat())
+        selectAnimator!!.addUpdateListener {
+            button!!.layoutParams = LayoutParams(
+                originalParams!!.width, (it.animatedValue as Float).toInt(), originalParams!!.x,
+                originalParams!!.y - (((it.animatedValue as Float) -
+                        originalParams!!.height.toFloat()) * 0.5f).toInt()
+            )
+        }
     }
 
     private var x: Float = 0f
