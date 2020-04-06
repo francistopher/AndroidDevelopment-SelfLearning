@@ -147,7 +147,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         (gridButtonY + originalParams!!.y).toInt()),
                     backgroundColor = gridColors!![rowIndex][columnIndex])
                 catButton!!.getThis().setOnClickListener {
-                    AudioController.kittenMeow()
                     catButtonSelector(id = it.id)
                 }
 //                gridCatButton!.rowIndex = rowIndex
@@ -162,13 +161,41 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     private fun catButtonSelector(id:Int) {
-        for (catButton in catButtons!!.getCurrentCatButtons()) {
-            if (MainActivity.colorOptions!!.getSelectedColor() != Color.LTGRAY) {
-                if (catButton.getThis().id == id) {
-
+        // The user has selected a color option
+        if (MainActivity.colorOptions!!.getSelectedColor() != Color.LTGRAY) {
+            for (catButton in catButtons!!.getCurrentCatButtons()) {
+                // The button is found and colors match
+                if (catButton.getThis().id == id && MainActivity.colorOptions!!.getSelectedColor()
+                    == catButton.getOriginalBackgroundColor() && !catButton.isPodded) {
+                    catButton.transitionColor(catButton.getOriginalBackgroundColor())
+                    catButton.pod()
+                    verifyRemainingCatsArePodded()
                 }
             }
         }
+    }
+
+    private fun verifyRemainingCatsArePodded() {
+        if (catButtons!!.areAliveAndPodded()) {
+            AudioController.heaven()
+            MainActivity.successGradientView!!.alpha = 1f
+            MainActivity.colorOptions!!.resetSelectedColor()
+            if (catButtons!!.allSurvived()) {
+                promote()
+            }
+        }
+    }
+
+    private fun promote() {
+        reset(true)
+    }
+
+    private fun reset(allSurvived:Boolean) {
+        if (allSurvived) {
+            catButtons!!.disperseVertically()
+        }
+        gridColors = null
+        ColorOptions.selectionColors!!.clear()
     }
 
     private var recordedColor:Int = 0

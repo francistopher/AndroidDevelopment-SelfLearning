@@ -2,6 +2,7 @@ package com.example.savethecat_colormatching.Characters
 
 import android.animation.ValueAnimator
 import android.graphics.Color
+import android.util.Log
 import android.widget.AbsoluteLayout
 import android.widget.Button
 import android.widget.ImageButton
@@ -45,5 +46,33 @@ class CatButtons {
 
     fun getCurrentCatButtons() :MutableList<CatButton> {
         return currentCatButtons!!
+    }
+
+    fun areAliveAndPodded():Boolean {
+        for (catButton in currentCatButtons!!) {
+            if (catButton.isAlive && !catButton.isPodded) {
+                return false
+            }
+        }
+        return true
+    }
+
+    fun disperseVertically() {
+        for (catButton in currentCatButtons!!) {
+            Log.i("Dispering", "YEAAH1")
+            if (catButton.isAlive) {
+                Log.i("Dispering", "YEAAH")
+                catButton.disperseVertically()
+            }
+        }
+    }
+
+    fun allSurvived():Boolean {
+        for (catButton in currentCatButtons!!) {
+            if (!catButton.isAlive) {
+                return false
+            }
+        }
+        return true
     }
 }

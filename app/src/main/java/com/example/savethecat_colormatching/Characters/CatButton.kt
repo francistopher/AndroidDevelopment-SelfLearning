@@ -19,9 +19,11 @@ import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
+import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
+import java.lang.Exception
 
 class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams, backgroundColor:Int) {
 
@@ -36,6 +38,9 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private var buttonLayout:AbsoluteLayout? = null
     private var parentLayout:AbsoluteLayout? = null
+
+    var isPodded:Boolean = false
+    var isAlive:Boolean = true
 
     init {
         this.imageButton = imageButton
@@ -53,11 +58,16 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private var shape: GradientDrawable? = null
     private var borderWidth:Int = 0
+    private var cornerRadius:Int = 0
     fun setCornerRadiusAndBorderWidth(radius:Int, borderWidth:Int) {
         shape = null
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
-        shape!!.setColor((imageButton!!.background as ColorDrawable).color)
+        try {
+            shape!!.setColor((imageButton!!.background as ColorDrawable).color)
+        } catch (e: Exception) {
+            shape!!.setColor(originalBackgroundColor)
+        }
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
             if (MainActivity.isThemeDark) {
@@ -67,6 +77,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 shape!!.setStroke(borderWidth, Color.BLACK)
             }
         }
+        cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()
         imageButton!!.setBackgroundDrawable(shape)
     }
@@ -81,7 +92,11 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 transitionColorAnimator = null
             }
         }
-        transitionColorAnimator = ValueAnimator.ofArgb(originalBackgroundColor, targetColor)
+        transitionColorAnimator = if (targetColor == Color.TRANSPARENT) {
+            ValueAnimator.ofArgb(originalBackgroundColor, targetColor)
+        } else {
+            ValueAnimator.ofArgb(Color.TRANSPARENT, targetColor)
+        }
         transitionColorAnimator!!.addUpdateListener {
             imageButton!!.setBackgroundColor(it.animatedValue as Int)
             setCornerRadiusAndBorderWidth((originalParams!!.height / 5.0).toInt(), borderWidth)
@@ -113,7 +128,6 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         imageView = CImageView(imageView = ImageView(buttonContext!!),
             parentLayout = parentLayout!!, params = originalParams!!)
         imageView!!.loadImages(R.drawable.lightsmilingcat, R.drawable.darksmilingcat)
-
         startImageRotation()
     }
 
@@ -144,8 +158,34 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             startImageRotation()
             rotateImageToRight = !rotateImageToRight
         }
+    }
 
-//        imageRotationAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+    private var podAnimator:ValueAnimator? = null
+    private var isPodAnimatorRunning:Boolean = false
+    fun pod() {
+        isPodded = true
+        if (podAnimator != null) {
+            if (isPodAnimatorRunning) {
+                podAnimator!!.cancel()
+                isPodAnimatorRunning = false
+                podAnimator = null
+            }
+        }
+        AudioController.kittenMeow()
+        podAnimator = ValueAnimator.ofFloat(cornerRadius.toFloat(), (imageButton!!.layoutParams as LayoutParams).width * 0.5f)
+        podAnimator!!.addUpdateListener {
+            setCornerRadiusAndBorderWidth((it.animatedValue as Float).toInt(), borderWidth)
+        }
+        podAnimator!!.duration = 500
+        podAnimator!!.startDelay = 125
+        podAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        isPodAnimatorRunning = true
+        podAnimator!!.start()
+    }
+
+    fun disperseVertically() {
+        imageView!!.loadImages(R.drawable.lightcheeringcat, R.drawable.darkcheeringcat)
+
 
     }
 
