@@ -1,6 +1,7 @@
 package com.example.savethecat_colormatching.ParticularViews
 
 import android.content.Context
+import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
@@ -9,6 +10,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import com.example.savethecat_colormatching.Characters.CatButton
 import com.example.savethecat_colormatching.Characters.CatButtons
+import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.MainActivity
@@ -145,7 +147,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         (gridButtonY + originalParams!!.y).toInt()),
                     backgroundColor = gridColors!![rowIndex][columnIndex])
                 catButton!!.getThis().setOnClickListener {
-
+                    AudioController.kittenMeow()
+                    catButtonSelector(id = it.id)
                 }
 //                gridCatButton!.rowIndex = rowIndex
 //                gridCatButton!.columnIndex = columnIndex
@@ -155,6 +158,16 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 gridButtonX += gridButtonWidth
             }
             gridButtonY += gridButtonHeight
+        }
+    }
+
+    private fun catButtonSelector(id:Int) {
+        for (catButton in catButtons!!.getCurrentCatButtons()) {
+            if (MainActivity.colorOptions!!.getSelectedColor() != Color.LTGRAY) {
+                if (catButton.getThis().id == id) {
+
+                }
+            }
         }
     }
 

@@ -128,4 +128,8 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             MainActivity.boardGame!!.setButtonsBackgroundColorTransparent()
         }
     }
+
+    fun getSelectedColor():Int {
+        return selectedColor
+    }
 }
