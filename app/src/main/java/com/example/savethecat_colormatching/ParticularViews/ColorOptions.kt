@@ -139,15 +139,16 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                     }
                     button!!.translate(newParams!!)
                     x += buttonWidth
-//                } else {
-//                    if (button!!.isSelected) {
-//                        button!!.willBeShrunk = true
-//                        for (selectionButton in selectionButtons!!.reversed()) {
-//                            if (!button!!.willBeShrunk) {
-//                                button!!.getThis().performClick()
-//                            }
-//                        }
-//                    }
+                } else {
+                    if (button!!.isSelected) {
+                        button!!.willBeShrunk = true
+                        for (selectionButton in selectionButtons!!.reversed()) {
+                            if (!selectionButton.willBeShrunk) {
+                                Log.i("Selected", button!!.isSelected.toString())
+                                selectionButton.getThis().performClick()
+                            }
+                        }
+                    }
 //                    this.count += 1
 //                    when {
 //                        numOfUniqueColors + 1 == 1 -> button!!.shrinkType = ShrinkType.mid
@@ -166,7 +167,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
 //                            }
 //                        }
 //                    }
-//                    button!!.shrink()
+                    button!!.shrink()
                 }
                 index += 1
             }

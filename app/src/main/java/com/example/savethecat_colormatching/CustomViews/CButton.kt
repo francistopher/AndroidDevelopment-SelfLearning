@@ -264,32 +264,31 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         }
         when (shrinkType) {
             ShrinkType.left -> {
-                x = (originalParams!!.x).toFloat()
+                x = ((button!!.layoutParams as LayoutParams).x).toFloat()
                 duration = 750f
             }
             ShrinkType.mid -> {
-                x = (originalParams!!.x + originalParams!!.width * 0.5).toFloat()
+                x = ((button!!.layoutParams as LayoutParams).x +
+                        (button!!.layoutParams as LayoutParams).width * 0.5).toFloat()
                 duration = 500f
             }
             ShrinkType.right -> {
-                x = (originalParams!!.x + originalParams!!.width).toFloat()
+                x = ((button!!.layoutParams as LayoutParams).x + (button!!.layoutParams as LayoutParams).width).toFloat()
                 duration = 750f
             }
         }
-        translateXAnimator = ValueAnimator.ofFloat((originalParams!!.x).toFloat(), x)
+        translateXAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).x.toFloat(), x)
         translateXAnimator!!.addUpdateListener {
             x = (it.animatedValue as Float)
-            originalParams = LayoutParams(width.toInt(), originalParams!!.height,
-                x.toInt(), originalParams!!.y
-            )
+            originalParams = LayoutParams(width.toInt(), (button!!.layoutParams as LayoutParams).height,
+                x.toInt(), (button!!.layoutParams as LayoutParams).y)
             button!!.layoutParams = originalParams!!
         }
-        shrinkWidthAnimator = ValueAnimator.ofFloat((originalParams!!.width).toFloat(), 0f)
+        shrinkWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(), 0f)
         shrinkWidthAnimator!!.addUpdateListener {
             width = (it.animatedValue as Float)
-            originalParams = LayoutParams(width.toInt(), originalParams!!.height,
-                x.toInt(), originalParams!!.y
-            )
+            originalParams = LayoutParams(width.toInt(), (button!!.layoutParams as LayoutParams).height,
+                x.toInt(),(button!!.layoutParams as LayoutParams).y)
             button!!.layoutParams = originalParams
         }
         shrinkAnimationSet = AnimatorSet()
@@ -346,31 +345,29 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     var translateWidthAnimator:ValueAnimator? = null
     var translateHeightAnimator:ValueAnimator? = null
     fun translate(params:LayoutParams) {
-        originalParams = params
-
         translateXAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).x.toFloat(),
-        originalParams!!.x.toFloat())
+        params.x.toFloat())
         translateXAnimator!!.addUpdateListener {
             x = (it.animatedValue as Float)
             button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
         }
 
         translateYAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).y.toFloat(),
-            originalParams!!.y.toFloat())
+            params.y.toFloat())
         translateYAnimator!!.addUpdateListener {
             y = (it.animatedValue as Float)
             button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
         }
 
         translateWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(),
-            originalParams!!.width.toFloat())
+            params.width.toFloat())
         translateWidthAnimator!!.addUpdateListener {
             width = (it.animatedValue as Float)
             button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
         }
 
         translateHeightAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).height.toFloat(),
-            originalParams!!.height.toFloat())
+            params.height.toFloat())
         translateHeightAnimator!!.addUpdateListener {
             height = (it.animatedValue as Float)
             button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
