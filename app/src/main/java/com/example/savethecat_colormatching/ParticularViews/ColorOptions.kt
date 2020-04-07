@@ -102,15 +102,22 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             button = CButton(button = Button(colorOptionsContext!!), parentLayout =
             colorOptionsLayout!!, params = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(),
                 x.toInt(), (originalParams!!.y + rowGap * 0.9).toInt()))
+            if (numOfUniqueColors != 1) {
+                button!!.shrunk()
+                button!!.grow()
+                button!!.fade(true, false, 0.0f, 0.125f)
+            } else {
+                button!!.getThis().alpha = 1f
+            }
             button!!.backgroundColor = color
             button!!.setStyle()
+            button!!.setCornerRadiusAndBorderWidth((button!!.getOriginalParams().height / 5.0f).toInt(),
+            (kotlin.math.sqrt(button!!.getOriginalParams().width * 0.01) * 2.5).toInt())
+            selectionButtons!!.add(button!!)
+            x += buttonWidth
             button!!.getThis().setOnClickListener {
                 colorOptionSelector(color = color)
             }
-            button!!.setCornerRadiusAndBorderWidth(((kotlin.math.sqrt(button!!.getOriginalParams().
-            width * 0.01) * 10.0) * 0.75).toInt(),  (button!!.getOriginalParams().height / 20.0).toInt())
-            selectionButtons!!.add(button!!)
-            x += buttonWidth
         }
     }
 
