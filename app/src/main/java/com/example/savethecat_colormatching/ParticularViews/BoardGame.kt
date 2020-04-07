@@ -171,6 +171,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 if (catButton.getOriginalParams() == params && MainActivity.colorOptions!!.getSelectedColor()
                     == catButton.getOriginalBackgroundColor() && !catButton.isPodded) {
                     catButton.transitionColor(catButton.getOriginalBackgroundColor())
+                    gridColorsCount!![catButton.getOriginalBackgroundColor()] =
+                        gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
+                    MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
                     catButton.pod()
                 }
             }
@@ -250,6 +253,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 Timer().schedule(object : TimerTask() {
                     override fun run() {
                         MainActivity.staticSelf!!.runOnUiThread {
+                            MainActivity.successGradientView!!.alpha = 0f
                             startGame()
                         }
                     }
@@ -262,7 +266,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     fun startGame() {
-        MainActivity.colorOptions!!.buildColorOptionButtons()
+        MainActivity.colorOptions!!.buildColorOptionButtons(setup = true)
     }
 
     fun setupTwoPlayerButton() {

@@ -8,6 +8,7 @@ import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
 import com.example.savethecat_colormatching.CustomViews.CButton
+import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.MainActivity
 
 class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -87,7 +88,10 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     // Button
     private var button:CButton? = null
     private var x:Float = 0f
-    fun buildColorOptionButtons() {
+    private var newParams:LayoutParams? = null
+    private var index:Int = 0
+    private var count:Int = 0
+    fun buildColorOptionButtons(setup:Boolean) {
         numOfUniqueColors = MainActivity.boardGame!!.nonZeroGridColorsCount()
         columnGap = (originalParams!!.width * 0.1f) / (numOfUniqueColors + 1).toFloat()
         rowGap = originalParams!!.height * 0.1f
@@ -96,27 +100,75 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         buttonHeight = (originalParams!!.height -  (rowGap * 2.0)).toFloat()
         button = null
         x = originalParams!!.x.toFloat()
+        // Rebuilding
+        index = 0
+        count = 0
         Log.i("Number of unique colors", "$numOfUniqueColors")
         for ((color, count) in MainActivity.boardGame!!.getGridColorsCount()) {
-            x += columnGap
-            button = CButton(button = Button(colorOptionsContext!!), parentLayout =
-            colorOptionsLayout!!, params = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(),
-                x.toInt(), (originalParams!!.y + rowGap * 0.9).toInt()))
-            if (numOfUniqueColors != 1) {
-                button!!.shrunk()
-                button!!.grow()
-                button!!.fade(true, false, 0.0f, 0.125f)
+            if (setup) {
+                x += columnGap
+                button = CButton(button = Button(colorOptionsContext!!), parentLayout =
+                colorOptionsLayout!!, params = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(),
+                    x.toInt(), (originalParams!!.y + rowGap * 0.9).toInt()))
+                if (numOfUniqueColors != 1) {
+                    button!!.shrunk()
+                    button!!.grow()
+                    button!!.fade(In = true, Out = false, Duration = 0.0f, Delay = 0.125f)
+                } else {
+                    button!!.getThis().alpha = 1f
+                }
+                button!!.backgroundColor = color
+                button!!.setStyle()
+                button!!.setCornerRadiusAndBorderWidth((button!!.getOriginalParams().height / 5.0f).toInt(),
+                    (kotlin.math.sqrt(button!!.getOriginalParams().width * 0.01) * 2.5).toInt())
+                selectionButtons!!.add(button!!)
+                x += buttonWidth
+                button!!.getThis().setOnClickListener {
+                    colorOptionSelector(color = color)
+                }
             } else {
-                button!!.getThis().alpha = 1f
-            }
-            button!!.backgroundColor = color
-            button!!.setStyle()
-            button!!.setCornerRadiusAndBorderWidth((button!!.getOriginalParams().height / 5.0f).toInt(),
-            (kotlin.math.sqrt(button!!.getOriginalParams().width * 0.01) * 2.5).toInt())
-            selectionButtons!!.add(button!!)
-            x += buttonWidth
-            button!!.getThis().setOnClickListener {
-                colorOptionSelector(color = color)
+                button = selectionButtons!!.elementAt(index)
+                Log.i("Color $color", "Count $count")
+                if (count != 0) {
+                    x += columnGap
+                    newParams = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(),
+                        x.toInt(), (originalParams!!.y + rowGap * 0.9).toInt())
+                    if (button!!.isSelected) {
+                        newParams = LayoutParams(buttonWidth.toInt(), (buttonHeight * 1.375).toInt(),
+                            x.toInt(), (originalParams!!.y + (rowGap * 0.9) - (buttonHeight * 0.1875)).toInt())
+                    }
+                    button!!.translate(newParams!!)
+                    x += buttonWidth
+//                } else {
+//                    if (button!!.isSelected) {
+//                        button!!.willBeShrunk = true
+//                        for (selectionButton in selectionButtons!!.reversed()) {
+//                            if (!button!!.willBeShrunk) {
+//                                button!!.getThis().performClick()
+//                            }
+//                        }
+//                    }
+//                    this.count += 1
+//                    when {
+//                        numOfUniqueColors + 1 == 1 -> button!!.shrinkType = ShrinkType.mid
+//                        numOfUniqueColors + 1 == 2 -> {
+//                            when {
+//                                count > index -> button!!.shrinkType = ShrinkType.left
+//
+//                                else -> button!!.shrinkType = ShrinkType.right
+//                            }
+//                        }
+//                        else -> {
+//                            when {
+//                                count > index -> button!!.shrinkType = ShrinkType.left
+//                                index == numOfUniqueColors -> button!!.shrinkType = ShrinkType.mid
+//                                else -> button!!.shrinkType = ShrinkType.right
+//                            }
+//                        }
+//                    }
+//                    button!!.shrink()
+                }
+                index += 1
             }
         }
     }
