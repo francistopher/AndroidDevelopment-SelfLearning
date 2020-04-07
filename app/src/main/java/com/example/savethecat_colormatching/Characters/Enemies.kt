@@ -51,6 +51,7 @@ class Enemies {
                     parentLayout = MainActivity.rootLayout!!,
                     params = AbsoluteLayout.LayoutParams(sideLength.toInt(), sideLength.toInt(),
                         x.toInt(), y.toInt()))
+                enemy!!.getThis().alpha = 0f
                 enemy!!.loadImages(lightImageR = R.drawable.lighthairball, darkImageR = R.drawable.darkhairball)
                 enemy!!.setStyle()
                 enemy!!.sway()
@@ -71,12 +72,6 @@ class Enemies {
     fun fadeIn() {
         for (enemy in enemies) {
             enemy.fadeIn()
-        }
-    }
-
-    fun hide() {
-        for (enemy in enemies) {
-            enemy.getThis().alpha = 0.0f
         }
     }
 }

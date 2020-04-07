@@ -123,24 +123,23 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
             fadeAnimatorIsRunning = true
         }
         fadeAnimator!!.withEndAction {
-            if (In and Out) {
-                if (isCatImage) {
-                    AudioController.kittenMeow()
-                    this.fade(In = false, Out = true, Duration =(Duration * 0.805f), Delay = 0.0f)
-                } else {
-                    this.fade(In = false, Out = true, Duration =(Duration), Delay = 0.0f)
-                }
-                stopRotation = true
-
-            } else {
                 fadeAnimator!!.cancel()
                 fadeAnimatorIsRunning = false
                 fadeAnimator = null
-            }
         }
         if (!fadeAnimatorIsRunning) {
             fadeAnimator!!.start()
         }
+    }
+
+    fun fadeOut(Duration: Float) {
+        if (isCatImage) {
+            AudioController.kittenMeow()
+            this.fade(In = false, Out = true, Duration =(Duration * 0.805f), Delay = 0.0f)
+        } else {
+            this.fade(In = false, Out = true, Duration =(Duration), Delay = 0.0f)
+        }
+        stopRotation = true
     }
 
     fun setStyle() {

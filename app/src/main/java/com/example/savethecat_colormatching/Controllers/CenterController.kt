@@ -21,11 +21,11 @@ class CenterController {
                 getCenterX().toInt(), getCenterY().toInt())
         }
         
-        fun center(childView: ImageView, childParams:LayoutParams, parentParams:LayoutParams) {
+        fun center(childView: ImageView, childParams:LayoutParams, parentParams:LayoutParams, vD:Float) {
             this.childParam = childParams
             this.parentParam = parentParams
             childView.layoutParams = LayoutParams(childParam!!.width, childParam!!.height,
-                getCenterX().toInt(), getCenterY().toInt())
+                getCenterX().toInt(), (getCenterY() + vD).toInt())
         }
 
         fun centerViewHorizontally(childView: View, childParams:LayoutParams, parentParams: LayoutParams) {

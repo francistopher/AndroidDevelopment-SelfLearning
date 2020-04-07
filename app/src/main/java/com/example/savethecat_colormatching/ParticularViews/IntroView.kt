@@ -2,18 +2,19 @@ package com.example.savethecat_colormatching.ParticularViews
 
 import android.view.ViewPropertyAnimator
 import android.view.animation.LinearInterpolator
+import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.AbsoluteLayout
 import android.widget.ImageView
 import com.example.savethecat_colormatching.CustomViews.CImageView
 
-class IntroView(imageView: ImageView, parentLayout:AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
+class IntroView(imageView: ImageView, parentLayout:AbsoluteLayout, params: LayoutParams) {
 
     var textImageView:CImageView? = null
     var catImageView:CImageView? = null
 
     init {
         textImageView = CImageView(imageView=imageView, parentLayout = parentLayout, params = params)
-        val catImageViewParams = AbsoluteLayout.LayoutParams(params.width, params.height, params.x, (params.y - params.height * 0.0015).toInt())
+        val catImageViewParams = LayoutParams(params.width, params.height, params.x, (params.y - params.height * 0.0015).toInt())
         catImageView = CImageView(imageView= ImageView(textImageView!!.getContext()), parentLayout = parentLayout, params = catImageViewParams)
         catImageView!!.isCatImage = true
         textImageView!!.getThis().alpha = 0.0f
@@ -39,12 +40,17 @@ class IntroView(imageView: ImageView, parentLayout:AbsoluteLayout, params: Absol
         return catImageView!!.getThis()
     }
 
-    fun getTextParams():AbsoluteLayout.LayoutParams {
+    fun getTextParams():LayoutParams {
         return textImageView!!.getOriginalParams()
     }
 
-    fun getCatParams():AbsoluteLayout.LayoutParams {
+    fun getCatParams():LayoutParams {
         return catImageView!!.getOriginalParams()
+    }
+
+    fun fadeOut(duration:Float) {
+        textImageView!!.fadeOut(duration)
+        catImageView!!.fadeOut(duration)
     }
 
     fun setStyle() {

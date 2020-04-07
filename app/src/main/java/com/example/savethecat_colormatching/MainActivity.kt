@@ -118,7 +118,34 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         AspectRatio.setupAspectRatio()
         setCurrentTheme()
         setupSaveTheCat()
+        setupGamePlayAuthentication()
         setContentView(rootLayout!!)
+    }
+
+    private fun setupGamePlayAuthentication(){
+        presentSaveTheCat()
+    }
+
+    private fun presentSaveTheCat() {
+        introAnimation!!.start()
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                staticSelf!!.runOnUiThread {
+                    introAnimation!!.fadeOut(2.4f)
+                    Timer().schedule(object : TimerTask() {
+                        override fun run() {
+                            staticSelf!!.runOnUiThread {
+                                enemies!!.fadeIn()
+                                boardGame!!.buildGame()
+                                boardGame!!.setupSinglePlayerButton()
+                                boardGame!!.setupTwoPlayerButton()
+                                adView!!.alpha = 1f
+                            }
+                        }
+                    }, 2400)
+                }
+            }
+        }, 2400)
     }
 
     private fun setupSaveTheCat() {
@@ -160,9 +187,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             params = AbsoluteLayout.LayoutParams(width.toInt(), width.toInt(), 0, 0))
         introAnimation!!.loadTextImages(lightTextImageR = R.drawable.darkintrotext, darkTextImageR = R.drawable.lightintrotext,
             lightCatImageR = R.drawable.darkcat, darkCatImageR = R.drawable.lightcat)
-        CenterController.center(introAnimation!!.getTextImage(), introAnimation!!.getTextParams(), params!!)
-        CenterController.center(introAnimation!!.getCatImage(), introAnimation!!.getCatParams(), params!!)
-        introAnimation!!.start()
+        CenterController.center(introAnimation!!.getTextImage(), introAnimation!!.getTextParams(),
+            params!!, -(dNavigationBarHeight.toFloat() * 2.5f))
+        CenterController.center(introAnimation!!.getCatImage(), introAnimation!!.getCatParams(),
+            params!!, -(dNavigationBarHeight.toFloat() * 2.5f))
     }
 
     private fun setSuccessGradientViewAndLayer() {
@@ -208,6 +236,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         adRequest = AdRequest.Builder().build()
         adView!!.loadAd(adRequest)
         rootLayout!!.addView(adView)
+        adView!!.alpha = 0f
     }
 
     private fun setupBoardGame() {
@@ -220,7 +249,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             childParams = boardGame!!.getOriginalParams(),
             parentParams = AbsoluteLayout.LayoutParams(dWidth.toInt(), (adHeight * 1.05).toInt(), 0, 0))
         boardGame!!.setOriginalParams(boardGame!!.getThis().layoutParams as AbsoluteLayout.LayoutParams)
-        boardGame!!.buildGame()
     }
 
     private fun setupColorOptions() {
@@ -235,8 +263,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         colorOptions!!.setOriginalParams(colorOptions!!.getThis().layoutParams as AbsoluteLayout.LayoutParams)
         rootLayout!!.addView(ColorOptions.colorOptionsLayout!!)
         // Set board game player buttons
-        boardGame!!.setupSinglePlayerButton()
-        boardGame!!.setupTwoPlayerButton()
         rootLayout!!.addView(BoardGame.boardGameLayout)
     }
 

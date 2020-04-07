@@ -149,6 +149,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 catButton!!.getThis().setOnClickListener {
                     catButtonSelector(params = (it as View).layoutParams as LayoutParams)
                 }
+                catButton!!.shrunk()
+                catButton!!.grow()
 //                gridCatButton!.rowIndex = rowIndex
 //                gridCatButton!.columnIndex = columnIndex
 //                gridCatButton!.imageContainerButton!.backgroundColor = UIColor.clear;

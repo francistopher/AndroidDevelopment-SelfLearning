@@ -1,19 +1,14 @@
 package com.example.savethecat_colormatching.Characters
 
-import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.Matrix
-import android.graphics.drawable.Animatable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
+import android.renderscript.Sampler
+import android.view.View
 import android.view.ViewPropertyAnimator
-import android.view.animation.Animation
-import android.view.animation.CycleInterpolator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
@@ -24,12 +19,12 @@ import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.ParticularViews.BoardGame
 import com.example.savethecat_colormatching.R
 import java.lang.Exception
-import java.lang.Math.cos
 import kotlin.random.Random
 
-class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams, backgroundColor:Int) {
+class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: LayoutParams, backgroundColor:Int) {
 
     private var originalParams: LayoutParams? = null
     private var shrunkParams: LayoutParams? = null
@@ -58,6 +53,45 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setShrunkParams()
         this.imageButton!!.setBackgroundColor(backgroundColor)
         setupImageView()
+    }
+
+    private var fadeButtonAnimator:ValueAnimator? = null
+    private var fadeCatAnimator:ValueAnimator? = null
+    private var fadeAnimatorSet:AnimatorSet? = null
+    private var fadeAnimatorIsRunning:Boolean = false
+    fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        if (fadeAnimatorSet != null) {
+            if (fadeAnimatorIsRunning) {
+                fadeAnimatorSet!!.cancel()
+                fadeAnimatorIsRunning = false
+                fadeAnimatorSet = null
+            }
+        }
+        if (In) {
+            fadeCatAnimator = ValueAnimator.ofFloat(imageView!!.getThis().alpha, 1f)
+            fadeButtonAnimator = ValueAnimator.ofFloat(imageButton!!.alpha, 1f)
+
+        } else if (Out and !In) {
+            fadeCatAnimator = ValueAnimator.ofFloat(imageView!!.getThis().alpha, 0f)
+            fadeButtonAnimator = ValueAnimator.ofFloat(imageButton!!.alpha, 0f)
+        }
+
+        fadeCatAnimator!!.addUpdateListener {
+            imageView!!.getThis().alpha = it.animatedValue as Float
+        }
+        fadeButtonAnimator!!.addUpdateListener {
+            imageButton!!.alpha = it.animatedValue as Float
+        }
+
+        fadeCatAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        fadeButtonAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+
+        fadeAnimatorSet = AnimatorSet()
+        fadeAnimatorSet!!.play(fadeCatAnimator!!).with(imageRotationAnimator!!)
+        fadeAnimatorSet!!.startDelay = (1000.0f * Delay).toLong()
+        fadeAnimatorSet!!.duration = (1000.0f * Duration).toLong()
+
+        fadeAnimatorIsRunning = true
     }
 
     private var shape: GradientDrawable? = null
@@ -191,6 +225,36 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         podAnimator!!.start()
     }
 
+    private var growAnimator:ValueAnimator? = null
+    private var isGrowing:Boolean = false
+
+    fun grow() {
+        if (growAnimator != null) {
+            if (isGrowing) {
+                growAnimator!!.cancel()
+                isGrowing = false
+                growAnimator = null
+            }
+        }
+        growAnimator = ValueAnimator.ofFloat(imageButton!!.width.toFloat(), originalParams!!.width.toFloat())
+        growAnimator!!.addUpdateListener {
+            val sideLength:Int = (it.animatedValue as Float).toInt()
+            val x:Int = (originalParams!!.x + (originalParams!!.width * 0.5) - (sideLength * 0.5)).toInt()
+            val y:Int = (originalParams!!.y + (originalParams!!.height * 0.5) - (sideLength * 0.5)).toInt()
+            imageButton!!.layoutParams = LayoutParams(sideLength, sideLength, x, y)
+            imageView!!.getThis().layoutParams = LayoutParams(sideLength, sideLength, x, y)
+        }
+        growAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        growAnimator!!.duration = 1000
+        growAnimator!!.startDelay = 125
+        isGrowing = true
+        growAnimator!!.start()
+        growAnimator!!.doOnEnd {
+            imageView!!.getThis().layoutParams = originalParams!!
+            imageButton!!.layoutParams = originalParams!!
+        }
+    }
+
     private var angle:Float = 0f
     private var disperseVerticalSet:AnimatorSet? = null
     private var disperseVerticalXAnimator:ValueAnimator? = null
@@ -237,6 +301,11 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private fun getElevatedTargetY(): Float {
         return -Random.nextInt((originalParams!!.height),
             (originalParams!!.height * 2.0).toInt()).toFloat()
+    }
+
+    fun shrunk() {
+        imageButton!!.layoutParams = shrunkParams!!
+        imageView!!.getThis().layoutParams = shrunkParams!!
     }
 
 }
