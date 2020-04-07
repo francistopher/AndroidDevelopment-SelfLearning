@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.util.Log
 import android.util.TypedValue
+import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
@@ -151,8 +152,8 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 selectAnimator = null
             }
         }
-        selectAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).height.toFloat(),
-            (button!!.layoutParams as LayoutParams).height * 1.275f)
+        selectAnimator = ValueAnimator.ofFloat(originalParams!!.height.toFloat(),
+            originalParams!!.height * 1.275f)
         selectAnimator!!.addUpdateListener {
             button!!.layoutParams = LayoutParams(
                 originalParams!!.width, (it.animatedValue as Float).toInt(), originalParams!!.x,
@@ -170,6 +171,9 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     private var unSelectAnimator:ValueAnimator? = null
     private var isUnSelectRunning:Boolean = false
     fun unSelect() {
+        if ((getThis().layoutParams as LayoutParams).height == originalParams!!.height) {
+            return
+        }
         if (selectAnimator != null) {
             if (isSelectRunning) {
                 selectAnimator!!.cancel()
@@ -184,7 +188,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 unSelectAnimator = null
             }
         }
-        unSelectAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).height * 1.275f,
+        unSelectAnimator = ValueAnimator.ofFloat(originalParams!!.height * 1.275f,
             originalParams!!.height.toFloat())
         unSelectAnimator!!.addUpdateListener {
             button!!.layoutParams = LayoutParams(
@@ -193,6 +197,11 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                         originalParams!!.height.toFloat()) * 0.5f).toInt()
             )
         }
+        unSelectAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        unSelectAnimator!!.startDelay = 125
+        unSelectAnimator!!.duration = 500
+        isUnSelectRunning = true
+        unSelectAnimator!!.start()
     }
 
     private var x: Float = 0f

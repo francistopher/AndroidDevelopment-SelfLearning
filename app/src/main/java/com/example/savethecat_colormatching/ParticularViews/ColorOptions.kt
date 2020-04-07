@@ -116,8 +116,8 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
 
     private fun colorOptionSelector(color: Int) {
         clearBoardGameGridButtonsColorIndicator()
-        for (selectionButton in selectionButtons!!) {
-            if (color != selectedColor) {
+        if (color != selectedColor) {
+            for (selectionButton in selectionButtons!!) {
                 if (color == selectionButton.backgroundColor) {
                     selectedColor = color
                     selectionButton.select()
