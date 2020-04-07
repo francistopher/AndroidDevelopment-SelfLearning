@@ -119,13 +119,13 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
-    var gridButtonRowGap:Float = 0.0f
-    var gridButtonColumnGap:Float = 0.0f
-    var gridButtonHeight:Float = 0.0f
-    var gridButtonWidth:Float = 0.0f
-    var gridButtonX:Float = 0.0f
-    var gridButtonY:Float = 0.0f
-    var catButton:CatButton? = null
+    private var gridButtonRowGap:Float = 0.0f
+    private var gridButtonColumnGap:Float = 0.0f
+    private var gridButtonHeight:Float = 0.0f
+    private var gridButtonWidth:Float = 0.0f
+    private var gridButtonX:Float = 0.0f
+    private var gridButtonY:Float = 0.0f
+    private var catButton:CatButton? = null
     private fun buildGridButtons() {
         gridButtonRowGap = originalParams!!.height * 0.1f / (rowsAndColumns.first + 1.0f)
         gridButtonColumnGap = originalParams!!.width * 0.1f / (rowsAndColumns.second + 1.0f)
@@ -147,7 +147,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         (gridButtonY + originalParams!!.y).toInt()),
                     backgroundColor = gridColors!![rowIndex][columnIndex])
                 catButton!!.getThis().setOnClickListener {
-                    catButtonSelector(id = it.id)
+                    catButtonSelector(params = (it as View).layoutParams as LayoutParams)
                 }
 //                gridCatButton!.rowIndex = rowIndex
 //                gridCatButton!.columnIndex = columnIndex
@@ -160,18 +160,18 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
-    private fun catButtonSelector(id:Int) {
+    private fun catButtonSelector(params:LayoutParams) {
         // The user has selected a color option
         if (MainActivity.colorOptions!!.getSelectedColor() != Color.LTGRAY) {
             for (catButton in catButtons!!.getCurrentCatButtons()) {
                 // The button is found and colors match
-                if (catButton.getThis().id == id && MainActivity.colorOptions!!.getSelectedColor()
+                if (catButton.getOriginalParams() == params && MainActivity.colorOptions!!.getSelectedColor()
                     == catButton.getOriginalBackgroundColor() && !catButton.isPodded) {
                     catButton.transitionColor(catButton.getOriginalBackgroundColor())
                     catButton.pod()
-                    verifyRemainingCatsArePodded()
                 }
             }
+            verifyRemainingCatsArePodded()
         }
     }
 

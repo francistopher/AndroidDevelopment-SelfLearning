@@ -116,6 +116,10 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         originalParams = params
     }
 
+    fun getOriginalParams():LayoutParams {
+        return this.originalParams!!
+    }
+
     private fun setShrunkParams() {
         shrunkParams = LayoutParams(originalParams!!.x / 2, originalParams!!.y / 2, 1, 1)
     }
