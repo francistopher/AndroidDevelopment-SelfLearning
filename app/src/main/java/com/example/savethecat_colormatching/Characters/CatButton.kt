@@ -8,12 +8,14 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.renderscript.Sampler
 import android.view.View
+import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Controllers.AudioController
@@ -53,6 +55,8 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setShrunkParams()
         this.imageButton!!.setBackgroundColor(backgroundColor)
         setupImageView()
+        this.imageView!!.getThis().alpha = 0f
+        this.imageButton!!.alpha = 0f
     }
 
     private var fadeButtonAnimator:ValueAnimator? = null
@@ -225,31 +229,50 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         podAnimator!!.start()
     }
 
-    private var growAnimator:ValueAnimator? = null
+    private var growAnimatorSet:AnimatorSet? = null
+    private var growWidthAnimator:ValueAnimator? = null
+    private var growHeightAnimator:ValueAnimator? = null
     private var isGrowing:Boolean = false
-
+    private var width:Int = 0
+    private var height:Int = 0
+    private var x:Int = 0
+    private var y:Int = 0
     fun grow() {
-        if (growAnimator != null) {
+        if (growAnimatorSet != null) {
             if (isGrowing) {
-                growAnimator!!.cancel()
+                growAnimatorSet!!.cancel()
                 isGrowing = false
-                growAnimator = null
+                growAnimatorSet = null
             }
         }
-        growAnimator = ValueAnimator.ofFloat(imageButton!!.width.toFloat(), originalParams!!.width.toFloat())
-        growAnimator!!.addUpdateListener {
-            val sideLength:Int = (it.animatedValue as Float).toInt()
-            val x:Int = (originalParams!!.x + (originalParams!!.width * 0.5) - (sideLength * 0.5)).toInt()
-            val y:Int = (originalParams!!.y + (originalParams!!.height * 0.5) - (sideLength * 0.5)).toInt()
-            imageButton!!.layoutParams = LayoutParams(sideLength, sideLength, x, y)
-            imageView!!.getThis().layoutParams = LayoutParams(sideLength, sideLength, x, y)
+        growWidthAnimator = ValueAnimator.ofFloat(1f, originalParams!!.width.toFloat())
+        growWidthAnimator!!.addUpdateListener {
+            width = (it.animatedValue as Float).toInt()
+            x = (originalParams!!.x + (originalParams!!.width * 0.5) - (width * 0.5)).toInt()
+            y = (originalParams!!.y + (originalParams!!.height * 0.5) - (height * 0.5)).toInt()
+            imageButton!!.layoutParams = LayoutParams(width, height, x, y)
+            imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
         }
-        growAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-        growAnimator!!.duration = 1000
-        growAnimator!!.startDelay = 125
+
+        growHeightAnimator = ValueAnimator.ofFloat(1f, originalParams!!.height.toFloat())
+        growHeightAnimator!!.addUpdateListener {
+            height = (it.animatedValue as Float).toInt()
+            x = (originalParams!!.x + (originalParams!!.width * 0.5) - (width * 0.5)).toInt()
+            y = (originalParams!!.y + (originalParams!!.height * 0.5) - (height * 0.5)).toInt()
+            imageButton!!.layoutParams = LayoutParams(width, height, x, y)
+            imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+            imageButton!!.alpha = 1f
+            imageView!!.getThis().alpha = 1f
+        }
+
+        growAnimatorSet = AnimatorSet()
+        growAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        growAnimatorSet!!.play(growHeightAnimator!!).with(growWidthAnimator!!)
+        growAnimatorSet!!.duration = 1000
+        growAnimatorSet!!.startDelay = 125
         isGrowing = true
-        growAnimator!!.start()
-        growAnimator!!.doOnEnd {
+        growAnimatorSet!!.start()
+        growAnimatorSet!!.doOnEnd {
             imageView!!.getThis().layoutParams = originalParams!!
             imageButton!!.layoutParams = originalParams!!
         }
@@ -273,6 +296,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 originalParams!!.width, originalParams!!.height,
                 (it.animatedValue as Float).toInt(), targetY.toInt())
         }
+
         disperseVerticalYAnimator = ValueAnimator.ofFloat(originalParams!!.y.toFloat(), getElevatedTargetY())
         disperseVerticalYAnimator!!.addUpdateListener {
             targetY = (it.animatedValue as Float)
