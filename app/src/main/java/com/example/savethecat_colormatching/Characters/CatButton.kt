@@ -59,41 +59,34 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         this.imageButton!!.alpha = 0f
     }
 
-    private var fadeButtonAnimator:ValueAnimator? = null
-    private var fadeCatAnimator:ValueAnimator? = null
-    private var fadeAnimatorSet:AnimatorSet? = null
+    private var fadeInAnimator:ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
-        if (fadeAnimatorSet != null) {
+        if (fadeInAnimator != null) {
             if (fadeAnimatorIsRunning) {
-                fadeAnimatorSet!!.cancel()
+                fadeInAnimator!!.cancel()
                 fadeAnimatorIsRunning = false
-                fadeAnimatorSet = null
+                fadeInAnimator = null
             }
         }
         if (In) {
-            fadeCatAnimator = ValueAnimator.ofFloat(imageView!!.getThis().alpha, 1f)
-            fadeButtonAnimator = ValueAnimator.ofFloat(imageButton!!.alpha, 1f)
+            fadeInAnimator = ValueAnimator.ofFloat(0f, 1f)
 
         } else if (Out and !In) {
-            fadeCatAnimator = ValueAnimator.ofFloat(imageView!!.getThis().alpha, 0f)
-            fadeButtonAnimator = ValueAnimator.ofFloat(imageButton!!.alpha, 0f)
+            fadeInAnimator = ValueAnimator.ofFloat(1f, 0f)
         }
 
-        fadeCatAnimator!!.addUpdateListener {
+        fadeInAnimator!!.addUpdateListener {
             imageView!!.getThis().alpha = it.animatedValue as Float
-        }
-        fadeButtonAnimator!!.addUpdateListener {
             imageButton!!.alpha = it.animatedValue as Float
         }
 
-        fadeCatAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-        fadeButtonAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
 
-        fadeAnimatorSet = AnimatorSet()
-        fadeAnimatorSet!!.play(fadeCatAnimator!!).with(imageRotationAnimator!!)
-        fadeAnimatorSet!!.startDelay = (1000.0f * Delay).toLong()
-        fadeAnimatorSet!!.duration = (1000.0f * Duration).toLong()
+        fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
+        fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
+
+        fadeInAnimator!!.start()
 
         fadeAnimatorIsRunning = true
     }
@@ -261,8 +254,6 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             y = (originalParams!!.y + (originalParams!!.height * 0.5) - (height * 0.5)).toInt()
             imageButton!!.layoutParams = LayoutParams(width, height, x, y)
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
-            imageButton!!.alpha = 1f
-            imageView!!.getThis().alpha = 1f
         }
 
         growAnimatorSet = AnimatorSet()

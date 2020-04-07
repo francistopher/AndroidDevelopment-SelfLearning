@@ -151,6 +151,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 }
                 catButton!!.shrunk()
                 catButton!!.grow()
+                catButton!!.fade(true, false, 0.5f, 0.125f)
 //                gridCatButton!.rowIndex = rowIndex
 //                gridCatButton!.columnIndex = columnIndex
 //                gridCatButton!.imageContainerButton!.backgroundColor = UIColor.clear;
@@ -255,6 +256,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 }, 1250)
             }
         }
+        singlePlayerButton!!.shrunk()
+        singlePlayerButton!!.grow()
+        singlePlayerButton!!.fade(true, false, 0.5f, 0.125f)
     }
 
     fun startGame() {
@@ -277,6 +281,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         multiplayerButton!!.getThis().setOnClickListener {
             Log.i("Click", "Multi Player Button")
         }
+        multiplayerButton!!.shrunk()
+        multiplayerButton!!.grow()
+        multiplayerButton!!.fade(true, false, 0.5f, 0.125f)
     }
 
     private var nonZeroCount:Int = 0

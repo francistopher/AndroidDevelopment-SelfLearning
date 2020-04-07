@@ -43,6 +43,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         setOriginalParams(params)
         setShrunkParams()
         setStyle()
+        this.button!!.alpha = 0f
     }
 
     fun getThis(): Button {
@@ -132,6 +133,45 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             fadeOutAnimator!!.doOnEnd {
                 parentLayout!!.removeView(this.getThis())
             }
+        }
+    }
+
+    private var growAnimatorSet:AnimatorSet? = null
+    private var growHeightAnimator:ValueAnimator? = null
+    private var isGrowing:Boolean = false
+    private var width:Int = 0
+    private var height:Int = 0
+    private var y:Int = 0
+    fun grow() {
+        if (growAnimatorSet != null) {
+            if (isGrowing) {
+                growAnimatorSet!!.cancel()
+                isGrowing = false
+                growAnimatorSet = null
+            }
+        }
+        growWidthAnimator = ValueAnimator.ofFloat(1f, originalParams!!.width.toFloat())
+        growWidthAnimator!!.addUpdateListener {
+            width = (it.animatedValue as Float).toInt()
+            x = ((originalParams!!.x + (originalParams!!.width * 0.5) - (width * 0.5)).toFloat())
+            button!!.layoutParams = LayoutParams(width, height, x.toInt(), y)
+        }
+
+        growHeightAnimator = ValueAnimator.ofFloat(1f, originalParams!!.height.toFloat())
+        growHeightAnimator!!.addUpdateListener {
+            height = (it.animatedValue as Float).toInt()
+            y = (originalParams!!.y + (originalParams!!.height * 0.5) - (height * 0.5)).toInt()
+            button!!.layoutParams = LayoutParams(width, height, x.toInt(), y)
+        }
+        growAnimatorSet = AnimatorSet()
+        growAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        growAnimatorSet!!.play(growHeightAnimator!!).with(growWidthAnimator!!)
+        growAnimatorSet!!.duration = 1000
+        growAnimatorSet!!.startDelay = 125
+        isGrowing = true
+        growAnimatorSet!!.start()
+        growAnimatorSet!!.doOnEnd {
+            button!!.layoutParams = originalParams!!
         }
     }
 
@@ -320,6 +360,10 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             }
 
         }
+    }
+
+    fun shrunk() {
+        button!!.layoutParams = shrunkParams!!
     }
 
     fun setOriginalParams(params: LayoutParams) {
