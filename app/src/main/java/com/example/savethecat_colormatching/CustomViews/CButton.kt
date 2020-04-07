@@ -152,7 +152,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 selectAnimator = null
             }
         }
-        selectAnimator = ValueAnimator.ofFloat(originalParams!!.height.toFloat(),
+        selectAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).height.toFloat(),
             originalParams!!.height * 1.275f)
         selectAnimator!!.addUpdateListener {
             button!!.layoutParams = LayoutParams(
@@ -188,8 +188,8 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 unSelectAnimator = null
             }
         }
-        unSelectAnimator = ValueAnimator.ofFloat(originalParams!!.height * 1.275f,
-            originalParams!!.height.toFloat())
+        unSelectAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).
+        height.toFloat(), originalParams!!.height.toFloat())
         unSelectAnimator!!.addUpdateListener {
             button!!.layoutParams = LayoutParams(
                 originalParams!!.width, (it.animatedValue as Float).toInt(), originalParams!!.x,
