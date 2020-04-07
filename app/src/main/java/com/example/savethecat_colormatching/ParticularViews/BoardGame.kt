@@ -189,6 +189,16 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     private fun promote() {
         reset(true)
         MainActivity.colorOptions!!.shrinkAllColorOptionButtons()
+        MainActivity.colorOptions!!.loadSelectionToSelectedButtons()
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                MainActivity.staticSelf!!.runOnUiThread {
+                    currentStage += 1
+                    buildGame()
+                    startGame()
+                }
+            }
+        }, 1250)
     }
 
     private fun reset(allSurvived:Boolean) {
@@ -196,18 +206,22 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             catButtons!!.disperseVertically()
         }
         gridColors = null
-        ColorOptions.selectionColors!!.clear()
+        catButtons!!.removeAll()
     }
 
     private var recordedColor:Int = 0
     private fun recordGridColorsUsed() {
-        this.gridColorsCount = mutableMapOf()
+        if (gridColorsCount == null) {
+            gridColorsCount = mutableMapOf()
+        } else {
+           gridColorsCount!!.clear()
+        }
         for (catButton in catButtons!!.getCurrentCatButtons()) {
             recordedColor = catButton.getOriginalBackgroundColor()
-            if (this.gridColorsCount!![recordedColor] == null) {
-                this.gridColorsCount!![recordedColor] = 1
+            if (gridColorsCount!![recordedColor] == null) {
+                gridColorsCount!![recordedColor] = 1
             } else {
-                this.gridColorsCount!![recordedColor] = this.gridColorsCount!![recordedColor]!! + 1
+                gridColorsCount!![recordedColor] = gridColorsCount!![recordedColor]!! + 1
             }
         }
     }
@@ -233,12 +247,16 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 Timer().schedule(object : TimerTask() {
                     override fun run() {
                         MainActivity.staticSelf!!.runOnUiThread {
-                            MainActivity.colorOptions!!.buildColorOptionButtons()
+                            startGame()
                         }
                     }
                 }, 1250)
             }
         }
+    }
+
+    fun startGame() {
+        MainActivity.colorOptions!!.buildColorOptionButtons()
     }
 
     fun setupTwoPlayerButton() {
@@ -259,14 +277,15 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
-    var nonZeroCount:Int = 0
+    private var nonZeroCount:Int = 0
     fun nonZeroGridColorsCount():Int {
         nonZeroCount = 0
         for ((_, count) in gridColorsCount!!) {
-            if (count != 0) {
+            if (count > 0) {
                 nonZeroCount += 1
             }
         }
+        Log.i("COUNT GRID COLORS", gridColorsCount!!.toString())
         return nonZeroCount
     }
 

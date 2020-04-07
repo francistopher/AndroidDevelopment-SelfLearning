@@ -211,7 +211,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
         disperseVerticalSet = AnimatorSet()
         disperseVerticalSet!!.play(disperseVerticalYAnimator).with(disperseVerticalXAnimator)
-        disperseVerticalSet!!.duration = 2500
+        disperseVerticalSet!!.duration = 3000
         disperseVerticalSet!!.startDelay = 125
         disperseVerticalSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         isDispersedVertically = true

@@ -73,4 +73,8 @@ class CatButtons {
         }
         return true
     }
+
+    fun removeAll() {
+        currentCatButtons!!.clear()
+    }
 }

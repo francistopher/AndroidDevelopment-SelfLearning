@@ -2,6 +2,7 @@ package com.example.savethecat_colormatching.ParticularViews
 
 import android.content.Context
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
@@ -19,6 +20,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     private var shrunkParams:LayoutParams? = null
 
     private var selectionButtons:MutableSet<CButton>? = null
+    private var selectedButtons:MutableSet<CButton>? = null
 
     private var selectedColor:Int = Color.LTGRAY
 
@@ -57,6 +59,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         setShrunkParams()
         this.view!!.setBackgroundColor(Color.TRANSPARENT)
         selectionButtons = mutableSetOf()
+        selectedButtons = mutableSetOf()
     }
 
     fun setOriginalParams(params:LayoutParams) {
@@ -86,18 +89,19 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     private var x:Float = 0f
     fun buildColorOptionButtons() {
         numOfUniqueColors = MainActivity.boardGame!!.nonZeroGridColorsCount()
-        columnGap = (originalParams!!.width * 0.01f) / (numOfUniqueColors + 1).toFloat()
+        columnGap = (originalParams!!.width * 0.1f) / (numOfUniqueColors + 1).toFloat()
         rowGap = originalParams!!.height * 0.1f
         buttonWidth = (originalParams!!.width - (columnGap * (numOfUniqueColors + 1).toFloat())) /
                 numOfUniqueColors.toFloat()
         buttonHeight = (originalParams!!.height -  (rowGap * 2.0)).toFloat()
         button = null
-        x = 0.0f
-        for ((color, _) in MainActivity.boardGame!!.getGridColorsCount()) {
+        x = originalParams!!.x.toFloat()
+        Log.i("Number of unique colors", "$numOfUniqueColors")
+        for ((color, count) in MainActivity.boardGame!!.getGridColorsCount()) {
             x += columnGap
             button = CButton(button = Button(colorOptionsContext!!), parentLayout =
             colorOptionsLayout!!, params = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(),
-                (originalParams!!.x + columnGap).toInt(), (originalParams!!.y + rowGap * 0.9).toInt()))
+                x.toInt(), (originalParams!!.y + rowGap * 0.9).toInt()))
             button!!.backgroundColor = color
             button!!.setStyle()
             button!!.getThis().setOnClickListener {
@@ -113,12 +117,14 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     private fun colorOptionSelector(color: Int) {
         clearBoardGameGridButtonsColorIndicator()
         for (selectionButton in selectionButtons!!) {
-            if (color == selectionButton.backgroundColor) {
-                selectedColor = color
-                selectionButton.select()
-            } else {
-                selectedColor = color
-                selectionButton.unSelect()
+            if (color != selectedColor) {
+                if (color == selectionButton.backgroundColor) {
+                    selectedColor = color
+                    selectionButton.select()
+                } else {
+                    selectedColor = color
+                    selectionButton.unSelect()
+                }
             }
         }
     }
@@ -141,5 +147,12 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
 
     fun resetSelectedColor() {
         selectedColor = Color.LTGRAY
+    }
+
+    fun loadSelectionToSelectedButtons() {
+        for (selectionButton in selectionButtons!!) {
+            selectedButtons!!.add(selectionButton)
+        }
+        selectionButtons!!.clear()
     }
 }

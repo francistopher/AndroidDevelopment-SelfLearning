@@ -226,7 +226,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private fun setupColorOptions() {
         val boardGameSideLength:Float = (dUnitHeight * 8.5).toFloat()
         colorOptions = ColorOptions(view = View(this), parentLayout = rootLayout!!, params =
-        AbsoluteLayout.LayoutParams((boardGameSideLength * 0.91).toInt(), (dUnitHeight * 1.5).toInt(),
+        AbsoluteLayout.LayoutParams(boardGameSideLength.toInt(), (dUnitHeight * 1.5).toInt(),
             boardGame!!.getOriginalParams().x, boardGame!!.getOriginalParams().y + boardGame!!.
             getOriginalParams().height))
         CenterController.centerViewHorizontally(colorOptions!!.getThis(), parentParams = AbsoluteLayout.
