@@ -59,9 +59,7 @@ class CatButtons {
 
     fun disperseVertically() {
         for (catButton in currentCatButtons!!) {
-            Log.i("Dispering", "YEAAH1")
             if (catButton.isAlive) {
-                Log.i("Dispering", "YEAAH")
                 catButton.disperseVertically()
             }
         }

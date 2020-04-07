@@ -1,6 +1,7 @@
 package com.example.savethecat_colormatching.Characters
 
 import android.animation.Animator
+import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Bitmap
@@ -9,6 +10,7 @@ import android.graphics.Matrix
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.ViewPropertyAnimator
 import android.view.animation.Animation
 import android.view.animation.CycleInterpolator
@@ -24,6 +26,8 @@ import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
 import java.lang.Exception
+import java.lang.Math.cos
+import kotlin.random.Random
 
 class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams, backgroundColor:Int) {
 
@@ -183,10 +187,53 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         podAnimator!!.start()
     }
 
+    private var angle:Float = 0f
+    private var disperseVerticalSet:AnimatorSet? = null
+    private var disperseVerticalXAnimator:ValueAnimator? = null
+    private var disperseVerticalYAnimator:ValueAnimator? = null
+    private var isDispersedVertically:Boolean = false
+    private var targetY:Float = 0.0f
     fun disperseVertically() {
         imageView!!.loadImages(R.drawable.lightcheeringcat, R.drawable.darkcheeringcat)
+        angle = (0..30).random().toFloat()
+        disperseVerticalXAnimator = ValueAnimator.ofFloat(originalParams!!.x.toFloat(), getElevatedTargetX())
+        disperseVerticalXAnimator!!.addUpdateListener {
+            imageButton!!.layoutParams = LayoutParams(
+                originalParams!!.width, originalParams!!.height,
+                (it.animatedValue as Float).toInt(), targetY.toInt())
+            imageView!!.getThis().layoutParams = LayoutParams(
+                originalParams!!.width, originalParams!!.height,
+                (it.animatedValue as Float).toInt(), targetY.toInt())
+        }
+        disperseVerticalYAnimator = ValueAnimator.ofFloat(originalParams!!.y.toFloat(), getElevatedTargetY())
+        disperseVerticalYAnimator!!.addUpdateListener {
+            targetY = (it.animatedValue as Float)
+        }
+        disperseVerticalSet = AnimatorSet()
+        disperseVerticalSet!!.play(disperseVerticalYAnimator).with(disperseVerticalXAnimator)
+        disperseVerticalSet!!.duration = 2500
+        disperseVerticalSet!!.startDelay = 125
+        disperseVerticalSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        isDispersedVertically = true
+        disperseVerticalSet!!.start()
+    }
 
+    var targetX:Float = 0f
+    private fun getElevatedTargetX():Float {
+        targetX = MainActivity.dWidth.toFloat() * 0.5f
+        if (angle < 15f) {
+            targetX -= originalParams!!.width
+        } else {
+            targetX += originalParams!!.width
+        }
+        targetX *= kotlin.math.cos(angle.toDouble()).toFloat()
+        return targetX
+    }
 
+    private fun getElevatedTargetY(): Float {
+        return -Random.nextInt((originalParams!!.height),
+            (originalParams!!.height * 2.0).toInt()).toFloat()
     }
 
 }
+

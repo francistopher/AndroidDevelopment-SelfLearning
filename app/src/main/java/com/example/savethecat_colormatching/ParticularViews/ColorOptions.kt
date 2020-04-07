@@ -123,6 +123,12 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
     }
 
+    fun shrinkAllColorOptionButtons() {
+        for (selectionButton in selectionButtons!!) {
+            selectionButton.shrink()
+        }
+    }
+
     private fun clearBoardGameGridButtonsColorIndicator() {
         if (selectedColor == Color.LTGRAY) {
             MainActivity.boardGame!!.setButtonsBackgroundColorTransparent()

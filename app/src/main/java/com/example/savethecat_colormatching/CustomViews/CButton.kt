@@ -12,9 +12,11 @@ import android.view.ViewPropertyAnimator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
+import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.ParticularViews.BoardGame
 
 
 class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -117,14 +119,19 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         growWidthAndChangeColorIsRunning = true
         growWidthAndChangeColor!!.start()
 
-        fadeOutAnimator = ValueAnimator.ofFloat(1f, 0f)
-        fadeOutAnimator!!.addUpdateListener{
-            button!!.alpha = it.animatedValue as Float
+        growWidthAndChangeColor!!.doOnEnd {
+            fadeOutAnimator = ValueAnimator.ofFloat(1f, 0f)
+            fadeOutAnimator!!.addUpdateListener{
+                button!!.alpha = it.animatedValue as Float
+            }
+            fadeOutAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+            fadeOutAnimator!!.duration = 750
+            fadeOutAnimator!!.start()
+            // Do on end
+            fadeOutAnimator!!.doOnEnd {
+                parentLayout!!.removeView(this.getThis())
+            }
         }
-        fadeOutAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-        fadeOutAnimator!!.startDelay = 1250
-        fadeOutAnimator!!.duration = 750
-        fadeOutAnimator!!.start()
     }
 
     private var selectAnimator:ValueAnimator? = null
@@ -178,8 +185,8 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             }
         }
         unSelectAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).height * 1.275f,
-            (button!!.layoutParams as LayoutParams).height.toFloat())
-        selectAnimator!!.addUpdateListener {
+            originalParams!!.height.toFloat())
+        unSelectAnimator!!.addUpdateListener {
             button!!.layoutParams = LayoutParams(
                 originalParams!!.width, (it.animatedValue as Float).toInt(), originalParams!!.x,
                 originalParams!!.y - (((it.animatedValue as Float) -
@@ -194,7 +201,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     private var shrinkWidthAnimator: ValueAnimator? = null
     private var shrinkAnimationSet: AnimatorSet? = null
     private var shrinkAnimationSetIsRunning: Boolean = false
-    fun shrink(isColorOptionButton: Boolean) {
+    fun shrink() {
         if (shrinkAnimationSet != null) {
             if (shrinkAnimationSetIsRunning) {
                 shrinkAnimationSet!!.cancel()
@@ -216,7 +223,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 duration = 750f
             }
         }
-
         translateXAnimator = ValueAnimator.ofFloat((originalParams!!.x).toFloat(), x)
         translateXAnimator!!.addUpdateListener {
             originalParams = LayoutParams(
@@ -227,7 +233,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             )
             button!!.layoutParams = originalParams!!
         }
-
         shrinkWidthAnimator = ValueAnimator.ofFloat((originalParams!!.width).toFloat(), 0f)
         shrinkWidthAnimator!!.addUpdateListener {
             originalParams = LayoutParams(
@@ -238,12 +243,15 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             )
             button!!.layoutParams = originalParams
         }
-
         shrinkAnimationSet = AnimatorSet()
         shrinkAnimationSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         shrinkAnimationSet!!.play(translateXAnimator!!).with(shrinkWidthAnimator)
         shrinkAnimationSet!!.duration = duration.toLong()
         shrinkAnimationSet!!.start()
+        // Do on end
+        shrinkAnimationSet!!.doOnEnd {
+            parentLayout!!.removeView(this.getThis())
+        }
     }
 
     private var fadeAnimator: ViewPropertyAnimator? = null

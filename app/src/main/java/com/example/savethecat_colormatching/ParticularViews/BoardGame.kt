@@ -33,7 +33,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         var boardGameContext:Context? = null
         var boardGameLayout:AbsoluteLayout? = null
         var singlePlayerButton:CButton? = null
-        var twoPlayerButton:CButton? = null
+        var multiplayerButton:CButton? = null
     }
     init {
         this.boardView = boardView
@@ -188,6 +188,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
 
     private fun promote() {
         reset(true)
+        MainActivity.colorOptions!!.shrinkAllColorOptionButtons()
     }
 
     private fun reset(allSurvived:Boolean) {
@@ -228,20 +229,12 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 Log.i("Click", "Single Player Button")
                 singlePlayerButton!!.targetBackgroundColor = gridColors!![0][0]
                 singlePlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
-                twoPlayerButton!!.shrink(false)
+                multiplayerButton!!.shrink()
                 Timer().schedule(object : TimerTask() {
                     override fun run() {
                         MainActivity.staticSelf!!.runOnUiThread {
                             MainActivity.colorOptions!!.buildColorOptionButtons()
                         }
-                        Timer().schedule(object : TimerTask() {
-                            override fun run() {
-                                MainActivity.staticSelf!!.runOnUiThread {
-                                    boardGameLayout!!.removeView(singlePlayerButton!!.getThis())
-                                    boardGameLayout!!.removeView(twoPlayerButton!!.getThis())
-                                }
-                            }
-                        }, 750)
                     }
                 }, 1250)
             }
@@ -249,19 +242,19 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     fun setupTwoPlayerButton() {
-        twoPlayerButton = CButton(button = Button(boardGameContext), parentLayout = boardGameLayout!!,
+        multiplayerButton = CButton(button = Button(boardGameContext), parentLayout = boardGameLayout!!,
             params = LayoutParams((originalParams!!.width * 0.425).toInt(), (MainActivity.dUnitHeight
                     * 1.5 * 0.8).toInt(), (originalParams!!.x + (originalParams!!.width * 0.525)).
             toInt(), (originalParams!!.y + (-MainActivity.dUnitHeight * 1.5 * 0.475) + originalParams!!.
             height + (originalParams!!.height * 0.1)).toInt()))
-        twoPlayerButton!!.setCornerRadiusAndBorderWidth((twoPlayerButton!!.
-        getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(twoPlayerButton!!.
+        multiplayerButton!!.setCornerRadiusAndBorderWidth((multiplayerButton!!.
+        getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(multiplayerButton!!.
         getOriginalParams().width * 0.01) * 10.0) * 0.35).toInt())
-        twoPlayerButton!!.setTextSize((twoPlayerButton!!.getOriginalParams().height * 0.175).
+        multiplayerButton!!.setTextSize((multiplayerButton!!.getOriginalParams().height * 0.175).
         toFloat())
-        twoPlayerButton!!.shrinkType = ShrinkType.right
-        twoPlayerButton!!.setText("Multi Player", false)
-        twoPlayerButton!!.getThis().setOnClickListener {
+        multiplayerButton!!.shrinkType = ShrinkType.right
+        multiplayerButton!!.setText("Multi Player", false)
+        multiplayerButton!!.getThis().setOnClickListener {
             Log.i("Click", "Multi Player Button")
         }
     }
