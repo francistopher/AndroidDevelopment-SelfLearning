@@ -176,8 +176,12 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         gridColorsCount!![catButton.getOriginalBackgroundColor()] =
                             gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
                         MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
-                        AudioController.kittenMeow()
                         catButton.pod()
+                    } else {
+                        catButton.disperseRadially()
+                        gridColorsCount!![catButton.getOriginalBackgroundColor()] =
+                            gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
+                        MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
                     }
                 } else if (catButton.getOriginalParams() == params && catButton.isPodded) {
                     AudioController.kittenMeow()

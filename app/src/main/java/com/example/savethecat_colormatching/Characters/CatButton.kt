@@ -7,23 +7,20 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.renderscript.Sampler
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewPropertyAnimator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
-import com.example.savethecat_colormatching.ParticularViews.BoardGame
 import com.example.savethecat_colormatching.R
 import java.lang.Exception
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.random.Random
 
 class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: LayoutParams, backgroundColor:Int) {
@@ -173,6 +170,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     var imageRotationAnimator:ValueAnimator? = null
     var isImageRotating:Boolean = false
     var rotateImageToRight:Boolean = true
+    var stopImageRotation:Boolean = false
     private fun startImageRotation() {
         if (imageRotationAnimator != null) {
             if (isImageRotating) {
@@ -194,14 +192,17 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         isImageRotating = true
         imageRotationAnimator!!.start()
         imageRotationAnimator!!.doOnEnd {
-            startImageRotation()
-            rotateImageToRight = !rotateImageToRight
+            if (!stopImageRotation) {
+                startImageRotation()
+                rotateImageToRight = !rotateImageToRight
+            }
         }
     }
 
     private var podAnimator:ValueAnimator? = null
     private var isPodAnimatorRunning:Boolean = false
     fun pod() {
+        AudioController.kittenMeow()
         isPodded = true
         if (podAnimator != null) {
             if (isPodAnimatorRunning) {
@@ -269,16 +270,16 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     }
 
     private var angle:Float = 0f
-    private var disperseVerticalSet:AnimatorSet? = null
-    private var disperseVerticalXAnimator:ValueAnimator? = null
-    private var disperseVerticalYAnimator:ValueAnimator? = null
-    private var isDispersedVertically:Boolean = false
+    private var disperseSet:AnimatorSet? = null
+    private var disperseXAnimator:ValueAnimator? = null
+    private var disperseYAnimator:ValueAnimator? = null
+    private var isDispersed:Boolean = false
     private var targetY:Float = 0.0f
     fun disperseVertically() {
         imageView!!.loadImages(R.drawable.lightcheeringcat, R.drawable.darkcheeringcat)
         angle = (0..30).random().toFloat()
-        disperseVerticalXAnimator = ValueAnimator.ofFloat(originalParams!!.x.toFloat(), getElevatedTargetX())
-        disperseVerticalXAnimator!!.addUpdateListener {
+        disperseXAnimator = ValueAnimator.ofFloat(originalParams!!.x.toFloat(), getElevatedTargetX())
+        disperseXAnimator!!.addUpdateListener {
             imageButton!!.layoutParams = LayoutParams(
                 originalParams!!.width, originalParams!!.height,
                 (it.animatedValue as Float).toInt(), targetY.toInt())
@@ -287,17 +288,17 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 (it.animatedValue as Float).toInt(), targetY.toInt())
         }
 
-        disperseVerticalYAnimator = ValueAnimator.ofFloat(originalParams!!.y.toFloat(), getElevatedTargetY())
-        disperseVerticalYAnimator!!.addUpdateListener {
+        disperseYAnimator = ValueAnimator.ofFloat(originalParams!!.y.toFloat(), getElevatedTargetY())
+        disperseYAnimator!!.addUpdateListener {
             targetY = (it.animatedValue as Float)
         }
-        disperseVerticalSet = AnimatorSet()
-        disperseVerticalSet!!.play(disperseVerticalYAnimator).with(disperseVerticalXAnimator)
-        disperseVerticalSet!!.duration = 3000
-        disperseVerticalSet!!.startDelay = 125
-        disperseVerticalSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-        isDispersedVertically = true
-        disperseVerticalSet!!.start()
+        disperseSet = AnimatorSet()
+        disperseSet!!.play(disperseYAnimator).with(disperseXAnimator)
+        disperseSet!!.duration = 3000
+        disperseSet!!.startDelay = 125
+        disperseSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        isDispersed = true
+        disperseSet!!.start()
     }
 
     var targetX:Float = 0f
@@ -308,13 +309,88 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         } else {
             targetX += originalParams!!.width
         }
-        targetX *= kotlin.math.cos(angle.toDouble()).toFloat()
+        targetX *= cos(angle.toDouble()).toFloat()
         return targetX
     }
 
     private fun getElevatedTargetY(): Float {
         return -Random.nextInt((originalParams!!.height),
             (originalParams!!.height * 2.0).toInt()).toFloat()
+    }
+
+    private var radialButtonAnimator:ValueAnimator? = null
+    private var radialImageAnimator:ValueAnimator? = null
+    fun disperseRadially() {
+        stopImageRotation = true
+        imageRotationAnimator!!.cancel()
+        transitionColor(targetColor = originalBackgroundColor!!)
+        isAlive = false
+        AudioController.kittenDie()
+        imageView!!.loadImages(lightImageR = R.drawable.lightdeadcat,
+            darkImageR = R.drawable.darkdeadcat)
+        disperseXAnimator = ValueAnimator.ofFloat(originalParams!!.x.toFloat(), getRadialTargetX())
+        disperseXAnimator!!.addUpdateListener {
+            targetX = (it.animatedValue as Float)
+            imageButton!!.layoutParams = LayoutParams(
+                originalParams!!.width, originalParams!!.height,
+                targetX.toInt(), targetY.toInt())
+            imageView!!.getThis().layoutParams = LayoutParams(
+                originalParams!!.width, originalParams!!.height,
+               targetX.toInt(), targetY.toInt())
+        }
+        disperseYAnimator = ValueAnimator.ofFloat(originalParams!!.y.toFloat(), getRadialTargetY())
+        disperseYAnimator!!.addUpdateListener {
+            targetY = (it.animatedValue as Float)
+        }
+        if ((0..1).random() == 0) {
+            radialButtonAnimator = ValueAnimator.ofFloat(imageButton!!.rotation,
+                imageButton!!.rotation + 180f)
+            radialImageAnimator = ValueAnimator.ofFloat(imageView!!.getThis().rotation,
+                imageView!!.getThis().rotation + 180f)
+        } else {
+            radialButtonAnimator = ValueAnimator.ofFloat(imageButton!!.rotation,
+                imageButton!!.rotation - 180f)
+            radialImageAnimator = ValueAnimator.ofFloat(imageView!!.getThis().rotation,
+                imageView!!.getThis().rotation - 180f)
+        }
+        radialButtonAnimator!!.addUpdateListener {
+            imageButton!!.rotation = (it.animatedValue as Float)
+        }
+        radialImageAnimator!!.addUpdateListener {
+            imageView!!.getThis().rotation = (it.animatedValue as Float)
+        }
+        disperseSet = AnimatorSet()
+        disperseSet!!.play(disperseYAnimator).with(disperseXAnimator).with(radialButtonAnimator!!).
+        with(radialImageAnimator!!)
+        disperseSet!!.duration = 3000
+        disperseSet!!.startDelay = 125
+        disperseSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        isDispersed = true
+        disperseSet!!.start()
+        disperseSet!!.doOnEnd {
+            parentLayout!!.removeView(imageButton!!)
+            parentLayout!!.removeView(imageView!!.getThis())
+        }
+    }
+
+    private fun getRadialTargetX():Float {
+        angle = (0..45).random().toFloat()
+        targetX = (MainActivity.dWidth.toFloat() + originalParams!!.width) * 1.42f
+        targetX *= cos(angle)
+        if ((0..1).random() == 1) {
+            targetX *= -1
+        }
+        return targetX
+    }
+
+    private fun getRadialTargetY():Float {
+        angle = (45..90).random().toFloat()
+        targetY = (MainActivity.dHeight.toFloat() + originalParams!!.height) * 1.42f
+        targetY *= sin(angle)
+        if ((0..1).random() == 1) {
+            targetY *= -1
+        }
+        return targetY
     }
 
     fun shrunk() {
