@@ -33,6 +33,7 @@ class CatButtons {
     }
 
     fun loadPreviousCats() {
+        previousCatButtons!!.clear()
         for (catButton in currentCatButtons!!) {
             previousCatButtons!!.add(catButton)
         }
@@ -42,6 +43,15 @@ class CatButtons {
         for (catButton in previousCatButtons!!) {
             catButton.transitionColor(Color.TRANSPARENT)
         }
+    }
+
+    fun areDead(): Boolean {
+        for (catButton in currentCatButtons!!) {
+            if (catButton!!.isAlive) {
+                return false
+            }
+        }
+        return true
     }
 
     fun getCurrentCatButtons() :MutableList<CatButton> {
@@ -63,6 +73,17 @@ class CatButtons {
                 catButton.disperseVertically()
             }
         }
+    }
+
+    var count:Int = 0
+    fun aliveCount():Int {
+        count = 0
+        for (catButton in currentCatButtons!!) {
+            if (catButton.isAlive) {
+                count += 1
+            }
+        }
+        return count
     }
 
     fun allSurvived():Boolean {

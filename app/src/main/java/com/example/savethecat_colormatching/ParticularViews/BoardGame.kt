@@ -61,6 +61,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     fun buildGame() {
         rowsAndColumns = getRowsAndColumns(currentStage = currentStage)
         ColorOptions.setSelectionColors()
+        catButtons!!.removeAll()
         buildGridColors()
         buildGridButtons()
         catButtons!!.loadPreviousCats()
@@ -196,10 +197,54 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             AudioController.heaven()
             MainActivity.successGradientView!!.alpha = 1f
             MainActivity.colorOptions!!.resetSelectedColor()
-            if (catButtons!!.allSurvived()) {
-                promote()
+            when {
+                catButtons!!.allSurvived() -> {
+                    promote()
+                }
+                catButtons!!.areDead() -> {
+                    maintain()
+                }
+                else -> {
+                    maintain()
+                }
             }
         }
+    }
+
+    private var countOfAliveCatButtons:Int = 0
+    private var newRound:Int = 0
+    private var product:Int = 0
+    private var newRowsAndColumns:Pair<Int,Int>? = null
+    private fun maintain() {
+        countOfAliveCatButtons = catButtons!!.aliveCount()
+        newRound = 1
+        while (true) {
+            newRowsAndColumns = getRowsAndColumns(newRound)
+            product = newRowsAndColumns!!.first * newRowsAndColumns!!.second
+            if (countOfAliveCatButtons < product) {
+                currentStage = newRound - 1
+                break
+            }
+            newRound += 1
+        }
+        reset(true)
+        MainActivity.colorOptions!!.shrinkAllColorOptionButtons()
+        MainActivity.colorOptions!!.loadSelectionToSelectedButtons()
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                MainActivity.staticSelf!!.runOnUiThread {
+                    buildGame()
+                    startGame()
+                    Timer().schedule(object : TimerTask() {
+                        override fun run() {
+                            MainActivity.staticSelf!!.runOnUiThread {
+                                MainActivity.successGradientView!!.alpha = 0f
+                            }
+                        }
+                    }, 1125)
+                }
+            }
+        }, 1250)
     }
 
     private fun promote() {
@@ -212,6 +257,13 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                     currentStage += 1
                     buildGame()
                     startGame()
+                    Timer().schedule(object : TimerTask() {
+                        override fun run() {
+                            MainActivity.staticSelf!!.runOnUiThread {
+                                MainActivity.successGradientView!!.alpha = 0f
+                            }
+                        }
+                    }, 1125)
                 }
             }
         }, 1250)
