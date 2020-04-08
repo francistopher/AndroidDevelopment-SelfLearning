@@ -155,6 +155,23 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                         }
                     }
                     this.count += 1
+                    if (numOfUniqueColors + 1 == 1) {
+                        button!!.shrinkType = ShrinkType.mid
+                    } else if (numOfUniqueColors + 1 == 2) {
+                        if (count >= index) {
+                            button!!.shrinkType = ShrinkType.left
+                        } else {
+                            button!!.shrinkType = ShrinkType.right
+                        }
+                    } else {
+                        if (count >= index) {
+                            button!!.shrinkType = ShrinkType.left
+                        } else if (index < numOfUniqueColors) {
+                            button!!.shrinkType = ShrinkType.mid
+                        } else {
+                            button!!.shrinkType = ShrinkType.right
+                        }
+                    }
                     button!!.shrink()
                 }
                 index += 1
