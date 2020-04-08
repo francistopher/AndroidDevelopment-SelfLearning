@@ -2,6 +2,7 @@ package com.example.savethecat_colormatching.ParticularViews
 
 import android.content.Context
 import android.graphics.Color
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
@@ -168,13 +169,18 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         if (MainActivity.colorOptions!!.getSelectedColor() != Color.LTGRAY) {
             for (catButton in catButtons!!.getCurrentCatButtons()) {
                 // The button is found and colors match
-                if (catButton.getOriginalParams() == params && MainActivity.colorOptions!!.getSelectedColor()
-                    == catButton.getOriginalBackgroundColor() && !catButton.isPodded) {
-                    catButton.transitionColor(catButton.getOriginalBackgroundColor())
-                    gridColorsCount!![catButton.getOriginalBackgroundColor()] =
-                        gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
-                    MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
-                    catButton.pod()
+                if (catButton.getOriginalParams() == params && !catButton.isPodded) {
+                    if (MainActivity.colorOptions!!.getSelectedColor()
+                        == catButton.getOriginalBackgroundColor()) {
+                        catButton.transitionColor(catButton.getOriginalBackgroundColor())
+                        gridColorsCount!![catButton.getOriginalBackgroundColor()] =
+                            gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
+                        MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
+                        AudioController.kittenMeow()
+                        catButton.pod()
+                    }
+                } else if (catButton.getOriginalParams() == params && catButton.isPodded) {
+                    AudioController.kittenMeow()
                 }
             }
             verifyRemainingCatsArePodded()

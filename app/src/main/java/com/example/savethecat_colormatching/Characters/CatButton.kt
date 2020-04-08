@@ -210,7 +210,6 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 podAnimator = null
             }
         }
-        AudioController.kittenMeow()
         podAnimator = ValueAnimator.ofFloat(cornerRadius.toFloat(), (imageButton!!.layoutParams as LayoutParams).width * 0.5f)
         podAnimator!!.addUpdateListener {
             setCornerRadiusAndBorderWidth((it.animatedValue as Float).toInt(), borderWidth)
