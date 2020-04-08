@@ -2,7 +2,6 @@ package com.example.savethecat_colormatching.ParticularViews
 
 import android.content.Context
 import android.graphics.Color
-import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
@@ -148,6 +147,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         gridButtonHeight.toInt(), (gridButtonX + originalParams!!.x).toInt(),
                         (gridButtonY + originalParams!!.y).toInt()),
                     backgroundColor = gridColors!![rowIndex][columnIndex])
+                catButton!!.rowIndex = rowIndex
+                catButton!!.columnIndex = columnIndex
                 catButton!!.getThis().setOnClickListener {
                     catButtonSelector(params = (it as View).layoutParams as LayoutParams)
                 }
@@ -179,10 +180,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
                         catButton.pod()
                     } else {
-                        catButton.disperseRadially()
-                        gridColorsCount!![catButton.getOriginalBackgroundColor()] =
-                            gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
-                        MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
+                        attackCatButton(catButton = catButton)
+                        displaceArea(catButton = catButton)
                     }
                 } else if (catButton.getOriginalParams() == params && catButton.isPodded) {
                     AudioController.kittenMeow()
@@ -190,6 +189,46 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             }
             verifyRemainingCatsArePodded()
         }
+    }
+
+    private var rowOfAliveCats:MutableList<CatButton>? = null
+    private fun displaceArea(catButton: CatButton){
+        rowOfAliveCats = catButtons!!.getRowOfAliveCats(rowIndex = catButton.rowIndex)
+        // Row is still occupied
+        if (rowOfAliveCats!!.size > 0) {
+            disperseRow(aliveCats = rowOfAliveCats!!)
+        } else {
+            // If all cats are alive
+            disperseColumns()
+        }
+    }
+
+    private var x:Float = 0f
+    private var y:Float = 0f
+    private var columnGap:Float = 0f
+    private var buttonWidth:Float = 0f
+    private fun disperseRow(aliveCats:MutableList<CatButton>) {
+        x = 0f
+        y = aliveCats[0].getOriginalParams().y.toFloat()
+        columnGap = originalParams!!.width * 0.1f / (aliveCats.size + 1).toFloat()
+        buttonWidth = originalParams!!.height * 0.9f / (aliveCats.size).toFloat()
+        for (aliveCat in aliveCats) {
+            x += columnGap
+            aliveCat.transformTo(LayoutParams(buttonWidth.toInt(), aliveCat.getOriginalParams().height,
+                x.toInt(), y.toInt()))
+            x += buttonWidth
+        }
+    }
+
+    private fun disperseColumns() {
+
+    }
+
+    private fun attackCatButton(catButton: CatButton) {
+        catButton.disperseRadially()
+        gridColorsCount!![catButton.getOriginalBackgroundColor()] =
+            gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
+        MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
     }
 
     private fun verifyRemainingCatsArePodded() {

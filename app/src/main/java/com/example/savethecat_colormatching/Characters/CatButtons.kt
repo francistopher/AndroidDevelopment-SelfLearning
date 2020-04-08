@@ -1,14 +1,8 @@
 package com.example.savethecat_colormatching.Characters
 
-import android.animation.ValueAnimator
 import android.graphics.Color
-import android.util.Log
 import android.widget.AbsoluteLayout
-import android.widget.Button
 import android.widget.ImageButton
-import com.daasuu.ei.Ease
-import com.daasuu.ei.EasingInterpolator
-import java.lang.Math.sqrt
 
 class CatButtons {
 
@@ -93,6 +87,17 @@ class CatButtons {
             }
         }
         return true
+    }
+
+    private var rowOfAliveCats:MutableList<CatButton>? = null
+    fun getRowOfAliveCats(rowIndex:Int):MutableList<CatButton> {
+        rowOfAliveCats = mutableListOf()
+        for (catButton in currentCatButtons!!) {
+            if (catButton.rowIndex == rowIndex && catButton.isAlive) {
+                rowOfAliveCats!!.add(catButton)
+            }
+        }
+        return rowOfAliveCats!!
     }
 
     fun removeAll() {

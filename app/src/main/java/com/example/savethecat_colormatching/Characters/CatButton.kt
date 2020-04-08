@@ -6,7 +6,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
-import android.renderscript.Sampler
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
@@ -18,7 +17,6 @@ import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
-import java.lang.Exception
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
@@ -36,6 +34,9 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private var buttonLayout:AbsoluteLayout? = null
     private var parentLayout:AbsoluteLayout? = null
+
+    var rowIndex:Int = 0
+    var columnIndex:Int = 0
 
     var isPodded:Boolean = false
     var isAlive:Boolean = true
@@ -68,23 +69,17 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
         if (In) {
             fadeInAnimator = ValueAnimator.ofFloat(0f, 1f)
-
         } else if (Out and !In) {
             fadeInAnimator = ValueAnimator.ofFloat(1f, 0f)
         }
-
         fadeInAnimator!!.addUpdateListener {
             imageView!!.getThis().alpha = it.animatedValue as Float
             imageButton!!.alpha = it.animatedValue as Float
         }
-
         fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-
         fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
-
         fadeInAnimator!!.start()
-
         fadeAnimatorIsRunning = true
     }
 
@@ -391,6 +386,59 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             targetY *= -1
         }
         return targetY
+    }
+
+    private var transformAnimatorSet:AnimatorSet? = null
+    private var transformXAnimator:ValueAnimator? = null
+    private var transformYAnimator:ValueAnimator? = null
+    private var transformWidthAnimator:ValueAnimator? = null
+    private var transformHeightAnimator:ValueAnimator? = null
+    private var isTransforming:Boolean = false
+    fun transformTo(newParams:LayoutParams) {
+        if (transformAnimatorSet != null) {
+            if (isTransforming) {
+                transformAnimatorSet!!.cancel()
+                isTransforming = false
+                transformAnimatorSet = null
+            }
+        }
+        originalParams = newParams
+        transformXAnimator = ValueAnimator.ofFloat((imageButton!!.layoutParams as
+                LayoutParams).x.toFloat(), newParams.x.toFloat())
+        transformXAnimator!!.addUpdateListener {
+            x = (it.animatedValue as Float).toInt()
+            imageButton!!.layoutParams = LayoutParams(width, height, x, y)
+            imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+        }
+        transformYAnimator = ValueAnimator.ofFloat((imageButton!!.layoutParams as
+                LayoutParams).y.toFloat(), newParams.y.toFloat())
+        transformYAnimator!!.addUpdateListener {
+            y = (it.animatedValue as Float).toInt()
+            imageButton!!.layoutParams = LayoutParams(width, height, x, y)
+            imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+        }
+        transformWidthAnimator = ValueAnimator.ofFloat((imageButton!!.layoutParams as
+                LayoutParams).width.toFloat(), newParams.width.toFloat())
+        transformWidthAnimator!!.addUpdateListener {
+            width = (it.animatedValue as Float).toInt()
+            imageButton!!.layoutParams = LayoutParams(width, height, x, y)
+            imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+        }
+        transformHeightAnimator = ValueAnimator.ofFloat((imageButton!!.layoutParams as
+                LayoutParams).height.toFloat(), newParams.height.toFloat())
+        transformHeightAnimator!!.addUpdateListener {
+            height = (it.animatedValue as Float).toInt()
+            imageButton!!.layoutParams = LayoutParams(width, height, x, y)
+            imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+        }
+        transformAnimatorSet = AnimatorSet()
+        transformAnimatorSet!!.play(transformXAnimator!!).with(transformYAnimator!!).
+        with(transformWidthAnimator!!).with(transformHeightAnimator!!)
+        transformAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        transformAnimatorSet!!.startDelay = 125
+        transformAnimatorSet!!.duration = 500
+        isTransforming = true
+        transformAnimatorSet!!.start()
     }
 
     fun shrunk() {

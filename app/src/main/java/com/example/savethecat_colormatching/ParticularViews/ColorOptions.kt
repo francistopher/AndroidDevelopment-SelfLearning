@@ -223,4 +223,6 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
         selectionButtons!!.clear()
     }
+
+
 }
