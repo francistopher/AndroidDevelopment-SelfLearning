@@ -26,6 +26,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
 
     private var originalParams: LayoutParams? = null
     private var shrunkParams: LayoutParams? = null
+    private var minHeight:Int = 0
 
     private var button: Button? = null
     var backgroundColor: Int? = null
@@ -40,6 +41,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     init {
         this.button = button
         this.button!!.layoutParams = params
+        this.minHeight = params.height
         this.parentLayout = parentLayout
         parentLayout.addView(button)
         setOriginalParams(params)
@@ -177,17 +179,13 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         }
     }
 
+    private var translateAnimatorSet:AnimatorSet? = null
+    private var translateWidthAnimator:ValueAnimator? = null
     private var selectAnimator:ValueAnimator? = null
     private var isSelectRunning:Boolean = false
-    fun select() {
-        isSelected = true
-        if (unSelectAnimator != null) {
-            if (isUnSelectRunning) {
-                unSelectAnimator!!.cancel()
-                isUnSelectRunning = false
-                unSelectAnimator = null
-            }
-        }
+    private var targetWidth:Float = -1f
+    private var targetX:Float = -1f
+    fun select(targetX:Float, targetWidth:Float) {
         if (selectAnimator != null) {
             if (isSelectRunning) {
                 selectAnimator!!.cancel()
@@ -195,36 +193,54 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 selectAnimator = null
             }
         }
-        selectAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).height.toFloat(),
-            originalParams!!.height * 1.275f)
+        this.targetWidth = targetWidth
+        this.targetX = targetX
+        selectAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).
+        height.toFloat(), minHeight * 1.275f)
         selectAnimator!!.addUpdateListener {
-            button!!.layoutParams = LayoutParams(
-                originalParams!!.width, (it.animatedValue as Float).toInt(), originalParams!!.x,
-                originalParams!!.y - (((it.animatedValue as Float) -
-                        originalParams!!.height.toFloat()) * 0.5f).toInt()
-            )
+            height = (it.animatedValue as Float)
+            y = originalParams!!.y - (((it.animatedValue as Float) - originalParams!!.
+            height.toFloat()) * 0.5f)
+                button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(),
+                    y.toInt())
         }
-        selectAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-        selectAnimator!!.startDelay = 125
-        selectAnimator!!.duration = 500
+
+        if (targetWidth != -1f && targetX != -1f) {
+            translateXAnimator = ValueAnimator.ofFloat((button!!.layoutParams as
+                LayoutParams).x.toFloat(), targetX)
+            translateWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as
+                    LayoutParams).width.toFloat(), targetWidth)
+        } else {
+            translateXAnimator = ValueAnimator.ofFloat((button!!.layoutParams as
+                    LayoutParams).x.toFloat(), originalParams!!.x.toFloat())
+            translateWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as
+                    LayoutParams).width.toFloat(), originalParams!!.width.toFloat())
+        }
+
+        translateXAnimator!!.addUpdateListener {
+            x = (it.animatedValue as Float)
+            button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
+        }
+        translateWidthAnimator!!.addUpdateListener {
+            width = (it.animatedValue as Float)
+            button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
+        }
+
+
+        translateAnimatorSet = AnimatorSet()
+        translateAnimatorSet!!.play(selectAnimator!!).with(translateWidthAnimator!!).
+            with(translateXAnimator!!)
+        translateAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        translateAnimatorSet!!.startDelay = 125
+        translateAnimatorSet!!.duration = 500
         isSelectRunning = true
-        selectAnimator!!.start()
+        translateAnimatorSet!!.start()
     }
 
+    private var unSelectAnimatorSet:AnimatorSet? = null
     private var unSelectAnimator:ValueAnimator? = null
     private var isUnSelectRunning:Boolean = false
     fun unSelect() {
-        isSelected = false
-        if ((getThis().layoutParams as LayoutParams).height == originalParams!!.height) {
-            return
-        }
-        if (selectAnimator != null) {
-            if (isSelectRunning) {
-                selectAnimator!!.cancel()
-                isSelectRunning = false
-                selectAnimator = null
-            }
-        }
         if (unSelectAnimator != null) {
             if (isUnSelectRunning) {
                 unSelectAnimator!!.cancel()
@@ -233,19 +249,36 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             }
         }
         unSelectAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).
-        height.toFloat(), originalParams!!.height.toFloat())
+        height.toFloat(), minHeight.toFloat())
         unSelectAnimator!!.addUpdateListener {
-            button!!.layoutParams = LayoutParams(
-                originalParams!!.width, (it.animatedValue as Float).toInt(), originalParams!!.x,
-                originalParams!!.y - (((it.animatedValue as Float) -
-                        originalParams!!.height.toFloat()) * 0.5f).toInt()
-            )
+            height = (it.animatedValue as Float)
+            y = originalParams!!.y - (((it.animatedValue as Float) -
+                    originalParams!!.height.toFloat()) * 0.5f)
+            button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(),
+                x.toInt(), y.toInt())
         }
-        unSelectAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-        unSelectAnimator!!.startDelay = 125
-        unSelectAnimator!!.duration = 500
+        translateXAnimator = ValueAnimator.ofFloat((button!!.layoutParams as
+                LayoutParams).x.toFloat(), originalParams!!.x.toFloat())
+        translateWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as
+                LayoutParams).width.toFloat(), originalParams!!.width.toFloat())
+
+        translateXAnimator!!.addUpdateListener {
+            x = (it.animatedValue as Float)
+            button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
+        }
+        translateWidthAnimator!!.addUpdateListener {
+            width = (it.animatedValue as Float)
+            button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
+        }
+
+        unSelectAnimatorSet = AnimatorSet()
+        unSelectAnimatorSet!!.play(unSelectAnimator!!).with(translateXAnimator!!).
+        with(translateWidthAnimator!!)
+        unSelectAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        unSelectAnimatorSet!!.startDelay = 125
+        unSelectAnimatorSet!!.duration = 500
         isUnSelectRunning = true
-        unSelectAnimator!!.start()
+        unSelectAnimatorSet!!.start()
     }
 
     private var x: Float = 0f
@@ -338,48 +371,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             Log.i("Animation", "Fade")
             fadeAnimator!!.start()
         }
-    }
-
-    var translateAnimatorSet:AnimatorSet? = null
-    var translateYAnimator:ValueAnimator? = null
-    var translateWidthAnimator:ValueAnimator? = null
-    var translateHeightAnimator:ValueAnimator? = null
-    fun translate(params:LayoutParams) {
-        translateXAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).x.toFloat(),
-        params.x.toFloat())
-        translateXAnimator!!.addUpdateListener {
-            x = (it.animatedValue as Float)
-            button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
-        }
-
-        translateYAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).y.toFloat(),
-            params.y.toFloat())
-        translateYAnimator!!.addUpdateListener {
-            y = (it.animatedValue as Float)
-            button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
-        }
-
-        translateWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(),
-            params.width.toFloat())
-        translateWidthAnimator!!.addUpdateListener {
-            width = (it.animatedValue as Float)
-            button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
-        }
-
-        translateHeightAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).height.toFloat(),
-            params.height.toFloat())
-        translateHeightAnimator!!.addUpdateListener {
-            height = (it.animatedValue as Float)
-            button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
-        }
-
-        translateAnimatorSet = AnimatorSet()
-        translateAnimatorSet!!.play(translateXAnimator!!).with(translateYAnimator!!).
-        with(translateWidthAnimator!!).with(translateHeightAnimator!!)
-        translateAnimatorSet!!.startDelay = 125
-        translateAnimatorSet!!.duration = 1000
-        translateAnimatorSet!!.start()
-
     }
 
     private fun getBackgroundColor(): Int {

@@ -102,8 +102,6 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         x = originalParams!!.x.toFloat()
         // Rebuilding
         index = 0
-        count = 0
-        Log.i("Number of unique colors", "$numOfUniqueColors")
         for ((color, count) in MainActivity.boardGame!!.getGridColorsCount()) {
             if (setup) {
                 x += columnGap
@@ -128,45 +126,35 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                 }
             } else {
                 button = selectionButtons!!.elementAt(index)
-                Log.i("Color $color", "Count $count")
                 if (count != 0) {
                     x += columnGap
-                    newParams = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(),
-                        x.toInt(), (originalParams!!.y + rowGap * 0.9).toInt())
                     if (button!!.isSelected) {
-                        newParams = LayoutParams(buttonWidth.toInt(), (buttonHeight * 1.375).toInt(),
-                            x.toInt(), (originalParams!!.y + (rowGap * 0.9) - (buttonHeight * 0.1875)).toInt())
+                        Log.i("Color $color", "Count $count")
+                        newParams = LayoutParams(buttonWidth.toInt(), (buttonHeight * 1.275).toInt(),
+                            x.toInt(), (originalParams!!.y + (rowGap * 0.9) - (buttonHeight * 0.1375)).toInt())
+                        button!!.setOriginalParams(newParams!!)
+                        button!!.select(targetX = x, targetWidth = buttonWidth)
+                    } else {
+                        newParams = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(),
+                            x.toInt(), (originalParams!!.y + rowGap * 0.9).toInt())
+                        button!!.setOriginalParams(newParams!!)
+                        button!!.unSelect()
                     }
-                    button!!.translate(newParams!!)
                     x += buttonWidth
                 } else {
                     if (button!!.isSelected) {
                         button!!.willBeShrunk = true
-                        for (selectionButton in selectionButtons!!.reversed()) {
+                        for (selectionButton in selectionButtons!!) {
                             if (!selectionButton.willBeShrunk) {
-                                Log.i("Selected", button!!.isSelected.toString())
-                                selectionButton.getThis().performClick()
+                                // Select the first element
+                                selectedColor = selectionButton.backgroundColor!!
+                                selectionButton.isSelected = true
+                                selectionButton.select(targetX = -1f, targetWidth = -1f)
+                                break
                             }
                         }
                     }
-//                    this.count += 1
-//                    when {
-//                        numOfUniqueColors + 1 == 1 -> button!!.shrinkType = ShrinkType.mid
-//                        numOfUniqueColors + 1 == 2 -> {
-//                            when {
-//                                count > index -> button!!.shrinkType = ShrinkType.left
-//
-//                                else -> button!!.shrinkType = ShrinkType.right
-//                            }
-//                        }
-//                        else -> {
-//                            when {
-//                                count > index -> button!!.shrinkType = ShrinkType.left
-//                                index == numOfUniqueColors -> button!!.shrinkType = ShrinkType.mid
-//                                else -> button!!.shrinkType = ShrinkType.right
-//                            }
-//                        }
-//                    }
+                    this.count += 1
                     button!!.shrink()
                 }
                 index += 1
@@ -180,9 +168,11 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             for (selectionButton in selectionButtons!!) {
                 if (color == selectionButton.backgroundColor) {
                     selectedColor = color
-                    selectionButton.select()
+                    selectionButton.isSelected = true
+                    selectionButton.select(targetX = -1f, targetWidth = -1f)
                 } else {
                     selectedColor = color
+                    selectionButton.isSelected = false
                     selectionButton.unSelect()
                 }
             }
