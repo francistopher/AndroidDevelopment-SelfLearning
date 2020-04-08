@@ -1,10 +1,12 @@
 package com.example.savethecat_colormatching.CustomViews
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.media.Image
+import android.renderscript.Sampler
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -13,6 +15,7 @@ import android.view.animation.LinearInterpolator
 import android.widget.AbsoluteLayout
 import android.widget.Button
 import android.widget.ImageView
+import androidx.core.animation.doOnEnd
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.daasuu.ei.Ease
@@ -70,29 +73,21 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
     }
 
     var startRotation:Boolean = true
-    var rotationAnimator:ViewPropertyAnimator? = null
-    var rotation:Float = 120f
+    var rotationAnimator:ValueAnimator? = null
+    var rotation:Float = 0f
 
     fun rotateText() {
         if (rotationAnimator != null) {
             rotationAnimator!!.cancel()
             rotationAnimator = null
         }
-
-        rotationAnimator = if (stopRotation) {
-            imageView!!.animate().rotation(rotation).alpha(0.0f)
-        } else {
-            imageView!!.animate().rotation(rotation).alpha( 1.0f)
+        rotationAnimator = ValueAnimator.ofFloat(rotation, rotation + 120)
+        rotationAnimator!!.addUpdateListener {
+            imageView!!.rotation = (it.animatedValue as Float)
         }
         rotationAnimator!!.interpolator = LinearInterpolator()
-        if (startRotation) {
-            rotationAnimator!!.startDelay = 500
-            startRotation = false
-        } else {
-            rotationAnimator!!.startDelay = 0
-        }
         rotationAnimator!!.duration = 1000
-        rotationAnimator!!.withEndAction {
+        rotationAnimator!!.doOnEnd {
             rotation += 120
             rotateText()
         }
@@ -135,7 +130,7 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
     fun fadeOut(Duration: Float) {
         if (isCatImage) {
             AudioController.kittenMeow()
-            this.fade(In = false, Out = true, Duration =(Duration * 0.805f), Delay = 0.0f)
+            this.fade(In = false, Out = true, Duration =(Duration), Delay = 0.0f)
         } else {
             this.fade(In = false, Out = true, Duration =(Duration), Delay = 0.0f)
         }

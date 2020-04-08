@@ -131,7 +131,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 staticSelf!!.runOnUiThread {
-                    introAnimation!!.fadeOut(2.4f)
+                    introAnimation!!.fadeOut(2.0f)
                     Timer().schedule(object : TimerTask() {
                         override fun run() {
                             staticSelf!!.runOnUiThread {
