@@ -102,7 +102,8 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         x = originalParams!!.x.toFloat()
         // Rebuilding
         index = 0
-        for ((color, count) in MainActivity.boardGame!!.getGridColorsCount()) {
+        count = 0
+        for ((color, colorCount) in MainActivity.boardGame!!.getGridColorsCount()) {
             if (setup) {
                 x += columnGap
                 button = CButton(button = Button(colorOptionsContext!!), parentLayout =
@@ -126,10 +127,10 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                 }
             } else {
                 button = selectionButtons!!.elementAt(index)
-                if (count != 0) {
+                if (colorCount != 0) {
                     x += columnGap
                     if (button!!.isSelected) {
-                        Log.i("Color $color", "Count $count")
+                        Log.i("Color $color", "Count $colorCount")
                         newParams = LayoutParams(buttonWidth.toInt(), (buttonHeight * 1.275).toInt(),
                             x.toInt(), (originalParams!!.y + (rowGap * 0.9) - (buttonHeight * 0.1375)).toInt())
                         button!!.setOriginalParams(newParams!!)
@@ -158,15 +159,15 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                     if (numOfUniqueColors + 1 == 1) {
                         button!!.shrinkType = ShrinkType.mid
                     } else if (numOfUniqueColors + 1 == 2) {
-                        if (count >= index) {
+                        if (this.count > index) {
                             button!!.shrinkType = ShrinkType.left
                         } else {
                             button!!.shrinkType = ShrinkType.right
                         }
                     } else {
-                        if (count >= index) {
+                        if (this.count > index) {
                             button!!.shrinkType = ShrinkType.left
-                        } else if (index < numOfUniqueColors) {
+                        } else if (index <= numOfUniqueColors - 1) {
                             button!!.shrinkType = ShrinkType.mid
                         } else {
                             button!!.shrinkType = ShrinkType.right
