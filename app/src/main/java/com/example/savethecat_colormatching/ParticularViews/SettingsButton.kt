@@ -1,12 +1,15 @@
 package com.example.savethecat_colormatching.ParticularViews
 
+import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
 import android.widget.ImageView
+import androidx.core.animation.doOnEnd
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
@@ -55,7 +58,41 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
     private fun setupListener() {
         settingsButton!!.setOnClickListener {
             settingsMenu!!.expandOrContract()
+            rotateGear()
         }
+    }
+
+    private var rotateGearAnimator: ValueAnimator? = null
+    private var isGearRotating:Boolean = false
+    private fun rotateGear() {
+        if (isGearRotating) {
+            return
+        } else {
+            if (rotateGearAnimator != null) {
+                rotateGearAnimator!!.cancel()
+                rotateGearAnimator = null
+            }
+        }
+
+        rotateGearAnimator = if (SettingsMenu.isExpanded) {
+            ValueAnimator.ofFloat(240f, 0f)
+        } else {
+            ValueAnimator.ofFloat(gearImage!!.getThis().rotation, 240f)
+        }
+
+        rotateGearAnimator!!.addUpdateListener {
+            gearImage!!.getThis().rotation = (it.animatedValue as Float)
+        }
+
+        rotateGearAnimator!!.interpolator = LinearInterpolator()
+        rotateGearAnimator!!.duration = 1000
+        rotateGearAnimator!!.start()
+        isGearRotating = true
+        rotateGearAnimator!!.doOnEnd {
+            isGearRotating = false
+        }
+
+
     }
 
     private var shape: GradientDrawable? = null
