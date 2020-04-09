@@ -109,7 +109,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                 button = CButton(button = Button(colorOptionsContext!!), parentLayout =
                 colorOptionsLayout!!, params = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(),
                     x.toInt(), (originalParams!!.y + rowGap * 0.9).toInt()))
-                if (numOfUniqueColors != 1) {
+                if (numOfUniqueColors != 1 || BoardGame.singlePlayerButton!!.getThis().alpha == 0f) {
                     button!!.shrunk()
                     button!!.grow()
                     button!!.fade(In = true, Out = false, Duration = 0.0f, Delay = 0.125f)

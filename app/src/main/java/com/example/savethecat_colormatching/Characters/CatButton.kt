@@ -86,14 +86,15 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var shape: GradientDrawable? = null
     private var borderWidth:Int = 0
     private var cornerRadius:Int = 0
-    fun setCornerRadiusAndBorderWidth(radius:Int, borderWidth:Int) {
-        shape = null
+    fun setCornerRadiusAndBorderWidth(radius:Int, borderWidth:Int, withBackground:Boolean) {
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
-        try {
-            shape!!.setColor((imageButton!!.background as ColorDrawable).color)
-        } catch (e: Exception) {
-            shape!!.setColor(originalBackgroundColor)
+        if (withBackground) {
+            try {
+                shape!!.setColor((imageButton!!.background as ColorDrawable).color)
+            } catch (e: Exception) {
+                shape!!.setColor(originalBackgroundColor)
+            }
         }
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
@@ -126,7 +127,8 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
         transitionColorAnimator!!.addUpdateListener {
             imageButton!!.setBackgroundColor(it.animatedValue as Int)
-            setCornerRadiusAndBorderWidth((originalParams!!.height / 5.0).toInt(), borderWidth)
+            setCornerRadiusAndBorderWidth((originalParams!!.height / 5.0).toInt(), borderWidth,
+                true)
         }
         transitionColorAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         transitionColorAnimator!!.startDelay = 125
@@ -208,7 +210,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
         podAnimator = ValueAnimator.ofFloat(cornerRadius.toFloat(), (imageButton!!.layoutParams as LayoutParams).width * 0.5f)
         podAnimator!!.addUpdateListener {
-            setCornerRadiusAndBorderWidth((it.animatedValue as Float).toInt(), borderWidth)
+            setCornerRadiusAndBorderWidth((it.animatedValue as Float).toInt(), borderWidth, withBackground = true)
         }
         podAnimator!!.duration = 500
         podAnimator!!.startDelay = 125
@@ -430,6 +432,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             height = (it.animatedValue as Float).toInt()
             imageButton!!.layoutParams = LayoutParams(width, height, x, y)
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+            setCornerRadiusAndBorderWidth(cornerRadius, borderWidth, withBackground = false)
         }
         transformAnimatorSet = AnimatorSet()
         transformAnimatorSet!!.play(transformXAnimator!!).with(transformYAnimator!!).
@@ -439,6 +442,10 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         transformAnimatorSet!!.duration = 500
         isTransforming = true
         transformAnimatorSet!!.start()
+        transformAnimatorSet!!.doOnEnd {
+            imageButton!!.layoutParams = originalParams!!
+            imageView!!.getThis().layoutParams = originalParams!!
+        }
     }
 
     fun shrunk() {

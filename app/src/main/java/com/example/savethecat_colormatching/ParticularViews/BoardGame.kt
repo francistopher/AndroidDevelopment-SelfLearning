@@ -172,8 +172,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             for (catButton in catButtons!!.getCurrentCatButtons()) {
                 // The button is found and colors match
                 if (catButton.getOriginalParams() == params && !catButton.isPodded) {
-                    if (MainActivity.colorOptions!!.getSelectedColor()
-                        == catButton.getOriginalBackgroundColor()) {
+                    if (MainActivity.colorOptions!!.getSelectedColor() ==
+                        catButton.getOriginalBackgroundColor()) {
+
                         catButton.transitionColor(catButton.getOriginalBackgroundColor())
                         gridColorsCount!![catButton.getOriginalBackgroundColor()] =
                             gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
@@ -183,11 +184,14 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         attackCatButton(catButton = catButton)
                         displaceArea(catButton = catButton)
                     }
+                    verifyRemainingCatsArePodded()
+                    return
                 } else if (catButton.getOriginalParams() == params && catButton.isPodded) {
                     AudioController.kittenMeow()
+                    return
                 }
             }
-            verifyRemainingCatsArePodded()
+
         }
     }
 
@@ -215,7 +219,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         for (aliveCat in aliveCats) {
             x += columnGap
             aliveCat.transformTo(LayoutParams(buttonWidth.toInt(), aliveCat.getOriginalParams().height,
-                x.toInt(), y.toInt()))
+                (originalParams!!.x + x).toInt(), y.toInt()))
             x += buttonWidth
         }
     }
@@ -347,7 +351,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
             if (!singlePlayerButton!!.growWidthAndChangeColorIsRunning) {
-                Log.i("Click", "Single Player Button")
                 singlePlayerButton!!.targetBackgroundColor = gridColors!![0][0]
                 singlePlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
                 multiplayerButton!!.shrink()
@@ -399,7 +402,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 nonZeroCount += 1
             }
         }
-        Log.i("COUNT GRID COLORS", gridColorsCount!!.toString())
         return nonZeroCount
     }
 
