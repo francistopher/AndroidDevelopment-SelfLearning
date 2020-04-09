@@ -11,6 +11,8 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import android.widget.AbsoluteLayout
+import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Characters.Enemies
@@ -21,6 +23,7 @@ import com.example.savethecat_colormatching.Controllers.CenterController
 import com.example.savethecat_colormatching.ParticularViews.BoardGame
 import com.example.savethecat_colormatching.ParticularViews.ColorOptions
 import com.example.savethecat_colormatching.ParticularViews.IntroView
+import com.example.savethecat_colormatching.ParticularViews.SettingsButton
 import com.google.android.gms.ads.*
 import java.util.*
 
@@ -50,6 +53,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         // Board Game
         var boardGame:BoardGame? = null
         var colorOptions:ColorOptions? = null
+        // Settings button
+        var settingsButton:SettingsButton? = null
     }
 
     var introAnimation:IntroView? = null
@@ -157,7 +162,16 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupAdvertisement()
         setupBoardGame()
         setupColorOptions()
+        setupSettingsButton()
         AudioController.mozartSonata(play = true, startOver = false)
+    }
+
+
+    private fun setupSettingsButton() {
+        val sideLength:Float = (dHeight * ((1.0/300.0) + 0.08)).toFloat()
+        settingsButton = SettingsButton(button = Button(this), parentLayout = rootLayout!!,
+        params = LayoutParams(sideLength.toInt(), sideLength.toInt(), dUnitWidth.toInt(),
+            dUnitHeight.toInt()))
     }
 
     private fun setupDecorView() {

@@ -8,7 +8,6 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.util.Log
 import android.util.TypedValue
-import android.view.ViewGroup
 import android.view.ViewPropertyAnimator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
@@ -17,7 +16,6 @@ import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
-import com.example.savethecat_colormatching.ParticularViews.BoardGame
 
 
 class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -442,6 +440,5 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 darkDominant()
             }
         }
-//        setCornerRadiusAndBorderWidth(cornerRadius, borderWidth)
     }
 }

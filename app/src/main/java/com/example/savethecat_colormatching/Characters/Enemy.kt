@@ -149,7 +149,6 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
         fade(true, false, 0.5f, 0.125f)
     }
 
-
     fun setStyle() {
         if(MainActivity.isThemeDark) {
             enemyImage!!.setImageResource(darkImageR)
