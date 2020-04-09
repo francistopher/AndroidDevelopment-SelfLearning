@@ -54,7 +54,6 @@ class Enemies {
                 enemy!!.getThis().alpha = 0f
                 enemy!!.loadImages(lightImageR = R.drawable.lighthairball, darkImageR = R.drawable.darkhairball)
                 enemy!!.setStyle()
-                enemy!!.sway()
                 enemies.add(enemy!!)
                 y += sideLength
             }
@@ -66,6 +65,12 @@ class Enemies {
     fun setStyle() {
         for (enemy in enemies){
             enemy.setStyle()
+        }
+    }
+
+    fun sway() {
+        for (enemy in enemies) {
+            enemy.sway()
         }
     }
 

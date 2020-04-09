@@ -1,19 +1,14 @@
 package com.example.savethecat_colormatching.Characters
 
-import android.view.View
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.view.ViewPropertyAnimator
-import android.view.animation.CycleInterpolator
-import android.view.animation.DecelerateInterpolator
-import android.view.animation.LinearInterpolator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageView
-import android.widget.TextView
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
+import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
-import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
 
@@ -101,15 +96,19 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
         }
     }
 
-    var swayAnimator:ViewPropertyAnimator? = null
-    var isSwaying:Boolean = false
-    var swayBack:Boolean = false
+    private var swayAnimatorSet:AnimatorSet? = null
+    private var swayXAnimator:ValueAnimator? = null
+    private var swayYAnimator:ValueAnimator? = null
+    private var swayY:Float = originalParams!!.y.toFloat()
+    private var swayX:Float = originalParams!!.x.toFloat()
+    private var isSwaying:Boolean = false
+    private var swayBack:Boolean = false
     fun sway() {
-        if (swayAnimator != null) {
+        if (swayAnimatorSet != null) {
             if (isSwaying) {
-                swayAnimator!!.cancel()
+                swayAnimatorSet!!.cancel()
                 isSwaying = false
-                swayAnimator = null
+                swayAnimatorSet = null
             }
         }
         if (swayBack) {
@@ -121,22 +120,29 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
             verticalSignFloat *= randomSign1Float()
             swayBack = true
         }
-        swayAnimator = enemyImage!!.animate().translationXBy(horizontalSignFloat * (this.originalParams!!.width/ 7.5).
-        toFloat()).translationYBy(verticalSignFloat * (this.originalParams!!.width/ 7.5).toFloat())
-        if (horizontalSignFloat > 0) {
-            swayAnimator!!.interpolator = EasingInterpolator(Ease.SINE_IN_OUT)
-        } else {
-            swayAnimator!!.interpolator = EasingInterpolator(Ease.SINE_IN_OUT)
+        swayYAnimator = ValueAnimator.ofFloat((enemyImage!!.layoutParams as LayoutParams).y.toFloat(),
+            (((enemyImage!!.layoutParams as LayoutParams).y) + (verticalSignFloat *
+                    (this.originalParams!!.width/ 7.5))).toFloat())
+        swayYAnimator!!.addUpdateListener {
+            swayY = it.animatedValue as Float
         }
-        swayAnimator!!.startDelay = 0
-        swayAnimator!!.duration = 1750
-        swayAnimator!!.withStartAction {
-            isSwaying = true
+        swayXAnimator = ValueAnimator.ofFloat((enemyImage!!.layoutParams as LayoutParams).x.toFloat(),
+            (((enemyImage!!.layoutParams as LayoutParams).x) + (horizontalSignFloat *
+                    (this.originalParams!!.width/ 7.5))).toFloat())
+        swayXAnimator!!.addUpdateListener {
+            swayX = it.animatedValue as Float
+            enemyImage!!.layoutParams = LayoutParams(originalParams!!.width, originalParams!!.height,
+                swayX.toInt(), swayY.toInt())
         }
-        swayAnimator!!.withEndAction {
+        swayAnimatorSet = AnimatorSet()
+        swayAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        swayAnimatorSet!!.play(swayXAnimator!!).with(swayYAnimator!!)
+        swayAnimatorSet!!.duration = 1750
+        isSwaying = true
+        swayAnimatorSet!!.doOnEnd {
             sway()
         }
-        swayAnimator!!.start()
+        swayAnimatorSet!!.start()
     }
 
     fun fadeIn() {

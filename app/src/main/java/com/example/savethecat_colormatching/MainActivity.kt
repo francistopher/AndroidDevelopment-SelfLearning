@@ -139,6 +139,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                                 boardGame!!.buildGame()
                                 boardGame!!.setupSinglePlayerButton()
                                 boardGame!!.setupTwoPlayerButton()
+                                enemies!!.sway()
                                 adView!!.alpha = 1f
                             }
                         }
