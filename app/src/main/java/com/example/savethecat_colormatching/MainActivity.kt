@@ -1,7 +1,6 @@
 package com.example.savethecat_colormatching
 
 
-import com.example.savethecat_colormatching.Controllers.ARType
 import Reachability
 import android.content.IntentFilter
 import android.content.res.Configuration
@@ -15,6 +14,7 @@ import android.widget.AbsoluteLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Characters.Enemies
+import com.example.savethecat_colormatching.Controllers.ARType
 import com.example.savethecat_colormatching.Controllers.AspectRatio
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
@@ -142,10 +142,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                                 adView!!.alpha = 1f
                             }
                         }
-                    }, 2400)
+                    }, 2000)
                 }
             }
-        }, 2400)
+        }, 2000)
     }
 
     private fun setupSaveTheCat() {

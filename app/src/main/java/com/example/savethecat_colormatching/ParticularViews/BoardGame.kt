@@ -202,7 +202,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         if (rowOfAliveCats!!.size > 0) {
             disperseRow(aliveCats = rowOfAliveCats!!)
         } else {
-            // If all cats are alive
             disperseColumns()
         }
     }
@@ -224,8 +223,42 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
+    private var rowIndexCatAliveCount:MutableMap<Int, Int>? = null
+    private var rowsLeftCount:Int = 0
+    private var maxCatsInRowCount:Int = 0
     private fun disperseColumns() {
+        rowIndexCatAliveCount = catButtons!!.getRowIndexAliveCatCount()
+        // No rows, cancel the operation
+        rowsLeftCount = rowIndexCatAliveCount!!.size
+        if (rowsLeftCount == 0) {
+            return
+        }
+        // Max count of cats in row
+        maxCatsInRowCount = rowIndexCatAliveCount!!.maxBy { it.value }!!.value
+        y = originalParams!!.y.toFloat()
+        gridButtonRowGap = (originalParams!!.height * 0.1f) / (rowsLeftCount.toFloat() + 1f)
+        gridButtonHeight = (originalParams!!.width * 0.9f) / rowsLeftCount.toFloat()
 
+        fun resetCatButtonsPosition(rowIndex:Int) {
+            y += gridButtonRowGap
+            for (catButton in catButtons!!.getRowOfAliveCats(rowIndex = rowIndex)) {
+                catButton.transformTo(LayoutParams(catButton.getOriginalParams().width,
+                gridButtonHeight.toInt(), catButton.getOriginalParams().x, y.toInt()))
+            }
+            y += gridButtonHeight
+        }
+
+        if (maxCatsInRowCount <= rowsLeftCount) {
+            for (rowIndex in rowIndexCatAliveCount!!.keys.sorted()) {
+                resetCatButtonsPosition(rowIndex)
+            }
+        } else {
+            gridButtonRowGap = (originalParams!!.height * 0.1f) / (rowsLeftCount.toFloat() + 1f)
+            gridButtonHeight = (originalParams!!.width * 0.9f) / rowsLeftCount.toFloat()
+            for (rowIndex in rowIndexCatAliveCount!!.keys.sorted()) {
+                resetCatButtonsPosition(rowIndex)
+            }
+        }
     }
 
     private fun attackCatButton(catButton: CatButton) {

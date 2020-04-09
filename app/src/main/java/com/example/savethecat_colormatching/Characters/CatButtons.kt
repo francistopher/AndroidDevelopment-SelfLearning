@@ -103,4 +103,20 @@ class CatButtons {
     fun removeAll() {
         currentCatButtons!!.clear()
     }
+
+    var indexAliveCatCountMap:MutableMap<Int, Int>? = null
+    fun getRowIndexAliveCatCount():MutableMap<Int, Int> {
+        indexAliveCatCountMap = mutableMapOf()
+        for (catButton in currentCatButtons!!) {
+            if (getRowOfAliveCats(catButton.rowIndex).size > 0) {
+                if (indexAliveCatCountMap!![catButton.rowIndex] == null) {
+                    indexAliveCatCountMap!![catButton.rowIndex] = 1
+                } else {
+                    indexAliveCatCountMap!![catButton.rowIndex] = 1 +
+                            indexAliveCatCountMap!![catButton.rowIndex]!!
+                }
+            }
+        }
+        return indexAliveCatCountMap!!
+    }
 }

@@ -13,8 +13,6 @@ import com.example.savethecat_colormatching.MainActivity
 
 class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
-    private var colors = mutableListOf(green, yellow, orange, red, purple, blue)
-
     private var view:View? = null
 
     private var originalParams:LayoutParams? = null

@@ -432,7 +432,13 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             height = (it.animatedValue as Float).toInt()
             imageButton!!.layoutParams = LayoutParams(width, height, x, y)
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
-            setCornerRadiusAndBorderWidth(cornerRadius, borderWidth, withBackground = false)
+            if (isPodded) {
+                setCornerRadiusAndBorderWidth((height / 5f).toInt(), borderWidth,
+                    withBackground = true)
+            } else {
+                setCornerRadiusAndBorderWidth((height / 5f).toInt(), borderWidth,
+                    withBackground = false)
+            }
         }
         transformAnimatorSet = AnimatorSet()
         transformAnimatorSet!!.play(transformXAnimator!!).with(transformYAnimator!!).
