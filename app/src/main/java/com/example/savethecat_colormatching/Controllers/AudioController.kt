@@ -1,7 +1,6 @@
 package com.example.savethecat_colormatching.Controllers
 import android.content.Context
 import android.media.MediaPlayer
-import android.provider.MediaStore
 import com.example.savethecat_colormatching.R
 
 class AudioController {
@@ -19,11 +18,11 @@ class AudioController {
         fun setupGearSpinning(context: Context) {
             if (gearSpinningPlayer == null) {
                 gearSpinningPlayer = MediaPlayer.create(context, R.raw.gearspinning)
+                gearSpinningPlayer!!.setVolume(0.25f, 0.25f)
             }
         }
 
         fun gearSpinning() {
-            gearSpinningPlayer!!.stop()
             gearSpinningPlayer!!.start()
         }
 

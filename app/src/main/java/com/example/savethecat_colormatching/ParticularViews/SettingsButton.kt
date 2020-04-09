@@ -1,8 +1,8 @@
 package com.example.savethecat_colormatching.ParticularViews
 
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
+import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
@@ -20,6 +20,14 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
 
     private var parentLayout:AbsoluteLayout? = null
     private var gearImage:CImageView? = null
+
+    private var clicked:Boolean = false
+    private var clickable:Boolean = false
+
+    companion object {
+        var settingsMenu:SettingsMenu? = null
+    }
+
     init {
         settingsButton = button
         settingsButton!!.layoutParams = params
@@ -31,6 +39,23 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         setGearImage()
         setCornerRadiusAndBorderWidth((params.height / 2.0).toInt(),
             (params.height / 12.0).toInt())
+        setupSettingsMenu()
+        setupListener()
+    }
+
+    private fun setupSettingsMenu() {
+        val width:Float = (MainActivity.dWidth - (originalParams!!.x * 2)).toFloat()
+        settingsMenu = SettingsMenu(view = View(settingsButton!!.context), parentLayout =
+        parentLayout!!, params = LayoutParams(width.toInt(), originalParams!!.height,
+            originalParams!!.x, originalParams!!.y))
+        parentLayout!!.bringChildToFront(settingsButton!!)
+        parentLayout!!.bringChildToFront(gearImage!!.getThis())
+    }
+
+    private fun setupListener() {
+        settingsButton!!.setOnClickListener {
+            settingsMenu!!.expandOrContract()
+        }
     }
 
     private var shape: GradientDrawable? = null

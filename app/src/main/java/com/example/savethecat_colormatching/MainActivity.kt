@@ -186,8 +186,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     private fun setupSounds() {
-        AudioController.setupGearSpinning(this)
         AudioController.setupHeaven(this)
+        AudioController.setupGearSpinning(this)
         AudioController.setupAnimeWowPlayer(this)
         AudioController.setupCoinEarnedPlayer(this)
         AudioController.setupKittenMeowPlayer(this)
