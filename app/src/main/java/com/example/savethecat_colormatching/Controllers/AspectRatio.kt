@@ -6,6 +6,7 @@ import com.example.savethecat_colormatching.MainActivity
 
 class AspectRatio {
     companion object {
+        var dAspectRatio:Double = 0.0
         private val displayMetrics: DisplayMetrics = DisplayMetrics()
         private var screenAspectRatio:Double = 0.0;
         fun setupAspectRatio() {
@@ -35,37 +36,47 @@ class AspectRatio {
             screenAspectRatio = (MainActivity.dHeight / MainActivity.dWidth)
             when {
                 screenAspectRatio > 2.16 -> {
+                    dAspectRatio = 2.16
                     MainActivity.aspectRatio = ARType.ar19point5by9
                 }
                 screenAspectRatio > 2.09 -> {
+                    dAspectRatio = 2.09
                     MainActivity.aspectRatio = ARType.ar19by9
                 }
                 screenAspectRatio > 2.07 -> {
+                    dAspectRatio = 2.07
                     MainActivity.aspectRatio = ARType.ar18point7by9
                 }
                 screenAspectRatio > 2.05 -> {
+                    dAspectRatio = 2.05
                     MainActivity.aspectRatio = ARType.ar18point5by9
                 }
                 screenAspectRatio > 1.9 -> {
+                    dAspectRatio = 1.9
                     MainActivity.aspectRatio = ARType.ar18by9
                 }
                 screenAspectRatio > 1.8 -> {
+                    dAspectRatio = 1.8
                     MainActivity.aspectRatio = ARType.ar19by10
                 }
                 screenAspectRatio > 1.7 -> {
+                    dAspectRatio = 1.7
                     MainActivity.aspectRatio = ARType.ar16by9
                 }
                 screenAspectRatio > 1.66 -> {
+                    dAspectRatio = 1.66
                     MainActivity.aspectRatio = ARType.ar5by3
                 }
                 screenAspectRatio > 1.5 -> {
+                    dAspectRatio = 1.5
                     MainActivity.aspectRatio = ARType.ar16by10
                 }
                 screenAspectRatio > 1.4 -> {
+                    dAspectRatio = 1.4
                     MainActivity.aspectRatio = ARType.ar3by2
                 }
                 else -> {
-                    // screen aspect ratio > 1.3
+                    dAspectRatio = 1.3
                     MainActivity.aspectRatio = ARType.ar4by3
                 }
             }

@@ -7,11 +7,15 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.Button
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
+import com.example.savethecat_colormatching.Controllers.AspectRatio
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.SettingsMenu.Ads
+import com.example.savethecat_colormatching.SettingsMenu.MouseCoin
 
 class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
@@ -23,8 +27,12 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     private var parentLayout:AbsoluteLayout? = null
 
     companion object {
-        var isExpanded:Boolean = false
+        var isExpanded: Boolean = false
+        var adsButton: Ads? = null
+        var mouseCoinButton: MouseCoin? = null
     }
+
+    private var spaceBetween:Float = 0f
 
     init {
         this.menuView = view
@@ -32,10 +40,16 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         this.parentLayout = parentLayout
         parentLayout.addView(view)
         setOriginalParams(params = params)
-        setContractedParams()
         setStyle()
         setCornerRadiusAndBorderWidth(radius = params.height / 2,
             borderWidth = params.height / 12)
+        setupAdsButton()
+        setupMouseCoinButton()
+        val unavailableSpace:Float = ((expandedParams!!.width - mouseCoinButton!!.getExpandedParams().x) +
+                (adsButton!!.getExpandedParams().width * 4.0) + getOriginalParams().height).toFloat()
+        val availableSpace:Float = getOriginalParams().width - unavailableSpace
+        spaceBetween = (availableSpace / 5.0).toFloat()
+        repositionMenuButtons()
     }
 
     private var shape: GradientDrawable? = null
@@ -93,7 +107,49 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             isTransforming = false
             isExpanded = !isExpanded
         }
+    }
 
+    private fun setupAdsButton() {
+        adsButton = Ads(button = Button(menuView!!.context), parentLayout = parentLayout!!,
+            params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0, 0))
+        if (AspectRatio.dAspectRatio >= 2.09) {
+            adsButton!!.getThis().scaleX = 0.5f
+            adsButton!!.getThis().scaleY = 0.5f
+        }
+        else if (AspectRatio.dAspectRatio >= 1.7) {
+            adsButton!!.getThis().scaleX = 0.55f
+            adsButton!!.getThis().scaleY = 0.55f
+        }
+        else {
+            adsButton!!.getThis().scaleX = 0.75f
+            adsButton!!.getThis().scaleY = 0.75f
+        }
+        adsButton!!.setExpandedParams(params = adsButton!!.getThis().layoutParams as LayoutParams)
+        adsButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
+            (expandedParams!!.height * 0.5).toInt(), 0, 0))
+    }
+
+    private fun setupMouseCoinButton() {
+        mouseCoinButton = MouseCoin(button = Button(menuView!!.context), parentLayout = parentLayout!!,
+            params = LayoutParams(expandedParams!!.height, expandedParams!!.height,
+                (getOriginalParams().width - (getOriginalParams().height * 0.7)).toInt(),
+                getOriginalParams().y))
+        mouseCoinButton!!.getThis().scaleX = 0.75f
+        mouseCoinButton!!.getThis().scaleY = 0.75f
+        mouseCoinButton!!.setExpandedParams(params = mouseCoinButton!!.getThis().layoutParams
+                as LayoutParams)
+        mouseCoinButton!!.setContractedParams(LayoutParams(expandedParams!!.height,
+            expandedParams!!.height, (expandedParams!!.height + (borderWidth * 0.5)).toInt(), 0))
+        mouseCoinButton!!.getThis().layoutParams = mouseCoinButton!!.getExpandedParams()
+    }
+
+    private fun repositionMenuButtons() {
+        // Reposition ad button
+        adsButton!!.setExpandedParams(LayoutParams(adsButton!!.getExpandedParams().width,
+        adsButton!!.getExpandedParams().height, (getOriginalParams().height + spaceBetween
+                    + (getOriginalParams().height * 0.45)).toInt(), getOriginalParams().y))
+        adsButton!!.getThis().layoutParams = adsButton!!.getExpandedParams()
+        // Reposition mouse coin
 
     }
 

@@ -24,9 +24,6 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
     private var parentLayout:AbsoluteLayout? = null
     private var gearImage:CImageView? = null
 
-    private var clicked:Boolean = false
-    private var clickable:Boolean = false
-
     companion object {
         var settingsMenu:SettingsMenu? = null
     }
@@ -73,17 +70,14 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
                 rotateGearAnimator = null
             }
         }
-
         rotateGearAnimator = if (SettingsMenu.isExpanded) {
             ValueAnimator.ofFloat(240f, 0f)
         } else {
             ValueAnimator.ofFloat(gearImage!!.getThis().rotation, 240f)
         }
-
         rotateGearAnimator!!.addUpdateListener {
             gearImage!!.getThis().rotation = (it.animatedValue as Float)
         }
-
         rotateGearAnimator!!.interpolator = LinearInterpolator()
         rotateGearAnimator!!.duration = 1000
         rotateGearAnimator!!.start()
@@ -91,8 +85,6 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         rotateGearAnimator!!.doOnEnd {
             isGearRotating = false
         }
-
-
     }
 
     private var shape: GradientDrawable? = null
