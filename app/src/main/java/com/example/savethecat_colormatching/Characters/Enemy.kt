@@ -21,8 +21,8 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
 
     private var lightImageR:Int = 0
     private var darkImageR:Int = 0
-    private var verticalSignFloat:Float = randomSign1Float()
-    private var horizontalSignFloat:Float = randomSign1Float()
+    private var verticalSignFloat:Int = randomSignInt()
+    private var horizontalSignFloat:Int = randomSignInt()
     init {
 
         this.enemyImage = imageView
@@ -88,19 +88,19 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
     }
 
 
-    private fun randomSign1Float():Float {
+    private fun randomSignInt():Int {
         return if ((0..1).random() == 0) {
-            -1f
+            -1
         } else {
-            1f
+            1
         }
     }
 
     private var swayAnimatorSet:AnimatorSet? = null
     private var swayXAnimator:ValueAnimator? = null
     private var swayYAnimator:ValueAnimator? = null
-    private var swayY:Float = originalParams!!.y.toFloat()
-    private var swayX:Float = originalParams!!.x.toFloat()
+    private var swayY:Int = originalParams!!.y
+    private var swayX:Int = originalParams!!.x
     private var isSwaying:Boolean = false
     private var swayBack:Boolean = false
     fun sway() {
@@ -112,27 +112,28 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
             }
         }
         if (swayBack) {
-            horizontalSignFloat *= -1f
-            verticalSignFloat *= -1f
+            horizontalSignFloat *= -1
+            verticalSignFloat *= -1
             swayBack = false
         } else {
-            horizontalSignFloat *= randomSign1Float()
-            verticalSignFloat *= randomSign1Float()
+            horizontalSignFloat *= randomSignInt()
+            verticalSignFloat *= randomSignInt()
             swayBack = true
         }
-        swayYAnimator = ValueAnimator.ofFloat((enemyImage!!.layoutParams as LayoutParams).y.toFloat(),
+        swayYAnimator = ValueAnimator.ofInt((enemyImage!!.layoutParams as LayoutParams).y,
             (((enemyImage!!.layoutParams as LayoutParams).y) + (verticalSignFloat *
-                    (this.originalParams!!.width/ 7.5))).toFloat())
+                    (this.originalParams!!.width/ 7.5))).toInt()
+        )
         swayYAnimator!!.addUpdateListener {
-            swayY = it.animatedValue as Float
+            swayY = it.animatedValue as Int
         }
-        swayXAnimator = ValueAnimator.ofFloat((enemyImage!!.layoutParams as LayoutParams).x.toFloat(),
-            (((enemyImage!!.layoutParams as LayoutParams).x) + (horizontalSignFloat *
-                    (this.originalParams!!.width/ 7.5))).toFloat())
+        swayXAnimator = ValueAnimator.ofInt((enemyImage!!.layoutParams as LayoutParams).x,
+            ((enemyImage!!.layoutParams as LayoutParams).x) + (horizontalSignFloat *
+                    (this.originalParams!!.width/ 7.5)).toInt())
         swayXAnimator!!.addUpdateListener {
-            swayX = it.animatedValue as Float
+            swayX = it.animatedValue as Int
             enemyImage!!.layoutParams = LayoutParams(originalParams!!.width, originalParams!!.height,
-                swayX.toInt(), swayY.toInt())
+                swayX, swayY)
         }
         swayAnimatorSet = AnimatorSet()
         swayAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
