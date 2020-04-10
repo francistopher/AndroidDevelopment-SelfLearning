@@ -155,6 +155,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 catButton!!.shrunk()
                 catButton!!.grow()
                 catButton!!.fade(true, false, 0.5f, 0.125f)
+
 //                gridCatButton!.rowIndex = rowIndex
 //                gridCatButton!.columnIndex = columnIndex
 //                gridCatButton!.imageContainerButton!.backgroundColor = UIColor.clear;

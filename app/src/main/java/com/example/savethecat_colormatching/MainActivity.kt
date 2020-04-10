@@ -256,10 +256,11 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         boardGame!!.getOriginalParams(), parentParams = LayoutParams(dWidth.toInt(),
             (adHeight * 1.05).toInt(), 0, 0))
         boardGame!!.setOriginalParams(boardGame!!.getThis().layoutParams as LayoutParams)
+        boardGame!!.getThis().bringToFront()
     }
 
     private fun setupColorOptions() {
-        val boardGameSideLength:Float = (dUnitHeight * 8.5).toFloat()
+        val boardGameSideLength:Float = (dUnitHeight * 8).toFloat()
         colorOptions = ColorOptions(view = View(this), parentLayout = rootLayout!!, params =
         LayoutParams(boardGameSideLength.toInt(), (dUnitHeight * 1.5).toInt(),
             boardGame!!.getOriginalParams().x, boardGame!!.getOriginalParams().y + boardGame!!.
@@ -311,15 +312,17 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupMyLivesMeter() {
         myLivesMeter = LivesMeter(meterView = View(this), parentLayout = rootLayout!!,
-            params = opponentLivesMeter!!.getOriginalParams())
-        myLivesMeter!!.getThis().setBackgroundColor(Color.RED )
+            params = opponentLivesMeter!!.getOriginalParams(), isOpoonent = false)
     }
 
     private fun setupOpponentLivesMeter() {
         val height:Float = (dHeight * ((1.0/300.0) + 0.08)).toFloat()
         val x:Float = (dWidth - height - dUnitWidth).toFloat()
         opponentLivesMeter = LivesMeter(meterView = View(this), parentLayout = rootLayout!!,
-        params = LayoutParams(height.toInt(), height.toInt(), x.toInt(), dUnitHeight.toInt()))
+        params = LayoutParams(height.toInt(), height.toInt(), x.toInt(), dUnitHeight.toInt()),
+            isOpoonent = true)
         opponentLivesMeter!!.getThis().setBackgroundColor(Color.BLUE)
     }
+
+
 }

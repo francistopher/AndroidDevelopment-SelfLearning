@@ -310,6 +310,10 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         return targetX
     }
 
+    fun getThisImage():ImageView {
+        return imageView!!.getThis()
+    }
+
     private fun getElevatedTargetY(): Float {
         return -Random.nextInt((originalParams!!.height),
             (originalParams!!.height * 2.0).toInt()).toFloat()
