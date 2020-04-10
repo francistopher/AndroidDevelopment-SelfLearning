@@ -117,7 +117,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                 button!!.backgroundColor = color
                 button!!.setStyle()
                 button!!.setCornerRadiusAndBorderWidth((button!!.getOriginalParams().height / 5.0f).toInt(),
-                    (kotlin.math.sqrt(button!!.getOriginalParams().width * 0.01) * 2.5).toInt())
+                    (kotlin.math.sqrt(button!!.getOriginalParams().width * 0.01) * 4.5).toInt())
                 selectionButtons!!.add(button!!)
                 x += buttonWidth
                 button!!.getThis().setOnClickListener {

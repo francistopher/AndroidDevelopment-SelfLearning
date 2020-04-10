@@ -378,7 +378,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             dUnitHeight * 1.5 * 0.475) + (originalParams!!.height * 0.1)).toInt()))
         singlePlayerButton!!.setCornerRadiusAndBorderWidth((singlePlayerButton!!.
         getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(singlePlayerButton!!.
-        getOriginalParams().width * 0.01) * 10.0) * 0.35).toInt())
+        getOriginalParams().width * 0.01) * 10.0) * 0.65).toInt())
         singlePlayerButton!!.setTextSize((singlePlayerButton!!.getOriginalParams().height * 0.175).
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
@@ -414,7 +414,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             height + (originalParams!!.height * 0.1)).toInt()))
         multiplayerButton!!.setCornerRadiusAndBorderWidth((multiplayerButton!!.
         getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(multiplayerButton!!.
-        getOriginalParams().width * 0.01) * 10.0) * 0.35).toInt())
+        getOriginalParams().width * 0.01) * 10.0) * 0.65).toInt())
         multiplayerButton!!.setTextSize((multiplayerButton!!.getOriginalParams().height * 0.175).
         toFloat())
         multiplayerButton!!.shrinkType = ShrinkType.right

@@ -39,11 +39,9 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         setShrunkParams()
         setupSettingsMenu()
         setupListener()
-        setStyle()
         setCornerRadiusAndBorderWidth((params.height / 2.0).toInt(),
             (params.height / 12.0).toInt())
-        setGearImage()
-        gearImage!!.getThis().bringToFront()
+        setStyle()
         settingsButton!!.bringToFront()
     }
 
@@ -78,12 +76,12 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
             }
         }
         rotateGearAnimator = if (SettingsMenu.isExpanded) {
-            ValueAnimator.ofFloat(240f, 0f)
+            ValueAnimator.ofFloat(225f, 0f)
         } else {
-            ValueAnimator.ofFloat(gearImage!!.getThis().rotation, 240f)
+            ValueAnimator.ofFloat(settingsButton!!.rotation, 225f)
         }
         rotateGearAnimator!!.addUpdateListener {
-            gearImage!!.getThis().rotation = (it.animatedValue as Float)
+            settingsButton!!.rotation = (it.animatedValue as Float)
         }
         rotateGearAnimator!!.interpolator = LinearInterpolator()
         rotateGearAnimator!!.duration = 1000
@@ -124,11 +122,11 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
     }
 
     private fun lightDominant() {
-        settingsButton!!.setBackgroundColor(Color.BLACK)
+        settingsButton!!.setBackgroundResource(R.drawable.lightgear)
     }
 
     private fun darkDominant() {
-        settingsButton!!.setBackgroundColor(Color.WHITE)
+        settingsButton!!.setBackgroundResource(R.drawable.darkgear)
     }
 
     private fun setGearImage() {

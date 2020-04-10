@@ -1,6 +1,5 @@
 package com.example.savethecat_colormatching
 
-
 import Reachability
 import android.content.IntentFilter
 import android.content.res.Configuration
@@ -26,7 +25,6 @@ import com.example.savethecat_colormatching.ParticularViews.IntroView
 import com.example.savethecat_colormatching.ParticularViews.SettingsButton
 import com.google.android.gms.ads.*
 import java.util.*
-
 
 class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListener {
 
