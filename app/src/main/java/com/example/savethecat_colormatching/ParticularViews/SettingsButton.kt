@@ -10,6 +10,8 @@ import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
 import android.widget.ImageView
 import androidx.core.animation.doOnEnd
+import com.daasuu.ei.Ease
+import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
@@ -43,6 +45,57 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
             (params.height / 12.0).toInt())
         setStyle()
         settingsButton!!.bringToFront()
+        settingsButton!!.alpha = 0f
+        settingsMenu!!.getThis().alpha = 0f
+    }
+
+    private var fadeAnimator: ValueAnimator? = null
+    private var fadeAnimatorIsRunning:Boolean = false
+    fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        if (fadeAnimator != null) {
+            if (fadeAnimatorIsRunning) {
+                fadeAnimator!!.cancel()
+                fadeAnimatorIsRunning = false
+                fadeAnimator = null
+            }
+        }
+        if (In) {
+            fadeAnimator = ValueAnimator.ofFloat(0f, 1f)
+        }
+        if (Out and !In) {
+            fadeAnimator = ValueAnimator.ofFloat(1f, 0f)
+
+        }
+        fadeAnimator!!.addUpdateListener {
+            val alpha:Float =  (it.animatedValue as Float)
+            settingsButton!!.alpha = alpha
+            settingsMenu!!.getThis().alpha = alpha
+            SettingsMenu.adsButton!!.getThis().alpha = alpha
+            SettingsMenu.leaderBoardButton!!.getThis().alpha = alpha
+            SettingsMenu.volumeButton!!.getThis().alpha = alpha
+            SettingsMenu.moreCatsButton!!.getThis().alpha = alpha
+            SettingsMenu.mouseCoinButton!!.getThis().alpha = alpha
+        }
+        fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
+        fadeAnimator!!.duration = (1000.0f * Duration).toLong()
+        fadeAnimator!!.doOnEnd {
+            if (In and Out) {
+                this.fade(In = false, Out = true, Duration = Duration, Delay = 0.0f)
+            } else {
+                fadeAnimator!!.cancel()
+                fadeAnimatorIsRunning = false
+                fadeAnimator = null
+            }
+        }
+        if (!fadeAnimatorIsRunning) {
+            fadeAnimator!!.start()
+        }
+        fadeAnimatorIsRunning = true
+    }
+
+    fun fadeIn() {
+        fade(true, false, 1f, 0.125f)
     }
 
     private fun setupSettingsMenu() {
@@ -93,7 +146,7 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
     }
 
     private var shape: GradientDrawable? = null
-    private var borderWidth:Int = 0
+    var borderWidth:Int = 0
     private var cornerRadius:Int = 0
     fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int) {
         shape = null
@@ -119,6 +172,10 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
 
     fun setOriginalParams(params: LayoutParams) {
         originalParams = params
+    }
+
+    fun getOriginalParams():LayoutParams {
+        return originalParams!!
     }
 
     private fun lightDominant() {

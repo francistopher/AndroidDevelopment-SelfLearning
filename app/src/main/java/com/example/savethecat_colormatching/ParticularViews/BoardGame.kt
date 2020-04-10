@@ -33,7 +33,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         var boardGameContext:Context? = null
         var boardGameLayout:AbsoluteLayout? = null
         var singlePlayerButton:CButton? = null
-        var multiplayerButton:CButton? = null
+        var multiPlayerButton:CButton? = null
     }
     init {
         this.boardView = boardView
@@ -386,7 +386,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             if (!singlePlayerButton!!.growWidthAndChangeColorIsRunning) {
                 singlePlayerButton!!.targetBackgroundColor = gridColors!![0][0]
                 singlePlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
-                multiplayerButton!!.shrink()
+                multiPlayerButton!!.shrink()
                 Timer().schedule(object : TimerTask() {
                     override fun run() {
                         MainActivity.staticSelf!!.runOnUiThread {
@@ -407,24 +407,24 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     fun setupTwoPlayerButton() {
-        multiplayerButton = CButton(button = Button(boardGameContext), parentLayout = boardGameLayout!!,
+        multiPlayerButton = CButton(button = Button(boardGameContext), parentLayout = boardGameLayout!!,
             params = LayoutParams((originalParams!!.width * 0.425).toInt(), (MainActivity.dUnitHeight
                     * 1.5 * 0.8).toInt(), (originalParams!!.x + (originalParams!!.width * 0.525)).
             toInt(), (originalParams!!.y + (-MainActivity.dUnitHeight * 1.5 * 0.475) + originalParams!!.
             height + (originalParams!!.height * 0.1)).toInt()))
-        multiplayerButton!!.setCornerRadiusAndBorderWidth((multiplayerButton!!.
-        getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(multiplayerButton!!.
+        multiPlayerButton!!.setCornerRadiusAndBorderWidth((multiPlayerButton!!.
+        getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(multiPlayerButton!!.
         getOriginalParams().width * 0.01) * 10.0) * 0.65).toInt())
-        multiplayerButton!!.setTextSize((multiplayerButton!!.getOriginalParams().height * 0.175).
+        multiPlayerButton!!.setTextSize((multiPlayerButton!!.getOriginalParams().height * 0.175).
         toFloat())
-        multiplayerButton!!.shrinkType = ShrinkType.right
-        multiplayerButton!!.setText("Multi Player", false)
-        multiplayerButton!!.getThis().setOnClickListener {
+        multiPlayerButton!!.shrinkType = ShrinkType.right
+        multiPlayerButton!!.setText("Multi Player", false)
+        multiPlayerButton!!.getThis().setOnClickListener {
             Log.i("Click", "Multi Player Button")
         }
-        multiplayerButton!!.shrunk()
-        multiplayerButton!!.grow()
-        multiplayerButton!!.fade(true, false, 0.5f, 0.125f)
+        multiPlayerButton!!.shrunk()
+        multiPlayerButton!!.grow()
+        multiPlayerButton!!.fade(true, false, 0.5f, 0.125f)
     }
 
     private var nonZeroCount:Int = 0

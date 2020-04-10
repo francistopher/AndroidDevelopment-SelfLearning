@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
 import android.util.TypedValue
 import android.view.ViewPropertyAnimator
 import android.widget.AbsoluteLayout
@@ -366,7 +365,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             }
         }
         if (!fadeAnimatorIsRunning) {
-            Log.i("Animation", "Fade")
             fadeAnimator!!.start()
         }
     }

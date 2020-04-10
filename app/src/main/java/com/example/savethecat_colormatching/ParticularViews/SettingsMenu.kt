@@ -59,6 +59,10 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         menuView!!.layoutParams = contractedParams!!
     }
 
+    fun getThis():View {
+        return menuView!!
+    }
+
     private var shape: GradientDrawable? = null
     private var borderWidth:Int = 0
     private var cornerRadius:Int = 0
@@ -137,6 +141,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             (expandedParams!!.height * 0.5).toInt(), (getOriginalParams().x +
                     getOriginalParams().height * 0.25).toInt(), (getOriginalParams().y +
                     getOriginalParams().height * 0.25).toInt()))
+        adsButton!!.getThis().alpha = 0f
     }
 
     private fun setupMouseCoinButton() {
@@ -152,6 +157,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             expandedParams!!.height, (expandedParams!!.height + (borderWidth * 2.5)).toInt(),
             getOriginalParams().y))
         mouseCoinButton!!.getThis().layoutParams = mouseCoinButton!!.getExpandedParams()
+        mouseCoinButton!!.getThis().alpha = 0f
     }
 
     private fun setupLeaderBoardButton() {
@@ -175,6 +181,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             (expandedParams!!.height * 0.5).toInt(), (getOriginalParams().x +
                     getOriginalParams().height * 0.25).toInt(), (getOriginalParams().y +
                     getOriginalParams().height * 0.25).toInt()))
+        leaderBoardButton!!.getThis().alpha = 0f
     }
 
     private fun setupVolumeButton() {
@@ -198,6 +205,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             (expandedParams!!.height * 0.5).toInt(), (getOriginalParams().x +
                     getOriginalParams().height * 0.25).toInt(), (getOriginalParams().y +
                     getOriginalParams().height * 0.25).toInt()))
+        volumeButton!!.getThis().alpha = 0f
     }
 
 
@@ -222,6 +230,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             (expandedParams!!.height * 0.5).toInt(),(getOriginalParams().x +
                     getOriginalParams().height * 0.25).toInt(), (getOriginalParams().y +
                     getOriginalParams().height * 0.25).toInt()))
+        moreCatsButton!!.getThis().alpha = 0f
     }
 
     private fun repositionMenuButtons() {
@@ -260,7 +269,6 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         volumeButton!!.getThis().layoutParams = volumeButton!!.getContractedParams()
         moreCatsButton!!.getThis().layoutParams = moreCatsButton!!.getContractedParams()
         mouseCoinButton!!.getThis().layoutParams = mouseCoinButton!!.getContractedParams()
-
     }
 
     fun setOriginalParams(params: LayoutParams) {
