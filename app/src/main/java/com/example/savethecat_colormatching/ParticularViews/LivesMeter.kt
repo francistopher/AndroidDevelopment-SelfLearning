@@ -6,13 +6,14 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.ImageButton
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
 
 class LivesMeter(meterView: View,
                  parentLayout: AbsoluteLayout,
                  params: LayoutParams,
-                 isOpoonent:Boolean) {
+                 isOpponent:Boolean) {
 
     private var originalParams:LayoutParams? = null
     private var meterContext: Context? = null
@@ -21,8 +22,14 @@ class LivesMeter(meterView: View,
 
     private var imageHeart:Int = 0
 
+    private var livesLeft:Int = 1
+    private var heartButtons:MutableList<ImageButton> = mutableListOf()
+
+    private var currentHeartButton:ImageButton? = null
+    private var parentLayout:AbsoluteLayout? = null
+
     init {
-        if (isOpoonent) {
+        if (isOpponent) {
             imageHeart = R.drawable.opponentheart
         } else {
             imageHeart = R.drawable.heart
@@ -36,7 +43,26 @@ class LivesMeter(meterView: View,
         setStyle()
         setCornerRadiusAndBorderWidth(radius = params.height / 2,
             borderWidth = params.height / 12)
+        this.parentLayout = parentLayout
         parentLayout.addView(this.meterView!!)
+        // Setup heart interactive buttons
+        setupHeartInteractiveButtons()
+    }
+
+    private fun setupHeartInteractiveButtons() {
+        for (why in (heartButtons.size..1)) {
+            buildHeartButton()
+        }
+    }
+
+    private fun buildHeartButton() {
+        currentHeartButton = ImageButton(meterView!!.context)
+        currentHeartButton!!.layoutParams = LayoutParams(getOriginalParams().width,
+            getOriginalParams().height, getOriginalParams().x, getOriginalParams().y)
+        currentHeartButton!!.setBackgroundResource(imageHeart)
+        heartButtons.add(currentHeartButton!!)
+        parentLayout!!.addView(currentHeartButton)
+
     }
 
     private var shape: GradientDrawable? = null
@@ -58,7 +84,6 @@ class LivesMeter(meterView: View,
             } else {
                 shape!!.setStroke(borderWidth, Color.BLACK)
             }
-
         }
         cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()

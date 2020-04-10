@@ -312,7 +312,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupMyLivesMeter() {
         myLivesMeter = LivesMeter(meterView = View(this), parentLayout = rootLayout!!,
-            params = opponentLivesMeter!!.getOriginalParams(), isOpoonent = false)
+            params = opponentLivesMeter!!.getOriginalParams(), isOpponent = false)
     }
 
     private fun setupOpponentLivesMeter() {
@@ -320,7 +320,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         val x:Float = (dWidth - height - dUnitWidth).toFloat()
         opponentLivesMeter = LivesMeter(meterView = View(this), parentLayout = rootLayout!!,
         params = LayoutParams(height.toInt(), height.toInt(), x.toInt(), dUnitHeight.toInt()),
-            isOpoonent = true)
+            isOpponent = true)
         opponentLivesMeter!!.getThis().setBackgroundColor(Color.BLUE)
     }
 
