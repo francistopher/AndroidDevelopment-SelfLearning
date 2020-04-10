@@ -121,15 +121,14 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
             swayBack = true
         }
         swayYAnimator = ValueAnimator.ofInt((enemyImage!!.layoutParams as LayoutParams).y,
-            (((enemyImage!!.layoutParams as LayoutParams).y) + (verticalSignFloat *
-                    (this.originalParams!!.width/ 7.5))).toInt()
-        )
+            kotlin.math.floor(((enemyImage!!.layoutParams as LayoutParams).y) +
+                    (verticalSignFloat * (this.originalParams!!.width / 7.5))).toInt())
         swayYAnimator!!.addUpdateListener {
             swayY = it.animatedValue as Int
         }
         swayXAnimator = ValueAnimator.ofInt((enemyImage!!.layoutParams as LayoutParams).x,
-            ((enemyImage!!.layoutParams as LayoutParams).x) + (horizontalSignFloat *
-                    (this.originalParams!!.width/ 7.5)).toInt())
+            (enemyImage!!.layoutParams as LayoutParams).x + horizontalSignFloat *
+                    (this.originalParams!!.width / 7.5).toInt())
         swayXAnimator!!.addUpdateListener {
             swayX = it.animatedValue as Int
             enemyImage!!.layoutParams = LayoutParams(originalParams!!.width, originalParams!!.height,

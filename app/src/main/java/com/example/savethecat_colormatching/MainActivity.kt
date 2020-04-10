@@ -240,17 +240,15 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         adView = AdView(this)
         adView!!.adUnitId = "ca-app-pub-3940256099942544/6300978111"
         adView!!.adSize = getAdaptiveBannerAdSize()
-        // Resetting position
-        adView!!.layoutParams = LayoutParams((adView!!.adSize.width * 2) + 1,
-            (adView!!.adSize.height * 2) + 1, 0, (adHeight - (adView!!.adSize.height * 0.25)).toInt())
         adRequest = AdRequest.Builder().build()
         adView!!.loadAd(adRequest)
         rootLayout!!.addView(adView)
+        adView!!.translationY = ((dUnitHeight * 15.5) - (getAdaptiveBannerAdSize().height)).toFloat()
         adView!!.alpha = 0f
     }
 
     private fun setupBoardGame() {
-        val boardGameSideLength:Float = (dUnitHeight * 8.5).toFloat()
+        val boardGameSideLength:Float = (dUnitHeight * 8).toFloat()
         boardGame = BoardGame(boardView = View(this), parentLayout = rootLayout!!,
             params = LayoutParams(boardGameSideLength.toInt(), boardGameSideLength.toInt(), 0,0))
         boardGame!!.getThis().setBackgroundColor(Color.TRANSPARENT)
@@ -266,10 +264,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         LayoutParams(boardGameSideLength.toInt(), (dUnitHeight * 1.5).toInt(),
             boardGame!!.getOriginalParams().x, boardGame!!.getOriginalParams().y + boardGame!!.
             getOriginalParams().height))
-        CenterController.centerViewHorizontally(colorOptions!!.getThis(), parentParams = AbsoluteLayout.
+        CenterController.centerViewHorizontally(colorOptions!!.getThis(), parentParams =
         LayoutParams(dWidth.toInt(), (adHeight * 1.05).toInt(), 0, 0), childParams =
         colorOptions!!.getOriginalParams())
-        colorOptions!!.setOriginalParams(colorOptions!!.getThis().layoutParams as AbsoluteLayout.LayoutParams)
+        colorOptions!!.setOriginalParams(colorOptions!!.getThis().layoutParams as LayoutParams)
         rootLayout!!.addView(ColorOptions.colorOptionsLayout!!)
         // Set board game player buttons
         rootLayout!!.addView(BoardGame.boardGameLayout)
@@ -279,7 +277,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         val sideLength:Float = (dHeight * ((1.0/300.0) + 0.08)).toFloat()
         settingsButton = SettingsButton(button = Button(this), parentLayout = rootLayout!!,
             params = LayoutParams(sideLength.toInt(), sideLength.toInt(), dUnitWidth.toInt(),
-                dUnitWidth.toInt()))
+                dUnitHeight.toInt()))
     }
 
     private fun setupAttackMeter() {
@@ -314,14 +312,14 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private fun setupMyLivesMeter() {
         myLivesMeter = LivesMeter(meterView = View(this), parentLayout = rootLayout!!,
             params = opponentLivesMeter!!.getOriginalParams())
-        myLivesMeter!!.getThis().setBackgroundColor(Color.RED)
+        myLivesMeter!!.getThis().setBackgroundColor(Color.RED )
     }
 
     private fun setupOpponentLivesMeter() {
         val height:Float = (dHeight * ((1.0/300.0) + 0.08)).toFloat()
         val x:Float = (dWidth - height - dUnitWidth).toFloat()
         opponentLivesMeter = LivesMeter(meterView = View(this), parentLayout = rootLayout!!,
-        params = LayoutParams(height.toInt(), height.toInt(), x.toInt(), dUnitWidth.toInt()))
+        params = LayoutParams(height.toInt(), height.toInt(), x.toInt(), dUnitHeight.toInt()))
         opponentLivesMeter!!.getThis().setBackgroundColor(Color.BLUE)
     }
 }
