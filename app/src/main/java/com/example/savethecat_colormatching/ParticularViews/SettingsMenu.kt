@@ -14,8 +14,7 @@ import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Controllers.AspectRatio
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.MainActivity
-import com.example.savethecat_colormatching.SettingsMenu.Ads
-import com.example.savethecat_colormatching.SettingsMenu.MouseCoin
+import com.example.savethecat_colormatching.SettingsMenu.*
 
 class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
@@ -30,6 +29,9 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         var isExpanded: Boolean = false
         var adsButton: Ads? = null
         var mouseCoinButton: MouseCoin? = null
+        var leaderBoardButton: LeaderBoard? = null
+        var volumeButton: Volume? = null
+        var moreCatsButton: MoreCats? = null
     }
 
     private var spaceBetween:Float = 0f
@@ -45,6 +47,9 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             borderWidth = params.height / 12)
         setupAdsButton()
         setupMouseCoinButton()
+        setupLeaderBoardButton()
+        setupVolumeButton()
+        setupMoreCatsButton()
         val unavailableSpace:Float = ((expandedParams!!.width - mouseCoinButton!!.getExpandedParams().x) +
                 (adsButton!!.getExpandedParams().width * 4.0) + getOriginalParams().height).toFloat()
         val availableSpace:Float = getOriginalParams().width - unavailableSpace
@@ -111,7 +116,8 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
 
     private fun setupAdsButton() {
         adsButton = Ads(button = Button(menuView!!.context), parentLayout = parentLayout!!,
-            params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0, 0))
+            params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
+            getOriginalParams().y))
         if (AspectRatio.dAspectRatio >= 2.09) {
             adsButton!!.getThis().scaleX = 0.5f
             adsButton!!.getThis().scaleY = 0.5f
@@ -121,8 +127,8 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             adsButton!!.getThis().scaleY = 0.55f
         }
         else {
-            adsButton!!.getThis().scaleX = 0.75f
-            adsButton!!.getThis().scaleY = 0.75f
+            adsButton!!.getThis().scaleX = 0.6f
+            adsButton!!.getThis().scaleY = 0.6f
         }
         adsButton!!.setExpandedParams(params = adsButton!!.getThis().layoutParams as LayoutParams)
         adsButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
@@ -143,14 +149,94 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         mouseCoinButton!!.getThis().layoutParams = mouseCoinButton!!.getExpandedParams()
     }
 
+    private fun setupLeaderBoardButton() {
+        leaderBoardButton = LeaderBoard(button = Button(menuView!!.context), parentLayout = parentLayout!!,
+            params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
+                getOriginalParams().y))
+        if (AspectRatio.dAspectRatio >= 2.09) {
+            leaderBoardButton!!.getThis().scaleX = 0.5f
+            leaderBoardButton!!.getThis().scaleY = 0.5f
+        }
+        else if (AspectRatio.dAspectRatio >= 1.7) {
+            leaderBoardButton!!.getThis().scaleX = 0.55f
+            leaderBoardButton!!.getThis().scaleY = 0.55f
+        }
+        else {
+            leaderBoardButton!!.getThis().scaleX = 0.6f
+            leaderBoardButton!!.getThis().scaleY = 0.6f
+        }
+        leaderBoardButton!!.setExpandedParams(params = leaderBoardButton!!.getThis().layoutParams as LayoutParams)
+        leaderBoardButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
+            (expandedParams!!.height * 0.5).toInt(), 0, 0))
+    }
+
+    private fun setupVolumeButton() {
+        volumeButton = Volume(button = Button(menuView!!.context), parentLayout = parentLayout!!,
+            params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
+                getOriginalParams().y))
+        if (AspectRatio.dAspectRatio >= 2.09) {
+            volumeButton!!.getThis().scaleX = 0.4f
+            volumeButton!!.getThis().scaleY = 0.4f
+        }
+        else if (AspectRatio.dAspectRatio >= 1.7) {
+            volumeButton!!.getThis().scaleX = 0.55f
+            volumeButton!!.getThis().scaleY = 0.55f
+        }
+        else {
+            volumeButton!!.getThis().scaleX = 0.6f
+            volumeButton!!.getThis().scaleY = 0.6f
+        }
+        volumeButton!!.setExpandedParams(params = volumeButton!!.getThis().layoutParams as LayoutParams)
+        volumeButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
+            (expandedParams!!.height * 0.5).toInt(), 0, 0))
+    }
+
+
+    private fun setupMoreCatsButton() {
+        moreCatsButton = MoreCats(button = Button(menuView!!.context), parentLayout = parentLayout!!,
+            params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
+                getOriginalParams().y))
+        if (AspectRatio.dAspectRatio >= 2.09) {
+            moreCatsButton!!.getThis().scaleX = 0.4f
+            moreCatsButton!!.getThis().scaleY = 0.4f
+        }
+        else if (AspectRatio.dAspectRatio >= 1.7) {
+            moreCatsButton!!.getThis().scaleX = 0.55f
+            moreCatsButton!!.getThis().scaleY = 0.55f
+        }
+        else {
+            moreCatsButton!!.getThis().scaleX = 0.6f
+            moreCatsButton!!.getThis().scaleY = 0.6f
+        }
+        moreCatsButton!!.setExpandedParams(params = moreCatsButton!!.getThis().layoutParams as LayoutParams)
+        moreCatsButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
+            (expandedParams!!.height * 0.5).toInt(), 0, 0))
+    }
+
     private fun repositionMenuButtons() {
         // Reposition ad button
-        adsButton!!.setExpandedParams(LayoutParams(adsButton!!.getExpandedParams().width,
-        adsButton!!.getExpandedParams().height, (getOriginalParams().height + spaceBetween
-                    + (getOriginalParams().height * 0.45)).toInt(), getOriginalParams().y))
+        adsButton!!.setExpandedParams(LayoutParams(adsButton!!.getExpandedParams().height,
+        adsButton!!.getExpandedParams().height, ((expandedParams!!.height * 1.25) +
+                    (borderWidth) + spaceBetween).toInt(), adsButton!!.getExpandedParams().y))
         adsButton!!.getThis().layoutParams = adsButton!!.getExpandedParams()
-        // Reposition mouse coin
-
+        // Reposition leader board button
+        leaderBoardButton!!.setExpandedParams(LayoutParams(leaderBoardButton!!.getExpandedParams().height,
+            leaderBoardButton!!.getExpandedParams().height, ((adsButton!!.getExpandedParams().x +
+                    adsButton!!.getExpandedParams().width) + (-borderWidth * 0.5) +
+                    spaceBetween).toInt(), leaderBoardButton!!.getExpandedParams().y))
+        leaderBoardButton!!.getThis().layoutParams = leaderBoardButton!!.getExpandedParams()
+        // Reposition volume button
+        volumeButton!!.setExpandedParams(LayoutParams(volumeButton!!.getExpandedParams().height,
+            volumeButton!!.getExpandedParams().height, ((leaderBoardButton!!.getExpandedParams().x +
+                    leaderBoardButton!!.getExpandedParams().width) + (-borderWidth * 0.5) +
+                    spaceBetween).toInt(), volumeButton!!.getExpandedParams().y))
+        volumeButton!!.getThis().layoutParams = volumeButton!!.getExpandedParams()
+        // Reposition more cats button
+        moreCatsButton!!.setExpandedParams(LayoutParams(moreCatsButton!!.getExpandedParams().height,
+            moreCatsButton!!.getExpandedParams().height, ((volumeButton!!.getExpandedParams().x +
+                    volumeButton!!.getExpandedParams().width) + (-borderWidth * 1.25) +
+                    spaceBetween).toInt(), moreCatsButton!!.getExpandedParams().y))
+        moreCatsButton!!.getThis().layoutParams = moreCatsButton!!.getExpandedParams()
     }
 
     fun setContractedParams() {
