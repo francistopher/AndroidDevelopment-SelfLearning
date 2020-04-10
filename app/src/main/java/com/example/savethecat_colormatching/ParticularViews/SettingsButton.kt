@@ -25,22 +25,26 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
     private var gearImage:CImageView? = null
 
     companion object {
-        var settingsMenu:SettingsMenu? = null
+        private var settingsMenu:SettingsMenu? = null
+        var settingsButtonLayout:AbsoluteLayout? = null
     }
 
     init {
         settingsButton = button
         settingsButton!!.layoutParams = params
+        settingsButtonLayout = AbsoluteLayout(button.context)
         this.parentLayout = parentLayout
         parentLayout.addView(settingsButton!!)
         setOriginalParams(params)
         setShrunkParams()
-        setStyle()
-        setGearImage()
-        setCornerRadiusAndBorderWidth((params.height / 2.0).toInt(),
-            (params.height / 12.0).toInt())
         setupSettingsMenu()
         setupListener()
+        setStyle()
+        setCornerRadiusAndBorderWidth((params.height / 2.0).toInt(),
+            (params.height / 12.0).toInt())
+        setGearImage()
+        gearImage!!.getThis().bringToFront()
+        settingsButton!!.bringToFront()
     }
 
     private fun setupSettingsMenu() {
@@ -48,13 +52,16 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         settingsMenu = SettingsMenu(view = View(settingsButton!!.context), parentLayout =
         parentLayout!!, params = LayoutParams(width.toInt(), originalParams!!.height,
             originalParams!!.x, originalParams!!.y))
-        parentLayout!!.bringChildToFront(settingsButton!!)
-        parentLayout!!.bringChildToFront(gearImage!!.getThis())
     }
 
     private fun setupListener() {
         settingsButton!!.setOnClickListener {
             settingsMenu!!.expandOrContract()
+            SettingsMenu.adsButton!!.expandOrContract()
+            SettingsMenu.leaderBoardButton!!.expandOrContract()
+            SettingsMenu.volumeButton!!.expandOrContract()
+            SettingsMenu.moreCatsButton!!.expandOrContract()
+            SettingsMenu.mouseCoinButton!!.expandOrContract()
             rotateGear()
         }
     }
@@ -128,7 +135,6 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         gearImage = CImageView(imageView = ImageView(settingsButton!!.context), parentLayout =
         parentLayout!!, params = originalParams!!)
         gearImage!!.loadImages(lightImageR = R.drawable.darkgear, darkImageR = R.drawable.lightgear)
-        parentLayout!!.bringChildToFront(gearImage!!.getThis())
     }
 
     private fun setStyle() {

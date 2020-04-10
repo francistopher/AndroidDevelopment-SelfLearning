@@ -55,6 +55,8 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         val availableSpace:Float = getOriginalParams().width - unavailableSpace
         spaceBetween = (availableSpace / 5.0).toFloat()
         repositionMenuButtons()
+        setContractedParams()
+        menuView!!.layoutParams = contractedParams!!
     }
 
     private var shape: GradientDrawable? = null
@@ -132,7 +134,9 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
         adsButton!!.setExpandedParams(params = adsButton!!.getThis().layoutParams as LayoutParams)
         adsButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
-            (expandedParams!!.height * 0.5).toInt(), 0, 0))
+            (expandedParams!!.height * 0.5).toInt(), (getOriginalParams().x +
+                    getOriginalParams().height * 0.25).toInt(), (getOriginalParams().y +
+                    getOriginalParams().height * 0.25).toInt()))
     }
 
     private fun setupMouseCoinButton() {
@@ -145,7 +149,8 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         mouseCoinButton!!.setExpandedParams(params = mouseCoinButton!!.getThis().layoutParams
                 as LayoutParams)
         mouseCoinButton!!.setContractedParams(LayoutParams(expandedParams!!.height,
-            expandedParams!!.height, (expandedParams!!.height + (borderWidth * 0.5)).toInt(), 0))
+            expandedParams!!.height, (expandedParams!!.height + (borderWidth * 2.5)).toInt(),
+            getOriginalParams().y))
         mouseCoinButton!!.getThis().layoutParams = mouseCoinButton!!.getExpandedParams()
     }
 
@@ -167,7 +172,9 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
         leaderBoardButton!!.setExpandedParams(params = leaderBoardButton!!.getThis().layoutParams as LayoutParams)
         leaderBoardButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
-            (expandedParams!!.height * 0.5).toInt(), 0, 0))
+            (expandedParams!!.height * 0.5).toInt(), (getOriginalParams().x +
+                    getOriginalParams().height * 0.25).toInt(), (getOriginalParams().y +
+                    getOriginalParams().height * 0.25).toInt()))
     }
 
     private fun setupVolumeButton() {
@@ -188,7 +195,9 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
         volumeButton!!.setExpandedParams(params = volumeButton!!.getThis().layoutParams as LayoutParams)
         volumeButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
-            (expandedParams!!.height * 0.5).toInt(), 0, 0))
+            (expandedParams!!.height * 0.5).toInt(), (getOriginalParams().x +
+                    getOriginalParams().height * 0.25).toInt(), (getOriginalParams().y +
+                    getOriginalParams().height * 0.25).toInt()))
     }
 
 
@@ -210,7 +219,9 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
         moreCatsButton!!.setExpandedParams(params = moreCatsButton!!.getThis().layoutParams as LayoutParams)
         moreCatsButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
-            (expandedParams!!.height * 0.5).toInt(), 0, 0))
+            (expandedParams!!.height * 0.5).toInt(),(getOriginalParams().x +
+                    getOriginalParams().height * 0.25).toInt(), (getOriginalParams().y +
+                    getOriginalParams().height * 0.25).toInt()))
     }
 
     private fun repositionMenuButtons() {
@@ -239,10 +250,17 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         moreCatsButton!!.getThis().layoutParams = moreCatsButton!!.getExpandedParams()
     }
 
-    fun setContractedParams() {
-        contractedParams = LayoutParams(expandedParams!!.height, expandedParams!!.height,
+    private fun setContractedParams() {
+        contractedParams = LayoutParams((expandedParams!!.height * 1.9).toInt(), expandedParams!!.height,
         expandedParams!!.x, expandedParams!!.y)
         menuView!!.layoutParams = contractedParams!!
+        // Contract no ads button
+        adsButton!!.getThis().layoutParams = adsButton!!.getContractedParams()
+        leaderBoardButton!!.getThis().layoutParams = leaderBoardButton!!.getContractedParams()
+        volumeButton!!.getThis().layoutParams = volumeButton!!.getContractedParams()
+        moreCatsButton!!.getThis().layoutParams = moreCatsButton!!.getContractedParams()
+        mouseCoinButton!!.getThis().layoutParams = mouseCoinButton!!.getContractedParams()
+
     }
 
     fun setOriginalParams(params: LayoutParams) {

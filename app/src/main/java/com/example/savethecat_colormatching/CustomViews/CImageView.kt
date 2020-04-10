@@ -2,22 +2,11 @@ package com.example.savethecat_colormatching.CustomViews
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.GradientDrawable
-import android.media.Image
-import android.renderscript.Sampler
-import android.util.Log
-import android.util.TypedValue
-import android.view.View
 import android.view.ViewPropertyAnimator
 import android.view.animation.LinearInterpolator
 import android.widget.AbsoluteLayout
-import android.widget.Button
 import android.widget.ImageView
 import androidx.core.animation.doOnEnd
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import androidx.interpolator.view.animation.LinearOutSlowInInterpolator
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Controllers.AudioController
