@@ -114,7 +114,6 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         }
         if (Out and !In) {
             fadeAnimator = ValueAnimator.ofFloat(1f, 0f)
-
         }
         fadeAnimator!!.addUpdateListener {
             val alpha:Float =  (it.animatedValue as Float)
@@ -225,19 +224,61 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         translationToCatAnimator = ValueAnimator.ofInt(enemyImage!!.getOriginalParams().x,
         getCurrentEnemyCatDistance() + getOriginalParams().x)
         translationToCatAnimator!!.addUpdateListener {
-            enemyImage!!.getThis().layoutParams = LayoutParams(enemyImage!!.getOriginalParams().width,
-            enemyImage!!.getOriginalParams().height, (it.animatedValue as Int),
-                enemyImage!!.getOriginalParams().y)
+            val params = LayoutParams(
+                enemyImage!!.getOriginalParams().width,
+                enemyImage!!.getOriginalParams().height,
+                (it.animatedValue as Int),
+                enemyImage!!.getOriginalParams().y
+            )
+            enemyImage!!.getThis().layoutParams = params
+            enemyImage!!.setOriginalParams(params)
         }
         translationToCatAnimator!!.duration = getEnemyToCatDuration()
         translationToCatAnimator!!.doOnEnd {
             dismantleTranslationToCat()
+            startSizeExpansion(0.125f)
         }
     }
 
     private fun dismantleTranslationToCat() {
         enemyPhase = null
         translationToCatAnimator = null
+    }
+
+    private var sizeExpansionAnimator:ValueAnimator? = null
+    private var enemySideLength:Int = 0
+    private fun startSizeExpansion(delay:Float) {
+        if (isEnemyInPhase()) {
+            return
+        }
+        enemySideLength = enemyImage!!.getOriginalParams().width
+        setupSizeExpansionAnimation()
+        sizeExpansionAnimator!!.startDelay = (1000 * delay).toLong()
+        sizeExpansionAnimator!!.start()
+        enemyPhase = EnemyPhase.SizeExpansion
+    }
+
+    private fun setupSizeExpansionAnimation() {
+        sizeExpansionAnimator = ValueAnimator.ofInt(enemyImage!!.getOriginalParams().width,
+            (enemyImage!!.getOriginalParams().width * 1.5).toInt())
+        sizeExpansionAnimator!!.addUpdateListener {
+            val value:Int = (it.animatedValue as Int)
+            val x:Int = (getOriginalParams().x + getOriginalParams().width - enemySideLength -
+                    ((value - enemySideLength) * 0.5)).toInt()
+            val y:Int = (getOriginalParams().y - ((value - enemySideLength) * 0.5)).toInt()
+            val params = LayoutParams(value, value, x, y)
+            enemyImage!!.getThis().layoutParams = params
+            enemyImage!!.setOriginalParams(params)
+        }
+        sizeExpansionAnimator!!.duration = (1000 * 0.5).toLong()
+        sizeExpansionAnimator!!.doOnEnd {
+            dismantleSizeExpansion()
+        }
+    }
+
+    private fun dismantleSizeExpansion() {
+        enemyPhase = null
+        sizeExpansionAnimator = null
     }
 
     private fun getCurrentEnemyCatDistance():Int {

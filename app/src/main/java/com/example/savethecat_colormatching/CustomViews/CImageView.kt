@@ -48,7 +48,7 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
         return imageView!!.context
     }
 
-    private fun setOriginalParams(params: AbsoluteLayout.LayoutParams) {
+    fun setOriginalParams(params: AbsoluteLayout.LayoutParams) {
         originalParams = params
     }
 
@@ -114,6 +114,8 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
             fadeAnimator!!.start()
         }
     }
+
+
 
     fun fadeOut(Duration: Float) {
         if (isCatImage) {
