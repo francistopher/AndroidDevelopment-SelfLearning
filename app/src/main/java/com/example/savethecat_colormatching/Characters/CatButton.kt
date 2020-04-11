@@ -167,7 +167,6 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     fun doNotStartRotationAndShow() {
         dontStartImageRotation = true
-        imageButton!!.alpha = 1f
     }
 
     var imageRotationAnimator:ValueAnimator? = null
@@ -177,7 +176,6 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private fun startImageRotation() {
         if (dontStartImageRotation) {
             imageView!!.getThis().rotation = 0f
-            imageView!!.getThis().alpha = 1f
             return
         }
         if (imageRotationAnimator != null) {
@@ -383,6 +381,10 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             parentLayout!!.removeView(imageButton!!)
             parentLayout!!.removeView(imageView!!.getThis())
         }
+    }
+
+    fun setCatImageAlpha(alpha:Float) {
+        imageView!!.getThis().alpha = alpha
     }
 
     private fun getRadialTargetX():Float {

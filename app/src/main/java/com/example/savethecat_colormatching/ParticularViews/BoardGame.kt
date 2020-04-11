@@ -35,6 +35,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         var singlePlayerButton:CButton? = null
         var multiPlayerButton:CButton? = null
     }
+
     init {
         this.boardView = boardView
         boardGameContext = boardView.context
@@ -351,6 +352,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
         gridColors = null
         catButtons!!.removeAll()
+    }
+
+    fun getCatButtons():CatButtons {
+        return this.catButtons!!
     }
 
     private var recordedColor:Int = 0

@@ -9,6 +9,7 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
+import android.view.WindowManager
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
@@ -17,11 +18,13 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Characters.Enemies
 import com.example.savethecat_colormatching.Controllers.ARType
 import com.example.savethecat_colormatching.Controllers.AspectRatio
+import com.example.savethecat_colormatching.Controllers.AspectRatio.Companion.setupAspectRatio
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
 import com.example.savethecat_colormatching.ParticularViews.*
 import com.google.android.gms.ads.*
 import java.util.*
+
 
 class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListener {
 
@@ -69,10 +72,15 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     private fun updateTheme() {
+        val window = this.window
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         if (isThemeDark) {
-            rootView?.setBackgroundColor(Color.BLACK)
+            rootView!!.setBackgroundColor(Color.BLACK)
+            window.statusBarColor = this.resources.getColor(R.color.Black)
         } else {
-            rootView?.setBackgroundColor(Color.WHITE)
+            rootView!!.setBackgroundColor(Color.WHITE)
+            window.statusBarColor = this.resources.getColor(R.color.White)
         }
     }
 
@@ -120,7 +128,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         rootLayout = AbsoluteLayout(this)
         staticSelf = this
         setupReachability()
-        AspectRatio.setupAspectRatio()
+        setupAspectRatio()
         setCurrentTheme()
         setupSaveTheCat()
         setupGamePlayAuthentication()
@@ -142,6 +150,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                             staticSelf!!.runOnUiThread {
                                 enemies!!.fadeIn()
                                 settingsButton!!.fadeIn()
+                                attackMeter!!.fadeIn()
                                 boardGame!!.buildGame()
                                 boardGame!!.setupSinglePlayerButton()
                                 boardGame!!.setupTwoPlayerButton()
@@ -256,7 +265,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         boardGame!!.getOriginalParams(), parentParams = LayoutParams(dWidth.toInt(),
             (adHeight * 1.05).toInt(), 0, 0))
         boardGame!!.setOriginalParams(boardGame!!.getThis().layoutParams as LayoutParams)
-        boardGame!!.getThis().bringToFront()
     }
 
     private fun setupColorOptions() {
@@ -303,6 +311,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             x.toInt(), y.toInt())
         attackMeter = AttackMeter(meterView = View(this), parentLayout = rootLayout!!,
             params = attackMeterParams)
+        attackMeter!!.setCatButtons(boardGame!!.getCatButtons())
     }
 
     private fun setupLivesMeters() {
