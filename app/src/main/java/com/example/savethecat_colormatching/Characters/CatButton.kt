@@ -35,6 +35,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var buttonLayout:AbsoluteLayout? = null
     private var parentLayout:AbsoluteLayout? = null
 
+    private var dontStartImageRotation:Boolean = false
     var rowIndex:Int = 0
     var columnIndex:Int = 0
 
@@ -164,11 +165,21 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         startImageRotation()
     }
 
+    fun doNotStartRotationAndShow() {
+        dontStartImageRotation = true
+        imageButton!!.alpha = 1f
+    }
+
     var imageRotationAnimator:ValueAnimator? = null
     var isImageRotating:Boolean = false
     var rotateImageToRight:Boolean = true
     var stopImageRotation:Boolean = false
     private fun startImageRotation() {
+        if (dontStartImageRotation) {
+            imageView!!.getThis().rotation = 0f
+            imageView!!.getThis().alpha = 1f
+            return
+        }
         if (imageRotationAnimator != null) {
             if (isImageRotating) {
                 imageRotationAnimator!!.cancel()

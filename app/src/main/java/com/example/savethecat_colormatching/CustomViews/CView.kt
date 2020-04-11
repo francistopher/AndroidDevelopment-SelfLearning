@@ -18,6 +18,7 @@ class CView(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
         this.view!!.layoutParams = params
         parentLayout.addView(view)
         setOriginalParams(params)
+        setStyle()
     }
 
     private var shape: GradientDrawable? = null

@@ -8,11 +8,9 @@ import android.view.animation.LinearInterpolator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
-import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
-import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
 
@@ -24,14 +22,12 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
     private var shrunkParams:LayoutParams? = null
 
     private var parentLayout:AbsoluteLayout? = null
-    private var gearImage:CImageView? = null
 
     companion object {
         private var settingsMenu:SettingsMenu? = null
+        var borderImageView:Button? = null
         var settingsButtonLayout:AbsoluteLayout? = null
     }
-
-    var borderImageView:Button? = null
 
     init {
         settingsButton = button
@@ -55,6 +51,7 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         settingsButton!!.bringToFront()
         settingsButton!!.alpha = 0f
         settingsMenu!!.getThis().alpha = 0f
+        borderImageView!!.alpha = 0f
     }
 
     private var fadeAnimator: ValueAnimator? = null
@@ -76,6 +73,7 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         }
         fadeAnimator!!.addUpdateListener {
             val alpha:Float =  (it.animatedValue as Float)
+            borderImageView!!.alpha = alpha
             settingsButton!!.alpha = alpha
             settingsMenu!!.getThis().alpha = alpha
             SettingsMenu.adsButton!!.getThis().alpha = alpha
