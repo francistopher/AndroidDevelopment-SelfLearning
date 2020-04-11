@@ -1,9 +1,7 @@
 package com.example.savethecat_colormatching.ParticularViews
 
-import android.view.ViewPropertyAnimator
-import android.view.animation.LinearInterpolator
-import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.AbsoluteLayout
+import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageView
 import com.example.savethecat_colormatching.CustomViews.CImageView
 
@@ -23,8 +21,8 @@ class IntroView(imageView: ImageView, parentLayout:AbsoluteLayout, params: Layou
 
     fun start() {
         textImageView!!.rotateText()
-        textImageView!!.fade(In = true, Out = true, Duration = 2.4f, Delay = 0.5f)
-        catImageView!!.fade(In = true, Out = true, Duration = 2.4f, Delay = 0.5f)
+        textImageView!!.fade(In = true, Out = true, Duration = 2.0f, Delay = 0.5f)
+        catImageView!!.fade(In = true, Out = true, Duration = 2.0f, Delay = 0.5f)
     }
 
     fun loadTextImages(lightTextImageR:Int, darkTextImageR:Int, lightCatImageR:Int, darkCatImageR:Int) {

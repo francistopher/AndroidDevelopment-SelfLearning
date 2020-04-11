@@ -34,6 +34,12 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     private var didNotInvokeRelease:Boolean = true
     private var enemyPhase:EnemyPhase? = null
 
+    private var rotationCheckpoint:Float = 0f
+
+    private var previousDisplacementDuration:Float = 3.5f
+    private var displacementDuration:Float = 3.5f
+    private var initialEnemyCatDistance:Int = 0
+
     init {
         this.meterView = meterView
         meterContext = meterView.context
@@ -72,6 +78,8 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     private fun setupCharacters() {
         setupCatButton()
         setupEnemy()
+        initialEnemyCatDistance = catButton!!.getOriginalParams().x -
+                enemyImage!!.getOriginalParams().x
     }
 
     private fun setupCatButton() {
@@ -163,20 +171,89 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
 
     fun invokeRelease() {
         didNotInvokeRelease = false
+        startRotation(0.5f)
     }
 
-    // First rotation
-    private fun startRotation(delay:Float) {
-         if (enemyPhase == null || didNotInvokeRelease) {
+    //Rotation animation
+    private var rotationAnimator:ValueAnimator? = null
+    private fun startRotation(delay: Float) {
+         if (enemyPhase != null || didNotInvokeRelease) {
              return
          }
         setupRotationAnimation()
+        rotationAnimator!!.startDelay = (1000 * delay).toLong()
+        rotationAnimator!!.start()
+        enemyPhase = EnemyPhase.ROTATION
     }
 
+    var remainingPercentage:Float = 0f
+    var rotationDuration:Float = 0f
     private fun setupRotationAnimation() {
-
+        rotationDuration = 1f
+        if (rotationCheckpoint > 0f) {
+            remainingPercentage = (360f - enemyImage!!.rotation) / 360f
+            rotationDuration *= remainingPercentage
+        }
+        rotationAnimator = ValueAnimator.ofFloat(enemyImage!!.getThis().rotation, 360f)
+        rotationAnimator!!.addUpdateListener {
+            enemyImage!!.getThis().rotation = (it.animatedValue as Float)
+        }
+        rotationAnimator!!.duration = (1000 * rotationDuration).toLong()
+        rotationAnimator!!.doOnEnd {
+            dismantleFirstRotation()
+            startTranslationToCat(0.125f)
+        }
     }
 
+    private fun dismantleFirstRotation() {
+        enemyPhase = null
+        rotationAnimator = null
+    }
+
+    private var translationToCatAnimator:ValueAnimator? = null
+    private fun startTranslationToCat(delay:Float) {
+        if (isEnemyInPhase()) {
+            return
+        }
+        setupTranslationToCatAnimation()
+        translationToCatAnimator!!.startDelay = (1000 * delay).toLong()
+        translationToCatAnimator!!.start()
+        enemyPhase = EnemyPhase.TranslationToCat
+    }
+
+    private fun setupTranslationToCatAnimation() {
+        translationToCatAnimator = ValueAnimator.ofInt(enemyImage!!.getOriginalParams().x,
+        getCurrentEnemyCatDistance() + getOriginalParams().x)
+        translationToCatAnimator!!.addUpdateListener {
+            enemyImage!!.getThis().layoutParams = LayoutParams(enemyImage!!.getOriginalParams().width,
+            enemyImage!!.getOriginalParams().height, (it.animatedValue as Int),
+                enemyImage!!.getOriginalParams().y)
+        }
+        translationToCatAnimator!!.duration = getEnemyToCatDuration()
+        translationToCatAnimator!!.doOnEnd {
+            dismantleTranslationToCat()
+        }
+    }
+
+    private fun dismantleTranslationToCat() {
+        enemyPhase = null
+        translationToCatAnimator = null
+    }
+
+    private fun getCurrentEnemyCatDistance():Int {
+        return (catButton!!.getOriginalParams().x - enemyImage!!.getOriginalParams().x)
+    }
+
+    private fun getEnemyToCatDuration():Long {
+        return ((displacementDuration * getCurrentEnemyCatDistance()
+                / initialEnemyCatDistance) * 1000).toLong()
+    }
+
+    private fun isEnemyInPhase():Boolean {
+        return ((rotationAnimator != null && rotationAnimator!!.isRunning) ||
+                (translationToCatAnimator != null && translationToCatAnimator!!.isRunning))
+//                 || (translationToCatAnimation != nil && translationToCatAnimation!.isRunning) || (sizeExpansionAnimation != nil && sizeExpansionAnimation!.isRunning) || (sizeReductionAnimation != nil && sizeReductionAnimation!.isRunning) || (translationToStartAnimation != nil && translationToStartAnimation!.isRunning));
+    }
     fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()

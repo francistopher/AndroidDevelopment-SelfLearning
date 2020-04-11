@@ -156,11 +156,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 catButton!!.shrunk()
                 catButton!!.grow()
                 catButton!!.fade(true, false, 0.5f, 0.125f)
-//                gridCatButton!.rowIndex = rowIndex
-//                gridCatButton!.columnIndex = columnIndex
-//                gridCatButton!.imageContainerButton!.backgroundColor = UIColor.clear;
-//                gridCatButton!.imageContainerButton!.addTarget(self, action: #selector(selectCatImageButton), for: .touchUpInside);
-//                gridCatButton!.addTarget(self, action: #selector(selectCatButton), for: .touchUpInside);
                 gridButtonX += gridButtonWidth
             }
             gridButtonY += gridButtonHeight
@@ -409,6 +404,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
 
     fun startGame() {
         MainActivity.colorOptions!!.buildColorOptionButtons(setup = true)
+        MainActivity.attackMeter!!.invokeRelease()
     }
 
     fun setupTwoPlayerButton() {

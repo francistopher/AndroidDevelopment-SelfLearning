@@ -1,9 +1,6 @@
 package com.example.savethecat_colormatching.Controllers
 
-import android.util.Log
 import android.view.View
-import android.view.ViewGroup
-import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageView
 
@@ -21,11 +18,11 @@ class CenterController {
                 getCenterX().toInt(), getCenterY().toInt())
         }
         
-        fun center(childView: ImageView, childParams:LayoutParams, parentParams:LayoutParams, vD:Float) {
+        fun center(childView: ImageView, childParams:LayoutParams, parentParams:LayoutParams) {
             this.childParam = childParams
             this.parentParam = parentParams
             childView.layoutParams = LayoutParams(childParam!!.width, childParam!!.height,
-                getCenterX().toInt(), (getCenterY() + vD).toInt())
+                getCenterX().toInt(), (getCenterY()).toInt())
         }
 
         fun centerViewHorizontally(childView: View, childParams:LayoutParams, parentParams: LayoutParams) {

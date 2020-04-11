@@ -24,8 +24,7 @@ class AspectRatio {
             MainActivity.dNavigationBarHeight = getStatusBarHeight() * 0.5f
             fun setupScreenDimension() {
                 MainActivity.dWidth = displayMetrics.widthPixels.toDouble()
-                MainActivity.adHeight = displayMetrics.heightPixels.toDouble()
-                MainActivity.dHeight = displayMetrics.heightPixels.toDouble()
+                MainActivity.dHeight = displayMetrics.heightPixels.toDouble() + getStatusBarHeight()
             }
             fun setupUnitScreenDimension() {
                 MainActivity.dUnitWidth = MainActivity.dWidth / 18.0

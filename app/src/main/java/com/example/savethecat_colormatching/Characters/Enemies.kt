@@ -31,13 +31,13 @@ class Enemies {
         Log.i("Side length", "${sideLength}")
         // Spacing
         totalWidthSpacing = MainActivity.dWidth.toFloat() - (sideLength * 3.0f)
-        totalHeightSpacing = MainActivity.adHeight.toFloat() - (sideLength * 4.0f)
+        totalHeightSpacing = MainActivity.dHeight.toFloat() - (sideLength * 4.0f)
         // Enemy Spacing
         enemyWidthSpacing = totalWidthSpacing / 2.625f
         enemyHeightSpacing = totalHeightSpacing / 4.0f
         // Starting coordinates
         x = -enemyWidthSpacing * 0.665f
-        y = (-(enemyHeightSpacing) * 0.45f) + MainActivity.dNavigationBarHeight.toFloat()
+        y = (-(enemyHeightSpacing) * 0.45f)
         // Build and plot enemies
         for (i in 0..2) {
             x += enemyWidthSpacing

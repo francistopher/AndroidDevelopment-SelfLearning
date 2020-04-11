@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         // Display properties
         var dWidth:Double = 0.0
         var dHeight:Double = 0.0
-        var adHeight:Double = 0.0
         var dUnitWidth:Double = 0.0
         var dUnitHeight:Double = 0.0
         var dNavigationBarHeight:Double = 0.0
@@ -203,13 +202,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private fun setupIntroAnimation() {
         val width:Double = dUnitWidth * 9.0
         introAnimation = IntroView(imageView = ImageView(this), parentLayout = rootLayout!!,
-            params = AbsoluteLayout.LayoutParams(width.toInt(), width.toInt(), 0, 0))
+            params = LayoutParams(width.toInt(), width.toInt(), 0, 0))
         introAnimation!!.loadTextImages(lightTextImageR = R.drawable.darkintrotext, darkTextImageR = R.drawable.lightintrotext,
             lightCatImageR = R.drawable.darkcat, darkCatImageR = R.drawable.lightcat)
         CenterController.center(introAnimation!!.getTextImage(), introAnimation!!.getTextParams(),
-            params!!, -(dNavigationBarHeight.toFloat() * 2.5f))
+            params!!)
         CenterController.center(introAnimation!!.getCatImage(), introAnimation!!.getCatParams(),
-            params!!, -(dNavigationBarHeight.toFloat() * 2.5f))
+            params!!)
     }
 
     private fun setSuccessGradientViewAndLayer() {
@@ -263,7 +262,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         boardGame!!.getThis().setBackgroundColor(Color.TRANSPARENT)
         CenterController.centerView(childView = boardGame!!.getThis(), childParams =
         boardGame!!.getOriginalParams(), parentParams = LayoutParams(dWidth.toInt(),
-            (adHeight * 1.05).toInt(), 0, 0))
+            (dHeight).toInt(), 0, 0))
         boardGame!!.setOriginalParams(boardGame!!.getThis().layoutParams as LayoutParams)
     }
 
@@ -274,7 +273,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             boardGame!!.getOriginalParams().x, boardGame!!.getOriginalParams().y + boardGame!!.
             getOriginalParams().height))
         CenterController.centerViewHorizontally(colorOptions!!.getThis(), parentParams =
-        LayoutParams(dWidth.toInt(), (adHeight * 1.05).toInt(), 0, 0), childParams =
+        LayoutParams(dWidth.toInt(), (dHeight).toInt(), 0, 0), childParams =
         colorOptions!!.getOriginalParams())
         colorOptions!!.setOriginalParams(colorOptions!!.getThis().layoutParams as LayoutParams)
         rootLayout!!.addView(ColorOptions.colorOptionsLayout!!)
