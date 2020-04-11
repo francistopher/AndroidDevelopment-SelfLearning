@@ -31,6 +31,8 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         var settingsButtonLayout:AbsoluteLayout? = null
     }
 
+    var borderImageView:Button? = null
+
     init {
         settingsButton = button
         settingsButton!!.layoutParams = params
@@ -41,6 +43,12 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         setShrunkParams()
         setupSettingsMenu()
         setupListener()
+        // Setup border image view
+        borderImageView = Button(settingsButton!!.context)
+        borderImageView!!.layoutParams = params
+        parentLayout.addView(borderImageView!!)
+
+        // Stop border image view setup
         setCornerRadiusAndBorderWidth((params.height / 2.0).toInt(),
             (params.height / 12.0).toInt())
         setStyle()
@@ -152,18 +160,20 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         shape = null
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
-        shape!!.setColor(Color.TRANSPARENT)
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
             if (MainActivity.isThemeDark) {
+                shape!!.setColor(Color.BLACK)
                 shape!!.setStroke(borderWidth, Color.WHITE)
             } else {
+                shape!!.setColor(Color.WHITE)
                 shape!!.setStroke(borderWidth, Color.BLACK)
             }
         }
         cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()
         settingsButton!!.setBackgroundDrawable(shape)
+        borderImageView!!.setBackgroundDrawable(shape)
     }
 
     private fun setShrunkParams() {
@@ -184,12 +194,6 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
 
     private fun darkDominant() {
         settingsButton!!.setBackgroundResource(R.drawable.darkgear)
-    }
-
-    private fun setGearImage() {
-        gearImage = CImageView(imageView = ImageView(settingsButton!!.context), parentLayout =
-        parentLayout!!, params = originalParams!!)
-        gearImage!!.loadImages(lightImageR = R.drawable.darkgear, darkImageR = R.drawable.lightgear)
     }
 
     private fun setStyle() {

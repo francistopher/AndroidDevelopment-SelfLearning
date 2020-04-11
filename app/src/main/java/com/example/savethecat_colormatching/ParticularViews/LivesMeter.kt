@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
+import com.example.savethecat_colormatching.CustomViews.CView
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
 
@@ -28,6 +29,8 @@ class LivesMeter(meterView: View,
     private var currentHeartButton:ImageButton? = null
     private var parentLayout:AbsoluteLayout? = null
 
+    private var containerView:CView? = null
+
     init {
         if (isOpponent) {
             imageHeart = R.drawable.opponentheart
@@ -44,6 +47,7 @@ class LivesMeter(meterView: View,
         setCornerRadiusAndBorderWidth(radius = params.height / 2,
             borderWidth = params.height / 12)
         this.parentLayout = parentLayout
+        setupContainerMeterView()
         parentLayout.addView(this.meterView!!)
         // Setup heart interactive buttons
         setupHeartInteractiveButtons()
@@ -55,6 +59,15 @@ class LivesMeter(meterView: View,
         }
     }
 
+    private fun setupContainerMeterView() {
+        containerView = CView(view = View(meterView!!.context), parentLayout = parentLayout!!,
+        params = LayoutParams(((getOriginalParams().width * 2) - borderWidth),
+            getOriginalParams().height, getOriginalParams().x - getOriginalParams().width +
+                    borderWidth, getOriginalParams().y))
+        containerView!!.setCornerRadiusAndBorderWidth(getOriginalParams().height / 2,
+            getOriginalParams().height / 12)
+    }
+
     private fun buildHeartButton() {
         currentHeartButton = ImageButton(meterView!!.context)
         currentHeartButton!!.layoutParams = LayoutParams(getOriginalParams().width,
@@ -62,13 +75,12 @@ class LivesMeter(meterView: View,
         currentHeartButton!!.setBackgroundResource(imageHeart)
         heartButtons.add(currentHeartButton!!)
         parentLayout!!.addView(currentHeartButton)
-
     }
 
     private var shape: GradientDrawable? = null
     private var borderWidth:Int = 0
     private var cornerRadius:Int = 0
-    fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int) {
+    private fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int) {
         shape = null
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE

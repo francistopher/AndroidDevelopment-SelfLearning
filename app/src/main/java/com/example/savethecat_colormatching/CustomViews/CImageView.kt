@@ -14,7 +14,6 @@ import com.example.savethecat_colormatching.MainActivity
 
 class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
 
-    var isInverted:Boolean = false
     var isCatImage:Boolean = false
 
     private var originalParams: AbsoluteLayout.LayoutParams? = null

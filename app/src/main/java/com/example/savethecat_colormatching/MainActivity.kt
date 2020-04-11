@@ -163,9 +163,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupAdvertisement()
         setupBoardGame()
         setupColorOptions()
+        setupLivesMeters()
         setupSettingsButton()
         setupAttackMeter()
-        setupLivesMeters()
         AudioController.mozartSonata(play = true, startOver = false)
     }
 

@@ -236,7 +236,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     private fun repositionMenuButtons() {
         // Reposition ad button
         adsButton!!.setExpandedParams(LayoutParams(adsButton!!.getExpandedParams().height,
-        adsButton!!.getExpandedParams().height, ((expandedParams!!.height * 1.175) +
+        adsButton!!.getExpandedParams().height, ((expandedParams!!.height * 1.25) +
                     (borderWidth) + spaceBetween).toInt(), adsButton!!.getExpandedParams().y))
         adsButton!!.getThis().layoutParams = adsButton!!.getExpandedParams()
         // Reposition leader board button
