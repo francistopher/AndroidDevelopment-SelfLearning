@@ -7,7 +7,7 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
-import android.widget.Button
+import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
@@ -39,7 +39,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     init {
         this.menuView = view
         this.menuView!!.layoutParams = params
-        this.parentLayout = parentLayout
+        this.parentLayout = MainActivity.rootLayout!!
         parentLayout.addView(view)
         setOriginalParams(params = params)
         setStyle()
@@ -121,7 +121,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     }
 
     private fun setupAdsButton() {
-        adsButton = Ads(button = Button(menuView!!.context), parentLayout = parentLayout!!,
+        adsButton = Ads(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
             getOriginalParams().y))
         if (AspectRatio.dAspectRatio >= 2.09) {
@@ -145,7 +145,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     }
 
     private fun setupMouseCoinButton() {
-        mouseCoinButton = MouseCoin(button = Button(menuView!!.context), parentLayout = parentLayout!!,
+        mouseCoinButton = MouseCoin(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height,
                 (getOriginalParams().width - (getOriginalParams().height * 0.7)).toInt(),
                 getOriginalParams().y))
@@ -161,7 +161,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     }
 
     private fun setupLeaderBoardButton() {
-        leaderBoardButton = LeaderBoard(button = Button(menuView!!.context), parentLayout = parentLayout!!,
+        leaderBoardButton = LeaderBoard(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
         if (AspectRatio.dAspectRatio >= 2.09) {
@@ -185,7 +185,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     }
 
     private fun setupVolumeButton() {
-        volumeButton = Volume(button = Button(menuView!!.context), parentLayout = parentLayout!!,
+        volumeButton = Volume(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
         if (AspectRatio.dAspectRatio >= 2.09) {
@@ -210,7 +210,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
 
 
     private fun setupMoreCatsButton() {
-        moreCatsButton = MoreCats(button = Button(menuView!!.context), parentLayout = parentLayout!!,
+        moreCatsButton = MoreCats(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
         if (AspectRatio.dAspectRatio >= 2.09) {

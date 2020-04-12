@@ -5,7 +5,7 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
-import android.widget.Button
+import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
@@ -13,17 +13,17 @@ import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
 
-class Ads(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams) {
+class Ads(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
     private var expandedParams:LayoutParams? = null
     private var contractedParams:LayoutParams? = null
 
-    private var adsButton:Button? = null
+    private var adsButton:ImageButton? = null
 
     init {
-        this.adsButton = button
+        this.adsButton = imageButton
         this.adsButton!!.layoutParams = params
-        parentLayout.addView(button)
+        parentLayout.addView(imageButton)
         this.adsButton!!.setBackgroundColor(Color.TRANSPARENT)
         setStyle()
     }
@@ -97,7 +97,7 @@ class Ads(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams) {
         return contractedParams!!
     }
 
-    fun getThis():Button {
+    fun getThis():ImageButton {
         return adsButton!!
     }
 

@@ -155,6 +155,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 catButton!!.getThis().setOnClickListener {
                     catButtonSelector(params = (it as View).layoutParams as LayoutParams)
                 }
+                catButton!!.getThisImage().setOnClickListener {
+                    catButtonSelector(params = (it as View).layoutParams as LayoutParams)
+                }
                 catButton!!.shrunk()
                 catButton!!.grow()
                 catButton!!.fade(true, false, 0.5f, 0.125f)
@@ -179,6 +182,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         catButton.pod()
                         verifyRemainingCatsArePodded()
                     } else {
+                        MainActivity.attackMeter!!.updateDuration(-0.75f)
                         attackCatButton(catButton = catButton)
                     }
                     return
@@ -204,6 +208,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         MainActivity.attackMeter!!.sendEnemyToStart()
         if (catButtons!!.areAliveAndPodded()) {
             if (catButtons!!.allSurvived()) {
+                MainActivity.attackMeter!!.updateDuration(0.075f)
                 AttackMeter.didNotInvokeRelease = true
                 unveilHeaven()
                 MainActivity.colorOptions!!.resetSelectedColor()
@@ -214,6 +219,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 AudioController.mozartSonata(play = false, startOver = false)
                 AudioController.chopinPrelude(play = true, startOver = false)
             } else {
+                MainActivity.attackMeter!!.updateDuration(0.025f)
                 AttackMeter.didNotInvokeRelease = true
                 unveilHeaven()
                 MainActivity.colorOptions!!.resetSelectedColor()

@@ -12,7 +12,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
-import android.widget.Button
+import android.widget.ImageButton
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Characters.Enemies
@@ -281,7 +281,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupSettingsButton() {
         val sideLength:Float = (dHeight * ((1.0/300.0) + 0.08)).toFloat()
-        settingsButton = SettingsButton(button = Button(this), parentLayout = rootLayout!!,
+        settingsButton = SettingsButton(imageButton = ImageButton(this), parentLayout = rootLayout!!,
             params = LayoutParams(sideLength.toInt(), sideLength.toInt(), dUnitWidth.toInt(),
                 dUnitHeight.toInt()))
     }

@@ -35,7 +35,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var buttonLayout:AbsoluteLayout? = null
     private var parentLayout:AbsoluteLayout? = null
 
-    private var dontStartImageRotation:Boolean = false
+    private var doNotStartImageRotation:Boolean = false
     var rowIndex:Int = 0
     var columnIndex:Int = 0
 
@@ -49,7 +49,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         this.imageButton!!.layoutParams = params
         this.originalBackgroundColor = backgroundColor
         this.parentLayout = parentLayout
-        parentLayout.addView(imageButton)
+        parentLayout.addView(this.imageButton)
         setOriginalParams(params=params)
         setShrunkParams()
         this.imageButton!!.setBackgroundColor(backgroundColor)
@@ -154,7 +154,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         return originalBackgroundColor
     }
 
-    fun getThis():ImageButton {
+    fun getThis(): ImageButton {
         return imageButton!!
     }
 
@@ -166,7 +166,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     }
 
     fun doNotStartRotationAndShow() {
-        dontStartImageRotation = true
+        doNotStartImageRotation = true
     }
 
     var imageRotationAnimator:ValueAnimator? = null
@@ -174,7 +174,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     var rotateImageToRight:Boolean = true
     var stopImageRotation:Boolean = false
     private fun startImageRotation() {
-        if (dontStartImageRotation) {
+        if (doNotStartImageRotation) {
             imageView!!.getThis().rotation = 0f
             return
         }
@@ -208,6 +208,10 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var podAnimator:ValueAnimator? = null
     private var isPodAnimatorRunning:Boolean = false
     fun pod() {
+        parentLayout!!.removeView(imageButton!!)
+        parentLayout!!.removeView(imageView!!.getThis())
+        MainActivity.rootLayout!!.addView(imageButton!!)
+        MainActivity.rootLayout!!.addView(imageView!!.getThis())
         AudioController.kittenMeow()
         isPodded = true
         if (podAnimator != null) {

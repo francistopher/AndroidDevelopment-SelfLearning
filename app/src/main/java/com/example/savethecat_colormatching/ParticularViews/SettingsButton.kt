@@ -7,40 +7,37 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
-import android.widget.Button
+import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
 
-class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams) {
+class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
-    private var settingsButton:Button? = null
+    private var settingsButton:ImageButton? = null
 
     private var originalParams:LayoutParams? = null
     private var shrunkParams:LayoutParams? = null
-
     private var parentLayout:AbsoluteLayout? = null
 
     companion object {
         private var settingsMenu:SettingsMenu? = null
-        var borderImageView:Button? = null
-        var settingsButtonLayout:AbsoluteLayout? = null
+        var borderImageView:ImageButton? = null
     }
 
     init {
-        settingsButton = button
+        settingsButton = imageButton
         settingsButton!!.layoutParams = params
-        settingsButtonLayout = AbsoluteLayout(button.context)
-        this.parentLayout = parentLayout
+        this.parentLayout = MainActivity.rootLayout!!
         parentLayout.addView(settingsButton!!)
         setOriginalParams(params)
         setShrunkParams()
         setupSettingsMenu()
         setupListener()
         // Setup border image view
-        borderImageView = Button(settingsButton!!.context)
+        borderImageView = ImageButton(settingsButton!!.context)
         borderImageView!!.layoutParams = params
         parentLayout.addView(borderImageView!!)
         // Stop border image view setup

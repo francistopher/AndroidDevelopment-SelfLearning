@@ -327,12 +327,11 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     }
 
     private fun attackRandomCatButton() {
-        if (MainActivity.boardGame!!.getCatButtons().areDead() ||
-            MainActivity.boardGame!!.getCatButtons().areAliveAndPodded()) {
-            return
+        val randomCatButton:CatButton? = MainActivity.boardGame!!.getCatButtons().randomLivingCatButton()
+        if (randomCatButton != null) {
+            MainActivity.boardGame!!.attackCatButton(randomCatButton)
         }
-        MainActivity.boardGame!!.attackCatButton(MainActivity.boardGame!!.getCatButtons().
-        getCurrentCatButtons().random())
+
     }
 
     private fun dismantleSizeReduction() {
@@ -477,6 +476,21 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
                 startSizeExpansion(0.125f)
             EnemyPhase.SizeReduction ->
                 startSizeReduction(0.125f)
+        }
+    }
+
+    fun updateDuration(change:Float) {
+        if (change > 0f) {
+            displacementDuration += change
+            previousDisplacementDuration += change
+        } else if (change < 0f) {
+            if (previousDisplacementDuration + change >= 1.5f) {
+                displacementDuration += change
+                previousDisplacementDuration += change
+            } else {
+                displacementDuration = 1.5f
+                previousDisplacementDuration = 1.5f
+            }
         }
     }
 

@@ -17,7 +17,7 @@ class CatButtons {
     private var catButton:CatButton? = null
     fun buildCatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout,
                        params: AbsoluteLayout.LayoutParams, backgroundColor:Int): CatButton {
-        catButton = CatButton(imageButton=imageButton, parentLayout=parentLayout, params=params,
+        catButton = CatButton(imageButton= imageButton, parentLayout=parentLayout, params=params,
             backgroundColor = backgroundColor)
         catButton!!.setCornerRadiusAndBorderWidth((params.height.toDouble() / 5.0).toInt(),
             ((kotlin.math.sqrt(params.width * 0.01) * 10.0) * 0.45).toInt(), true)
@@ -41,15 +41,24 @@ class CatButtons {
 
     fun areDead(): Boolean {
         for (catButton in currentCatButtons!!) {
-            if (catButton!!.isAlive) {
+            if (catButton.isAlive) {
                 return false
             }
         }
         return true
     }
 
-    fun getCurrentCatButtons() :MutableList<CatButton> {
+    fun getCurrentCatButtons(): MutableList<CatButton> {
         return currentCatButtons!!
+    }
+
+    fun randomLivingCatButton(): CatButton? {
+        if (areDead()) {
+            return null
+        } else {
+            return currentCatButtons!!.filter{ catButton -> (catButton.isAlive &&
+                    !catButton.isPodded)}.random()
+        }
     }
 
     fun areAliveAndPodded():Boolean {

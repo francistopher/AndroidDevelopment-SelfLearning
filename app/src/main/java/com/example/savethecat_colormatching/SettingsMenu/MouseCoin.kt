@@ -4,24 +4,24 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
-import android.widget.Button
+import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
 
-class MouseCoin(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams) {
+class MouseCoin(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
     private var expandedParams:LayoutParams? = null
     private var contractedParams:LayoutParams? = null
 
-    private var mouseCoinButton:Button? = null
+    private var mouseCoinButton:ImageButton? = null
 
     init {
-        this.mouseCoinButton = button
+        this.mouseCoinButton = imageButton
         this.mouseCoinButton!!.layoutParams = params
-        parentLayout.addView(button)
+        parentLayout.addView(imageButton)
         setStyle()
     }
 
@@ -90,7 +90,7 @@ class MouseCoin(button: Button, parentLayout: AbsoluteLayout, params: LayoutPara
         }
     }
 
-    fun getThis():Button {
+    fun getThis():ImageButton {
         return mouseCoinButton!!
     }
 

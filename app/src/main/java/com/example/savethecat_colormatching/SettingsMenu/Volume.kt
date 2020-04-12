@@ -5,6 +5,7 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.widget.AbsoluteLayout
 import android.widget.Button
+import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
@@ -12,17 +13,17 @@ import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
 
-class Volume(button: Button, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
+class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
 
     private var expandedParams: AbsoluteLayout.LayoutParams? = null
     private var contractedParams: AbsoluteLayout.LayoutParams? = null
 
-    private var volumeButton: Button? = null
+    private var volumeButton: ImageButton? = null
 
     init {
-        this.volumeButton = button
+        this.volumeButton = imageButton
         this.volumeButton!!.layoutParams = params
-        parentLayout.addView(button)
+        parentLayout.addView(imageButton)
         this.volumeButton!!.setBackgroundColor(Color.TRANSPARENT)
         setStyle()
     }
@@ -92,7 +93,7 @@ class Volume(button: Button, parentLayout: AbsoluteLayout, params: AbsoluteLayou
         }
     }
 
-    fun getThis(): Button {
+    fun getThis(): ImageButton {
         return volumeButton!!
     }
 

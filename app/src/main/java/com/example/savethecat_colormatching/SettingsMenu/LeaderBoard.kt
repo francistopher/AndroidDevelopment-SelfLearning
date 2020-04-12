@@ -4,7 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.widget.AbsoluteLayout
-import android.widget.Button
+import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
@@ -12,17 +12,17 @@ import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
 
-class LeaderBoard (button: Button, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
+class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
 
     private var expandedParams: AbsoluteLayout.LayoutParams? = null
     private var contractedParams: AbsoluteLayout.LayoutParams? = null
 
-    private var leaderBoardButton: Button? = null
+    private var leaderBoardButton: ImageButton? = null
 
     init {
-        this.leaderBoardButton = button
+        this.leaderBoardButton = imageButton
         this.leaderBoardButton!!.layoutParams = params
-        parentLayout.addView(button)
+        parentLayout.addView(imageButton)
         this.leaderBoardButton!!.setBackgroundColor(Color.TRANSPARENT)
         setStyle()
     }
@@ -92,7 +92,7 @@ class LeaderBoard (button: Button, parentLayout: AbsoluteLayout, params: Absolut
         }
     }
 
-    fun getThis(): Button {
+    fun getThis(): ImageButton {
         return leaderBoardButton!!
     }
 
