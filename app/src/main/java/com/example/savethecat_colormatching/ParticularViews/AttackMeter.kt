@@ -13,7 +13,6 @@ import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Characters.CatButton
-import com.example.savethecat_colormatching.Characters.CatButtons
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
@@ -28,10 +27,7 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     private var catButton:CatButton? = null
     private var enemyImage:CImageView? = null
 
-    private var catButtons: CatButtons? = null
-
     // Unique properties
-    private var didNotInvokeRelease:Boolean = true
     private var enemyPhase:EnemyPhase? = null
 
     private var rotationCheckpoint:Float = 0f
@@ -39,6 +35,10 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     private var previousDisplacementDuration:Float = 3.5f
     private var displacementDuration:Float = 3.5f
     private var initialEnemyCatDistance:Int = 0
+
+    companion object {
+        var didNotInvokeRelease:Boolean = true
+    }
 
     init {
         this.meterView = meterView
@@ -164,10 +164,6 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         return meterView!!
     }
 
-    fun setCatButtons(catButtons: CatButtons) {
-        this.catButtons = catButtons
-    }
-
     fun invokeRelease() {
         didNotInvokeRelease = false
         startRotation(0.5f)
@@ -190,7 +186,7 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     private fun setupRotationAnimation() {
         rotationDuration = 1f
         if (rotationCheckpoint > 0f) {
-            remainingPercentage = (360f - enemyImage!!.rotation) / 360f
+            remainingPercentage = (360f - enemyImage!!.getThis().rotation) / 360f
             rotationDuration *= remainingPercentage
         }
         rotationAnimator = ValueAnimator.ofFloat(enemyImage!!.getThis().rotation, 360f)
@@ -199,6 +195,7 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         }
         rotationAnimator!!.duration = (1000 * rotationDuration).toLong()
         rotationAnimator!!.doOnEnd {
+            enemyImage!!.getThis().rotation = 0f
             dismantleFirstRotation()
             startTranslationToCat(0.125f)
         }
@@ -304,9 +301,15 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         }
         sizeReductionAnimator!!.duration = (1000 * 0.5).toLong()
         sizeReductionAnimator!!.doOnEnd {
+            attackRandomCatButton()
             dismantleSizeReduction()
             startTransitionToStart(0.125f)
         }
+    }
+
+    private fun attackRandomCatButton() {
+       MainActivity.boardGame!!.attackCatButton(MainActivity.boardGame!!.getCatButtons()
+           .getCurrentCatButtons().random())
     }
 
     private fun dismantleSizeReduction() {

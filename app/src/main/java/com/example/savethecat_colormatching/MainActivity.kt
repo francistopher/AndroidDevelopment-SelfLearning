@@ -310,7 +310,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             x.toInt(), y.toInt())
         attackMeter = AttackMeter(meterView = View(this), parentLayout = rootLayout!!,
             params = attackMeterParams)
-        attackMeter!!.setCatButtons(boardGame!!.getCatButtons())
     }
 
     private fun setupLivesMeters() {

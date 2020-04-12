@@ -103,6 +103,19 @@ class AudioController {
             }
         }
 
+        fun chopinPrelude(play:Boolean, startOver:Boolean) {
+            if (play) {
+                if (startOver) {
+                    chopinPreludePlayer!!.stop()
+                    chopinPreludePlayer!!.start()
+                } else {
+                    chopinPreludePlayer!!.start()
+                }
+            } else {
+                chopinPreludePlayer!!.stop()
+            }
+        }
+
     }
 
 }

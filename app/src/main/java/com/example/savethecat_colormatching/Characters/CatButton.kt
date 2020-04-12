@@ -333,7 +333,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     fun disperseRadially() {
         stopImageRotation = true
         imageRotationAnimator!!.cancel()
-        transitionColor(targetColor = originalBackgroundColor!!)
+        transitionColor(targetColor = originalBackgroundColor)
         isAlive = false
         AudioController.kittenDie()
         imageView!!.loadImages(lightImageR = R.drawable.lightdeadcat,

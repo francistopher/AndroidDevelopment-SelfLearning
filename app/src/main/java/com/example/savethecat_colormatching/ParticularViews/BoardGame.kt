@@ -170,17 +170,15 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 if (catButton.getOriginalParams() == params && !catButton.isPodded) {
                     if (MainActivity.colorOptions!!.getSelectedColor() ==
                         catButton.getOriginalBackgroundColor()) {
-
                         catButton.transitionColor(catButton.getOriginalBackgroundColor())
                         gridColorsCount!![catButton.getOriginalBackgroundColor()] =
                             gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
                         MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
                         catButton.pod()
+                        verifyRemainingCatsArePodded()
                     } else {
                         attackCatButton(catButton = catButton)
-                        displaceArea(catButton = catButton)
                     }
-                    verifyRemainingCatsArePodded()
                     return
                 } else if (catButton.getOriginalParams() == params && catButton.isPodded) {
                     AudioController.kittenMeow()
@@ -189,6 +187,39 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             }
 
         }
+    }
+
+    fun attackCatButton(catButton: CatButton) {
+        catButton.disperseRadially()
+        gridColorsCount!![catButton.getOriginalBackgroundColor()] =
+            gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
+        MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
+        displaceArea(catButton = catButton)
+        verifyRemainingCatsArePodded()
+    }
+
+    private fun verifyRemainingCatsArePodded() {
+        if (catButtons!!.areAliveAndPodded()) {
+            if (catButtons!!.allSurvived()) {
+                unveilHeaven()
+                MainActivity.colorOptions!!.resetSelectedColor()
+                promote()
+            } else if (catButtons!!.areDead()) {
+                AttackMeter.didNotInvokeRelease = true
+                MainActivity.colorOptions!!.resetSelectedColor()
+                AudioController.mozartSonata(play = false, startOver = false)
+                AudioController.chopinPrelude(play = true, startOver = false)
+            } else {
+                unveilHeaven()
+                MainActivity.colorOptions!!.resetSelectedColor()
+                maintain()
+            }
+        }
+    }
+
+    private fun unveilHeaven() {
+        AudioController.heaven()
+        MainActivity.successGradientView!!.alpha = 1f
     }
 
     private var rowOfAliveCats:MutableList<CatButton>? = null
@@ -253,32 +284,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             gridButtonHeight = (originalParams!!.width * 0.9f) / rowsLeftCount.toFloat()
             for (rowIndex in rowIndexCatAliveCount!!.keys.sorted()) {
                 resetCatButtonsPosition(rowIndex)
-            }
-        }
-    }
-
-    private fun attackCatButton(catButton: CatButton) {
-        catButton.disperseRadially()
-        gridColorsCount!![catButton.getOriginalBackgroundColor()] =
-            gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
-        MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
-    }
-
-    private fun verifyRemainingCatsArePodded() {
-        if (catButtons!!.areAliveAndPodded()) {
-            AudioController.heaven()
-            MainActivity.successGradientView!!.alpha = 1f
-            MainActivity.colorOptions!!.resetSelectedColor()
-            when {
-                catButtons!!.allSurvived() -> {
-                    promote()
-                }
-                catButtons!!.areDead() -> {
-                    maintain()
-                }
-                else -> {
-                    maintain()
-                }
             }
         }
     }
