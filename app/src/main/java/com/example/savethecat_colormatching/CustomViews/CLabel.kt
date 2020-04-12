@@ -1,15 +1,16 @@
 package com.example.savethecat_colormatching.CustomViews
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.GradientDrawable.*
-import android.util.Log
+import android.graphics.drawable.GradientDrawable.RECTANGLE
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.ViewPropertyAnimator
 import android.widget.AbsoluteLayout
-import android.widget.TextView
 import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.TextView
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
@@ -87,6 +88,11 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutPara
 
     fun setText(text:String) {
         textView!!.text = text
+        textView!!.typeface = Typeface.createFromAsset(
+            MainActivity.rootView!!.context.assets,
+            "SleepyFatCat.ttf"
+        )
+        textView!!.gravity = Gravity.CENTER
     }
 
     fun getOriginalParams():LayoutParams {

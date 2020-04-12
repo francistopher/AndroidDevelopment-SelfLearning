@@ -7,6 +7,8 @@ import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
+import android.widget.TextView
+import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.CustomViews.CView
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
@@ -27,6 +29,7 @@ class LivesMeter(meterView: View,
     private var heartButtons:MutableList<ImageButton> = mutableListOf()
 
     private var currentHeartButton:ImageButton? = null
+    private var imageButtonText:CLabel? = null
     private var parentLayout:AbsoluteLayout? = null
 
     private var containerView:CView? = null
@@ -51,6 +54,17 @@ class LivesMeter(meterView: View,
         parentLayout.addView(this.meterView!!)
         // Setup heart interactive buttons
         setupHeartInteractiveButtons()
+        setupImageButtonText()
+    }
+
+    private fun setupImageButtonText() {
+        imageButtonText = CLabel(textView = TextView(meterView!!.context),
+            parentLayout = parentLayout!!, params =  LayoutParams(getOriginalParams().width,
+                getOriginalParams().height, getOriginalParams().x,
+                (getOriginalParams().y + (getOriginalParams().height * 0.05).toInt())))
+        imageButtonText!!.setText(livesLeft.toString())
+        imageButtonText!!.setTextSize((getOriginalParams().height * 0.15).toFloat())
+        imageButtonText!!.getThis().setBackgroundColor(Color.TRANSPARENT)
     }
 
     private fun setupHeartInteractiveButtons() {
