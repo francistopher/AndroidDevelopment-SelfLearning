@@ -196,6 +196,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     fun attackCatButton(catButton: CatButton) {
+        MainActivity.enemies!!.translateToCatAndBack(catButton)
         catButton.disperseRadially()
         gridColorsCount!![catButton.getOriginalBackgroundColor()] =
             gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)

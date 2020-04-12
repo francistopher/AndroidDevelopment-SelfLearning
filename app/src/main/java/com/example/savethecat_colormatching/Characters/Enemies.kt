@@ -57,6 +57,15 @@ class Enemies {
         }
     }
 
+    fun translateToCatAndBack(catButton:CatButton) {
+        for (enemy in enemies) {
+            enemy.translateToCatAndBack((catButton.getOriginalParams().x +
+                    (catButton.getOriginalParams().width * 0.5)).toInt(),
+                (catButton.getOriginalParams().y +
+                        (catButton.getOriginalParams().height * 0.5)).toInt())
+        }
+    }
+
     fun setStyle() {
         for (enemy in enemies){
             enemy.setStyle()

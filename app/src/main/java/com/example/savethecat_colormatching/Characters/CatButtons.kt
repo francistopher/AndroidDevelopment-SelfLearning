@@ -53,10 +53,10 @@ class CatButtons {
     }
 
     fun randomLivingCatButton(): CatButton? {
-        if (areDead()) {
-            return null
+        return if (areDead()) {
+            null
         } else {
-            return currentCatButtons!!.filter{ catButton -> (catButton.isAlive &&
+            currentCatButtons!!.filter{ catButton -> (catButton.isAlive &&
                     !catButton.isPodded)}.random()
         }
     }

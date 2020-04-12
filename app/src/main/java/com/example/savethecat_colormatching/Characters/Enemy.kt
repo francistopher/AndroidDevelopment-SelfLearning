@@ -96,6 +96,40 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
         }
     }
 
+    private var translateToCatButton:AnimatorSet? = null
+    private var translateX:ValueAnimator? = null
+    private var translateY:ValueAnimator? = null
+    private var translatingToCatAndBack:Boolean = false
+    fun translateToCatAndBack(targetX:Int, targetY:Int) {
+        translatingToCatAndBack = true
+        swayAnimatorSet!!.cancel()
+        if (translateToCatButton != null) {
+            translateToCatButton!!.cancel()
+        }
+        this.targetX = (targetX - ((getOriginalParams().width * 0.5))).toInt()
+        this.targetY = (targetY - ((getOriginalParams().height * 0.5))).toInt()
+        translateX = ValueAnimator.ofInt(getOriginalParams().x, this.targetX)
+        translateX!!.addUpdateListener {
+            swayX = (it.animatedValue as Int)
+            enemyImage!!.layoutParams = LayoutParams(getOriginalParams().width,
+                getOriginalParams().height, swayX, swayY)
+        }
+        translateY = ValueAnimator.ofInt(getOriginalParams().y, this.targetY)
+        translateY!!.addUpdateListener {
+            swayY = (it.animatedValue as Int)
+            enemyImage!!.layoutParams = LayoutParams(getOriginalParams().width,
+                getOriginalParams().height, swayX, swayY)
+        }
+        translateToCatButton = AnimatorSet()
+        translateToCatButton!!.play(translateX!!).with(translateY!!)
+        translateToCatButton!!.duration = 250
+        translateToCatButton!!.start()
+        translateToCatButton!!.doOnEnd {
+            translatingToCatAndBack = false
+            sway()
+        }
+    }
+
     private var swayAnimatorSet:AnimatorSet? = null
     private var swayXAnimator:ValueAnimator? = null
     private var swayYAnimator:ValueAnimator? = null
@@ -144,7 +178,9 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
         swayAnimatorSet!!.duration = 1750
         isSwaying = true
         swayAnimatorSet!!.doOnEnd {
-            sway()
+            if (!translatingToCatAndBack) {
+                sway()
+            }
         }
         swayAnimatorSet!!.start()
     }
