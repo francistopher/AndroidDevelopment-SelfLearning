@@ -43,7 +43,6 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         borderImageView = Button(settingsButton!!.context)
         borderImageView!!.layoutParams = params
         parentLayout.addView(borderImageView!!)
-
         // Stop border image view setup
         setCornerRadiusAndBorderWidth((params.height / 2.0).toInt(),
             (params.height / 12.0).toInt())

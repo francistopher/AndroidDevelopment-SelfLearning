@@ -192,7 +192,6 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
         imageRotationAnimator!!.addUpdateListener {
             imageView!!.getThis().rotation = (it.animatedValue as Float)
-            imageButton!!.rotation = (it.animatedValue as Float)
         }
         imageRotationAnimator!!.duration = 1750
         imageRotationAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
@@ -331,6 +330,10 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private var radialAnimator:ValueAnimator? = null
     fun disperseRadially() {
+        MainActivity.rootLayout!!.removeView(imageView!!.getThis())
+        MainActivity.rootLayout!!.addView(imageView!!.getThis(), 0)
+        MainActivity.rootLayout!!.removeView(imageButton!!)
+        MainActivity.rootLayout!!.addView(imageButton!!, 0)
         stopImageRotation = true
         imageRotationAnimator!!.cancel()
         transitionColor(targetColor = originalBackgroundColor)
