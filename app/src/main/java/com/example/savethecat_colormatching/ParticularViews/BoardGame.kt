@@ -41,6 +41,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         boardGameContext = boardView.context
         boardGameLayout = AbsoluteLayout(boardGameContext)
         this.boardView!!.layoutParams = params
+        // Set board game player buttons
+        MainActivity.rootLayout!!.addView(boardGameLayout)
         parentLayout.addView(this.boardView!!)
         setOriginalParams(params = params)
         catButtons = CatButtons()
@@ -144,7 +146,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             for (columnIndex in (0 until rowsAndColumns.second)) {
                 gridButtonX += gridButtonColumnGap
                 catButton = catButtons!!.buildCatButton(imageButton = ImageButton(boardGameContext!!),
-                    parentLayout = boardGameLayout!!, params = LayoutParams(gridButtonWidth.toInt(),
+                    parentLayout = MainActivity.rootLayout!!, params = LayoutParams(gridButtonWidth.toInt(),
                         gridButtonHeight.toInt(), (gridButtonX + originalParams!!.x).toInt(),
                         (gridButtonY + originalParams!!.y).toInt()),
                     backgroundColor = gridColors!![rowIndex][columnIndex])

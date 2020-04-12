@@ -150,9 +150,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                                 enemies!!.fadeIn()
                                 settingsButton!!.fadeIn()
                                 attackMeter!!.fadeIn()
-                                boardGame!!.buildGame()
                                 boardGame!!.setupSinglePlayerButton()
                                 boardGame!!.setupTwoPlayerButton()
+                                boardGame!!.buildGame()
                                 enemies!!.sway()
                                 adView!!.alpha = 1f
                             }
@@ -213,7 +213,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setSuccessGradientViewAndLayer() {
         successGradientView = View(rootView!!.context)
-        successGradientView!!.layoutParams = AbsoluteLayout.LayoutParams(dWidth.toInt(), (dHeight * 0.15).toInt(), 0, 0)
+        successGradientView!!.layoutParams = LayoutParams(dWidth.toInt(), (dHeight * 0.15).toInt(), 0, 0)
         successGradientView!!.setBackgroundColor(Color.TRANSPARENT)
         rootLayout!!.addView(successGradientView)
         successGradientView!!.setBackgroundDrawable( GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
@@ -277,8 +277,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         colorOptions!!.getOriginalParams())
         colorOptions!!.setOriginalParams(colorOptions!!.getThis().layoutParams as LayoutParams)
         rootLayout!!.addView(ColorOptions.colorOptionsLayout!!)
-        // Set board game player buttons
-        rootLayout!!.addView(BoardGame.boardGameLayout)
     }
 
     private fun setupSettingsButton() {

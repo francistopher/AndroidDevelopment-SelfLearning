@@ -192,6 +192,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
         imageRotationAnimator!!.addUpdateListener {
             imageView!!.getThis().rotation = (it.animatedValue as Float)
+            imageButton!!.rotation = (it.animatedValue as Float)
         }
         imageRotationAnimator!!.duration = 1750
         imageRotationAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
@@ -328,8 +329,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             (originalParams!!.height * 2.0).toInt()).toFloat()
     }
 
-    private var radialButtonAnimator:ValueAnimator? = null
-    private var radialImageAnimator:ValueAnimator? = null
+    private var radialAnimator:ValueAnimator? = null
     fun disperseRadially() {
         stopImageRotation = true
         imageRotationAnimator!!.cancel()
@@ -353,25 +353,18 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             targetY = (it.animatedValue as Float)
         }
         if ((0..1).random() == 0) {
-            radialButtonAnimator = ValueAnimator.ofFloat(imageButton!!.rotation,
-                imageButton!!.rotation + 180f)
-            radialImageAnimator = ValueAnimator.ofFloat(imageView!!.getThis().rotation,
-                imageView!!.getThis().rotation + 180f)
+            radialAnimator = ValueAnimator.ofFloat(0f,
+                360f)
         } else {
-            radialButtonAnimator = ValueAnimator.ofFloat(imageButton!!.rotation,
-                imageButton!!.rotation - 180f)
-            radialImageAnimator = ValueAnimator.ofFloat(imageView!!.getThis().rotation,
-                imageView!!.getThis().rotation - 180f)
+            radialAnimator = ValueAnimator.ofFloat(0f,
+                -360f)
         }
-        radialButtonAnimator!!.addUpdateListener {
+        radialAnimator!!.addUpdateListener {
+            imageView!!.getThis().rotation = (it.animatedValue as Float)
             imageButton!!.rotation = (it.animatedValue as Float)
         }
-        radialImageAnimator!!.addUpdateListener {
-            imageView!!.getThis().rotation = (it.animatedValue as Float)
-        }
         disperseSet = AnimatorSet()
-        disperseSet!!.play(disperseYAnimator).with(disperseXAnimator).with(radialButtonAnimator!!).
-        with(radialImageAnimator!!)
+        disperseSet!!.play(disperseYAnimator).with(disperseXAnimator).with(radialAnimator!!)
         disperseSet!!.duration = 3000
         disperseSet!!.startDelay = 125
         disperseSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
