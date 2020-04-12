@@ -103,6 +103,8 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
     private var swayX:Int = originalParams!!.x
     private var isSwaying:Boolean = false
     private var swayBack:Boolean = false
+    private var targetX:Int = 0
+    private var targetY:Int = 0
     fun sway() {
         if (swayAnimatorSet != null) {
             if (isSwaying) {
@@ -112,23 +114,25 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
             }
         }
         if (swayBack) {
-            horizontalSignFloat *= -1
-            verticalSignFloat *= -1
+            targetX = this.originalParams!!.x
+            targetY = this.originalParams!!.y
             swayBack = false
         } else {
-            horizontalSignFloat *= randomSignInt()
-            verticalSignFloat *= randomSignInt()
+            targetX = (enemyImage!!.layoutParams as LayoutParams).x + (randomSignInt() *
+                    (this.originalParams!!.width / 7.5)).toInt()
+            targetY = ((enemyImage!!.layoutParams as LayoutParams).y) + (randomSignInt() *
+                    (this.originalParams!!.width / 7.5)).toInt()
             swayBack = true
         }
         swayYAnimator = ValueAnimator.ofInt((enemyImage!!.layoutParams as LayoutParams).y,
-            kotlin.math.floor(((enemyImage!!.layoutParams as LayoutParams).y) +
-                    (verticalSignFloat * (this.originalParams!!.width / 7.5))).toInt())
+            targetY)
         swayYAnimator!!.addUpdateListener {
             swayY = it.animatedValue as Int
+            enemyImage!!.layoutParams = LayoutParams(originalParams!!.width, originalParams!!.height,
+                swayX, swayY)
         }
         swayXAnimator = ValueAnimator.ofInt((enemyImage!!.layoutParams as LayoutParams).x,
-            (enemyImage!!.layoutParams as LayoutParams).x + horizontalSignFloat *
-                    (this.originalParams!!.width / 7.5).toInt())
+            targetX)
         swayXAnimator!!.addUpdateListener {
             swayX = it.animatedValue as Int
             enemyImage!!.layoutParams = LayoutParams(originalParams!!.width, originalParams!!.height,

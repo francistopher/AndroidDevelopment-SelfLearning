@@ -1,6 +1,5 @@
 package com.example.savethecat_colormatching.Characters
 
-import android.util.Log
 import android.widget.AbsoluteLayout
 import android.widget.ImageView
 import com.example.savethecat_colormatching.MainActivity
@@ -28,23 +27,19 @@ class Enemies {
 
     private fun buildEnemies(){
         sideLength = (MainActivity.dUnitHeight * 2.0).toFloat()
-        Log.i("Side length", "${sideLength}")
         // Spacing
-        totalWidthSpacing = MainActivity.dWidth.toFloat() - (sideLength * 3.0f)
-        totalHeightSpacing = MainActivity.dHeight.toFloat() - (sideLength * 4.0f)
+        totalWidthSpacing = (MainActivity.dWidth).toFloat() - (sideLength * 3.0f)
+        totalHeightSpacing = (MainActivity.dUnitHeight * 16).toFloat() - (sideLength * 4.0f)
         // Enemy Spacing
         enemyWidthSpacing = totalWidthSpacing / 2.625f
         enemyHeightSpacing = totalHeightSpacing / 4.0f
         // Starting coordinates
         x = -enemyWidthSpacing * 0.665f
-        y = (-(enemyHeightSpacing) * 0.45f)
+        y = -enemyHeightSpacing * 0.45f
         // Build and plot enemies
         for (i in 0..2) {
             x += enemyWidthSpacing
             for (ii in 0..3) {
-                if (i == 3 && ii == 4){
-                    break
-                }
                 y += enemyHeightSpacing
                 enemy = null
                 enemy = Enemy(imageView = ImageView(MainActivity.staticSelf!!),
@@ -58,7 +53,7 @@ class Enemies {
                 y += sideLength
             }
             x += sideLength
-            y = (-(enemyHeightSpacing) * 0.45f) + MainActivity.dNavigationBarHeight.toFloat()
+            y = -(enemyHeightSpacing * 0.45f)
         }
     }
 

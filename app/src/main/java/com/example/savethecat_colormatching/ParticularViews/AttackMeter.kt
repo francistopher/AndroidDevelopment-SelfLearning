@@ -1,5 +1,6 @@
 package com.example.savethecat_colormatching.ParticularViews
 
+import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
@@ -16,6 +17,7 @@ import com.example.savethecat_colormatching.Characters.CatButton
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
+import java.util.*
 
 class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
@@ -195,9 +197,13 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         }
         rotationAnimator!!.duration = (1000 * rotationDuration).toLong()
         rotationAnimator!!.doOnEnd {
-            enemyImage!!.getThis().rotation = 0f
-            dismantleFirstRotation()
-            startTranslationToCat(0.125f)
+                enemyImage!!.getThis().rotation = 0f
+            if (enemyPhase != EnemyPhase.TranslationToStart) {
+                dismantleFirstRotation()
+                startTranslationToCat(0.125f)
+            } else {
+                dismantleFirstRotation()
+            }
         }
     }
 
@@ -232,8 +238,12 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         }
         translationToCatAnimator!!.duration = getEnemyToCatDuration()
         translationToCatAnimator!!.doOnEnd {
-            dismantleTranslationToCat()
-            startSizeExpansion(0.125f)
+            if (enemyPhase != EnemyPhase.TranslationToStart) {
+                dismantleTranslationToCat()
+                startSizeExpansion(0.125f)
+            } else {
+                dismantleTranslationToCat()
+            }
         }
     }
 
@@ -254,7 +264,7 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     }
 
     private fun setupSizeExpansionAnimation() {
-        sizeExpansionAnimator = ValueAnimator.ofInt(getOriginalParams().height,
+        sizeExpansionAnimator = ValueAnimator.ofInt(enemyImage!!.getOriginalParams().height,
             (getOriginalParams().height * 1.5).toInt())
         sizeExpansionAnimator!!.addUpdateListener {
             val value:Int = (it.animatedValue as Int)
@@ -267,8 +277,12 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         }
         sizeExpansionAnimator!!.duration = (1000 * 0.5).toLong()
         sizeExpansionAnimator!!.doOnEnd {
-            dismantleSizeExpansion()
-            startSizeReduction()
+            if (enemyPhase != EnemyPhase.TranslationToStart) {
+                dismantleSizeExpansion()
+                startSizeReduction(0.0f)
+            } else {
+                dismantleSizeExpansion()
+            }
         }
     }
 
@@ -278,13 +292,14 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     }
 
     private var sizeReductionAnimator:ValueAnimator? = null
-    private fun startSizeReduction() {
+    private fun startSizeReduction(delay:Float) {
         if (isEnemyInPhase()) {
             return
         }
         setupSizeReductionAnimation()
+        sizeReductionAnimator!!.startDelay = (1000 * delay).toLong()
         sizeReductionAnimator!!.start()
-        enemyPhase = EnemyPhase.SizeExpansion
+        enemyPhase = EnemyPhase.SizeReduction
     }
 
     private fun setupSizeReductionAnimation() {
@@ -301,15 +316,23 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         }
         sizeReductionAnimator!!.duration = (1000 * 0.5).toLong()
         sizeReductionAnimator!!.doOnEnd {
-            attackRandomCatButton()
-            dismantleSizeReduction()
-            startTransitionToStart(0.125f)
+            if (enemyPhase != EnemyPhase.TranslationToStart) {
+                dismantleSizeReduction()
+                attackRandomCatButton()
+                startTransitionToStart(0.125f)
+            } else {
+                dismantleSizeReduction()
+            }
         }
     }
 
     private fun attackRandomCatButton() {
-       MainActivity.boardGame!!.attackCatButton(MainActivity.boardGame!!.getCatButtons()
-           .getCurrentCatButtons().random())
+        if (MainActivity.boardGame!!.getCatButtons().areDead() ||
+            MainActivity.boardGame!!.getCatButtons().areAliveAndPodded()) {
+            return
+        }
+        MainActivity.boardGame!!.attackCatButton(MainActivity.boardGame!!.getCatButtons().
+        getCurrentCatButtons().random())
     }
 
     private fun dismantleSizeReduction() {
@@ -317,7 +340,7 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         sizeReductionAnimator = null
     }
 
-    private var transitionToStartAnimator:ValueAnimator? = null
+    private var transitionToStartAnimator:AnimatorSet? = null
     private fun startTransitionToStart(delay: Float) {
         if (isEnemyInPhase()) {
             return
@@ -325,13 +348,14 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         setupTransitionToStartAnimation()
         transitionToStartAnimator!!.startDelay = (1000 * delay).toLong()
         transitionToStartAnimator!!.start()
-        enemyPhase = EnemyPhase.SizeExpansion
+        enemyPhase = EnemyPhase.TranslationToStart
     }
 
+    var transitionToStartX:ValueAnimator? = null
     private fun setupTransitionToStartAnimation() {
-        transitionToStartAnimator = ValueAnimator.ofInt(enemyImage!!.getOriginalParams().x,
+        transitionToStartX = ValueAnimator.ofInt(enemyImage!!.getOriginalParams().x,
         getOriginalParams().x)
-        transitionToStartAnimator!!.addUpdateListener {
+        transitionToStartX!!.addUpdateListener {
             val params = LayoutParams(
                 enemyImage!!.getOriginalParams().width,
                 enemyImage!!.getOriginalParams().height,
@@ -341,6 +365,18 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
             enemyImage!!.getThis().layoutParams = params
             enemyImage!!.setOriginalParams(params)
         }
+        sizeReductionAnimator = ValueAnimator.ofInt((enemyImage!!.getOriginalParams().height),
+            (getOriginalParams().height))
+        sizeReductionAnimator!!.addUpdateListener {
+            val value:Int = (it.animatedValue as Int)
+            val x:Int = enemyImage!!.getOriginalParams().x
+            val y:Int = (getOriginalParams().y - ((value - getOriginalParams().height) * 0.5)).toInt()
+            val params = LayoutParams(value, value, x, y)
+            enemyImage!!.getThis().layoutParams = params
+            enemyImage!!.setOriginalParams(params)
+        }
+        transitionToStartAnimator = AnimatorSet()
+        transitionToStartAnimator!!.play(transitionToStartX!!).with(sizeReductionAnimator!!)
         transitionToStartAnimator!!.duration = getEnemyToStartDuration()
         transitionToStartAnimator!!.doOnEnd {
             dismantleTransitionToStart()
@@ -351,6 +387,8 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     private fun dismantleTransitionToStart() {
         enemyPhase = null
         transitionToStartAnimator = null
+        transitionToStartX = null
+        sizeReductionAnimator = null
     }
 
     private fun getEnemyToStartDuration():Long {
@@ -372,9 +410,76 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
 
     private fun isEnemyInPhase():Boolean {
         return ((rotationAnimator != null && rotationAnimator!!.isRunning) ||
-                (translationToCatAnimator != null && translationToCatAnimator!!.isRunning))
-//                 || (translationToCatAnimation != nil && translationToCatAnimation!.isRunning) || (sizeExpansionAnimation != nil && sizeExpansionAnimation!.isRunning) || (sizeReductionAnimation != nil && sizeReductionAnimation!.isRunning) || (translationToStartAnimation != nil && translationToStartAnimation!.isRunning));
+                (translationToCatAnimator != null && translationToCatAnimator!!.isRunning) ||
+                (sizeExpansionAnimator != null && sizeExpansionAnimator!!.isRunning)  ||
+                (sizeReductionAnimator != null && sizeReductionAnimator!!.isRunning) ||
+                (transitionToStartAnimator != null && transitionToStartAnimator!!.isRunning))
     }
+
+    fun sendEnemyToStart() {
+        if (enemyPhase != null && enemyPhase != EnemyPhase.TranslationToStart) {
+            displacementDuration = 1.0f
+            Timer().schedule(object : TimerTask() {
+                override fun run() {
+                    MainActivity.staticSelf!!.runOnUiThread {
+                        displacementDuration = previousDisplacementDuration
+                    }
+                }
+            }, 1000)
+            pauseEnemyMovement()
+            rotationCheckpoint = 0f
+            enemyPhase = EnemyPhase.TranslationToStart
+            resumeEnemyMovement()
+        }
+    }
+
+    private fun pauseEnemyMovement() {
+        when (enemyPhase!!) {
+            EnemyPhase.ROTATION -> {
+                enemyPhase = EnemyPhase.TranslationToStart
+                rotationAnimator?.cancel()
+                rotationCheckpoint = enemyImage!!.rotation
+            }
+            EnemyPhase.TranslationToCat -> {
+                enemyPhase = EnemyPhase.TranslationToStart
+                translationToCatAnimator?.cancel()
+            }
+            EnemyPhase.SizeExpansion -> {
+                enemyPhase = EnemyPhase.TranslationToStart
+                sizeExpansionAnimator?.cancel()
+            }
+            EnemyPhase.SizeReduction -> {
+                enemyPhase = EnemyPhase.TranslationToStart
+                sizeReductionAnimator?.cancel()
+            }
+            EnemyPhase.TranslationToStart -> {
+                enemyPhase = EnemyPhase.TranslationToStart
+                transitionToStartAnimator!!.cancel()
+            }
+        }
+    }
+
+    private fun resumeEnemyMovement() {
+        when(enemyPhase!!) {
+            EnemyPhase.ROTATION -> {
+                enemyPhase = null
+                startRotation(0.125f)
+            }
+            EnemyPhase.TranslationToCat -> {
+                val delay:Float = (0.75f * getEnemyToStartDuration() / initialEnemyCatDistance)
+                startTranslationToCat(delay)
+            }
+            EnemyPhase.TranslationToStart -> {
+                setupTransitionToStartAnimation()
+                startTransitionToStart(0f)
+            }
+            EnemyPhase.SizeExpansion ->
+                startSizeExpansion(0.125f)
+            EnemyPhase.SizeReduction ->
+                startSizeReduction(0.125f)
+        }
+    }
+
     fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()

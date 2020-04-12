@@ -98,11 +98,9 @@ class SettingsButton(button: Button, parentLayout: AbsoluteLayout, params: Layou
         }
         fadeAnimatorIsRunning = true
     }
-
     fun fadeIn() {
         fade(true, false, 1f, 0.125f)
     }
-
     private fun setupSettingsMenu() {
         val width:Float = (MainActivity.dWidth - (originalParams!!.x * 2)).toFloat()
         settingsMenu = SettingsMenu(view = View(settingsButton!!.context), parentLayout =

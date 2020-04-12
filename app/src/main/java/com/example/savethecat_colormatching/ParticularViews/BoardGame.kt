@@ -201,8 +201,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     private fun verifyRemainingCatsArePodded() {
+        MainActivity.attackMeter!!.sendEnemyToStart()
         if (catButtons!!.areAliveAndPodded()) {
             if (catButtons!!.allSurvived()) {
+                AttackMeter.didNotInvokeRelease = true
                 unveilHeaven()
                 MainActivity.colorOptions!!.resetSelectedColor()
                 promote()
@@ -212,6 +214,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 AudioController.mozartSonata(play = false, startOver = false)
                 AudioController.chopinPrelude(play = true, startOver = false)
             } else {
+                AttackMeter.didNotInvokeRelease = true
                 unveilHeaven()
                 MainActivity.colorOptions!!.resetSelectedColor()
                 maintain()
