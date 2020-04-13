@@ -6,9 +6,12 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.ImageView
 import android.widget.TextView
+import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.R
 
 class GameResults(resultsView: View,
                   parentLayout: AbsoluteLayout,
@@ -21,6 +24,13 @@ class GameResults(resultsView: View,
     private var parentLayout:AbsoluteLayout? = null
     private var gameOverLabel:CLabel? = null
     private var unitHeight:Int = 0
+
+    private var smilingCat:CImageView? = null
+    private var deadCat:CImageView? = null
+
+    private var aliveCatCountLabel:CLabel? = null
+    private var deadCatCountLabel:CLabel? = null
+
 
     companion object {
         var savedCatButtonsCount:Int = 0
@@ -42,6 +52,10 @@ class GameResults(resultsView: View,
 
     fun setupContents() {
         setupTitleView()
+        setupSmilingCat()
+        setupDeadCat()
+        setupAliveCatCountLabel()
+        setupDeadCatCountLabel()
     }
 
     private var shape: GradientDrawable? = null
@@ -112,6 +126,51 @@ class GameResults(resultsView: View,
         gameOverLabel!!.setStyle()
         gameOverLabel!!.setCornerRadiusAndBorderWidth((getOriginalParams().height / 2.0).toInt(),
             0)
+    }
+
+    private fun setupSmilingCat() {
+        smilingCat = CImageView(imageView = ImageView(resultsContext!!), parentLayout = parentLayout!!,
+        params = LayoutParams((getOriginalParams().width * 0.625).toInt(),
+            (getOriginalParams().width * 0.8125).toInt(), getOriginalParams().x -
+                    (getOriginalParams().width * 0.04).toInt(),
+            gameOverLabel!!.getOriginalParams().y +
+                    (gameOverLabel!!.getOriginalParams().height * 0.25).toInt()))
+        smilingCat!!.loadImages(R.drawable.lightsmilingcat, R.drawable.darksmilingcat)
+    }
+
+    private fun setupDeadCat() {
+        deadCat = CImageView(imageView = ImageView(resultsContext!!), parentLayout = parentLayout!!,
+            params = LayoutParams((getOriginalParams().width * 0.625).toInt(),
+                (getOriginalParams().width * 0.8125).toInt(), getOriginalParams().x +
+                        (getOriginalParams().width * 0.5).toInt() -
+                        (getOriginalParams().width * 0.095).toInt(),
+                gameOverLabel!!.getOriginalParams().y +
+                        (gameOverLabel!!.getOriginalParams().height * 0.25).toInt()))
+        deadCat!!.loadImages(R.drawable.lightdeadcat, R.drawable.darkdeadcat)
+    }
+
+    private fun setupAliveCatCountLabel() {
+        aliveCatCountLabel = CLabel(textView = TextView(resultsContext!!), parentLayout = parentLayout!!,
+        params = LayoutParams((getOriginalParams().width * 0.5).toInt() - (borderWidth * 2.0).toInt(),
+            unitHeight, getOriginalParams().x + (borderWidth * 2.0).toInt(), smilingCat!!.getOriginalParams().y +
+                    (smilingCat!!.getOriginalParams().height * 0.775).toInt()))
+        aliveCatCountLabel!!.setTextSize(aliveCatCountLabel!!.getOriginalParams().height * 0.1875f)
+        aliveCatCountLabel!!.setText("$savedCatButtonsCount")
+        aliveCatCountLabel!!.isInverted = true
+        aliveCatCountLabel!!.setStyle()
+    }
+
+    private fun setupDeadCatCountLabel() {
+        deadCatCountLabel = CLabel(textView = TextView(resultsContext!!), parentLayout = parentLayout!!,
+            params = LayoutParams((getOriginalParams().width * 0.5).toInt() -
+                    (borderWidth * 2.0).toInt(), unitHeight,
+               getOriginalParams().x + (getOriginalParams().width * 0.5).toInt(),
+                deadCat!!.getOriginalParams().y +
+                        (deadCat!!.getOriginalParams().height * 0.775).toInt()))
+        deadCatCountLabel!!.setTextSize(aliveCatCountLabel!!.getOriginalParams().height * 0.1875f)
+        deadCatCountLabel!!.setText("$deadCatButtonsCount")
+        deadCatCountLabel!!.isInverted = true
+        deadCatCountLabel!!.setStyle()
     }
 
     private fun setGameResults() {
