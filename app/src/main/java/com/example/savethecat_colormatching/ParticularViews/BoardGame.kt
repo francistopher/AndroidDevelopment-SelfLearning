@@ -180,9 +180,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                             gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
                         MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
                         catButton.pod()
-                        MainActivity.myLivesMeter!!.incrementLivesLeftCount(catButton = catButton,
-                            forOpponent = false)
-                        verifyRemainingCatsArePodded()
+                        verifyRemainingCatsArePodded(catButton = catButton)
                     } else {
                         MainActivity.attackMeter!!.updateDuration(-0.75f)
                         attackCatButton(catButton = catButton)
@@ -198,37 +196,39 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     fun attackCatButton(catButton: CatButton) {
+        MainActivity.myLivesMeter!!.dropLivesLeftHeart()
         MainActivity.enemies!!.translateToCatAndBack(catButton)
         catButton.disperseRadially()
         gridColorsCount!![catButton.getOriginalBackgroundColor()] =
             gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
         MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
         displaceArea(catButton = catButton)
-        verifyRemainingCatsArePodded()
+        verifyRemainingCatsArePodded(catButton = catButton)
     }
 
-    private fun verifyRemainingCatsArePodded() {
+    private fun verifyRemainingCatsArePodded(catButton:CatButton) {
         MainActivity.attackMeter!!.sendEnemyToStart()
-        if (catButtons!!.areAliveAndPodded()) {
             if (catButtons!!.allSurvived()) {
+                MainActivity.myLivesMeter!!.incrementLivesLeftCount(catButton = catButton,
+                    forOpponent = false)
                 MainActivity.attackMeter!!.updateDuration(0.075f)
                 AttackMeter.didNotInvokeRelease = true
                 unveilHeaven()
                 MainActivity.colorOptions!!.resetSelectedColor()
                 promote()
-            } else if (catButtons!!.areDead()) {
+            } else if (catButtons!!.areDead() || (MainActivity.myLivesMeter!!.getLivesLeftCount() == 0)) {
+                catButtons!!.setAllCatButtonsDead()
                 AttackMeter.didNotInvokeRelease = true
                 MainActivity.colorOptions!!.resetSelectedColor()
                 AudioController.mozartSonata(play = false, startOver = false)
                 AudioController.chopinPrelude(play = true, startOver = false)
-            } else {
+            } else if (catButtons!!.areAliveAndPodded()) {
                 MainActivity.attackMeter!!.updateDuration(0.025f)
                 AttackMeter.didNotInvokeRelease = true
                 unveilHeaven()
                 MainActivity.colorOptions!!.resetSelectedColor()
                 maintain()
             }
-        }
     }
 
     private fun unveilHeaven() {

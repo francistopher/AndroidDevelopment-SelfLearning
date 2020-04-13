@@ -91,7 +91,7 @@ class CatButtons {
 
     fun allSurvived():Boolean {
         for (catButton in currentCatButtons!!) {
-            if (!catButton.isAlive) {
+            if (!catButton.isAlive || !catButton.isPodded) {
                 return false
             }
         }
@@ -107,6 +107,14 @@ class CatButtons {
             }
         }
         return rowOfAliveCats!!
+    }
+
+    fun setAllCatButtonsDead() {
+        for (catButton in currentCatButtons!!) {
+            if (catButton.isAlive) {
+                catButton.disperseRadially()
+            }
+        }
     }
 
     fun removeAll() {

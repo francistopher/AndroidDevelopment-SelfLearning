@@ -73,12 +73,12 @@ class LivesMeter(meterView: View,
 
     private var transitionPackages:MutableList<TransitionPackage> = mutableListOf()
     fun incrementLivesLeftCount(catButton: CatButton, forOpponent:Boolean) {
-
         transitionPackages.add(TransitionPackage(spawnParams = LayoutParams(getOriginalParams().width,
             getOriginalParams().height, (catButton.getOriginalParams().x +
-                    (catButton.getOriginalParams().width * 0.25)).toInt(), (catButton.getOriginalParams().y +
+                    (catButton.getOriginalParams().width * 0.25)).toInt(),
+                    (catButton.getOriginalParams().y +
                     (catButton.getOriginalParams().height * 0.25)).toInt()),
-        targetParams = getOriginalParams(), heartButton = buildHeartButton()))
+                    targetParams = getOriginalParams(), heartButton = buildHeartButton()))
     }
 
     private fun setupHeartInteractiveButtons() {
@@ -87,10 +87,23 @@ class LivesMeter(meterView: View,
         }
     }
 
-    fun removeTransitionPackage(tp:TransitionPackage) {
-        livesLeft += 1
-        transitionPackages.remove(tp)
+    fun getLivesLeftCount():Int {
+        return livesLeft
     }
+
+    fun dropLivesLeftHeart() {
+        livesLeft -= 1
+        if (transitionPackages.size > 0) {
+            transitionPackages[0].drop()
+            transitionPackages.remove(transitionPackages[0])
+        }
+        resetLivesLeftCount()
+    }
+
+    fun incrementLivesLeftCount() {
+        livesLeft += 1
+    }
+
     fun resetLivesLeftCount() {
         imageButtonText!!.setText(livesLeft.toString())
         imageButtonText!!.getThis().bringToFront()
@@ -176,9 +189,12 @@ class TransitionPackage(spawnParams:LayoutParams,
     private var targetParams:LayoutParams? = null
     private var spawnParams:LayoutParams? = null
     private var heartButton:ImageButton? = null
-    private var animatorSet:AnimatorSet = AnimatorSet()
+    private var animatorSet:AnimatorSet? = null
     private var xAnimation:ValueAnimator? = null
     private var yAnimation:ValueAnimator? = null
+    private var transitionedToBase:Boolean = false
+    private var targetX:Int = 0
+    private var targetY:Int = 0
 
     init {
         this.targetParams = targetParams
@@ -191,33 +207,53 @@ class TransitionPackage(spawnParams:LayoutParams,
     }
 
     private fun setupAnimationX() {
+        targetX = spawnParams!!.x
         xAnimation = ValueAnimator.ofInt(spawnParams!!.x , targetParams!!.x)
         xAnimation!!.addUpdateListener {
-            heartButton!!.layoutParams = LayoutParams(
-                targetParams!!.width, targetParams!!.height,
-                (it.animatedValue as Int),
-                (heartButton!!.layoutParams as LayoutParams).y)
+            targetX = (it.animatedValue as Int)
+            heartButton!!.layoutParams = LayoutParams(targetParams!!.width, targetParams!!.height,
+                targetX, targetY)
         }
     }
 
     private fun setupAnimationY() {
+        targetY = spawnParams!!.y
         yAnimation = ValueAnimator.ofInt(spawnParams!!.y, targetParams!!.y)
         yAnimation!!.addUpdateListener {
-            heartButton!!.layoutParams = LayoutParams(
-                targetParams!!.width, targetParams!!.height,
-                (heartButton!!.layoutParams as LayoutParams).x,
-                (it.animatedValue as Int))
+            targetY = (it.animatedValue as Int)
+            heartButton!!.layoutParams = LayoutParams(targetParams!!.width, targetParams!!.height,
+                targetX, targetY)
         }
     }
 
     private fun setupAnimationSet() {
-        animatorSet.play(xAnimation!!).with(yAnimation!!)
-        animatorSet.startDelay = 125
-        animatorSet.duration = 2500
-        animatorSet.start()
-        animatorSet.doOnEnd {
-            MainActivity.myLivesMeter!!.removeTransitionPackage(this)
-            MainActivity.myLivesMeter!!.resetLivesLeftCount()
+        animatorSet = AnimatorSet()
+        animatorSet!!.play(xAnimation!!).with(yAnimation!!)
+        animatorSet!!.startDelay = 125
+        animatorSet!!.duration = 2500
+        animatorSet!!.start()
+        animatorSet!!.doOnEnd {
+            if (!transitionedToBase) {
+                transitionedToBase = true
+                MainActivity.myLivesMeter!!.incrementLivesLeftCount()
+                MainActivity.myLivesMeter!!.resetLivesLeftCount()
+            } else {
+                MainActivity.rootLayout!!.removeView(heartButton!!)
+            }
+        }
+    }
+
+    fun drop() {
+        if (transitionedToBase) {
+            spawnParams = heartButton!!.layoutParams as LayoutParams
+            targetParams = LayoutParams(targetParams!!.width, targetParams!!.height,
+                targetParams!!.x, (MainActivity.dUnitHeight * 16).toInt())
+            heartButton!!.bringToFront()
+            setupAnimationX()
+            setupAnimationY()
+            setupAnimationSet()
+        } else {
+            MainActivity.rootLayout!!.removeView(heartButton!!)
         }
     }
 
