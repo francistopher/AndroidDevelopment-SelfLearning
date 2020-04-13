@@ -1,5 +1,7 @@
 package com.example.savethecat_colormatching.ParticularViews
 
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -8,6 +10,8 @@ import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
 import android.widget.TextView
+import androidx.core.animation.doOnEnd
+import com.example.savethecat_colormatching.Characters.CatButton
 import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.CustomViews.CView
 import com.example.savethecat_colormatching.MainActivity
@@ -59,7 +63,7 @@ class LivesMeter(meterView: View,
 
     private fun setupImageButtonText() {
         imageButtonText = CLabel(textView = TextView(meterView!!.context),
-            parentLayout = parentLayout!!, params =  LayoutParams(getOriginalParams().width,
+            parentLayout = MainActivity.rootLayout!!, params =  LayoutParams(getOriginalParams().width,
                 getOriginalParams().height, getOriginalParams().x,
                 (getOriginalParams().y + (getOriginalParams().height * 0.05).toInt())))
         imageButtonText!!.setText(livesLeft.toString())
@@ -67,10 +71,29 @@ class LivesMeter(meterView: View,
         imageButtonText!!.getThis().setBackgroundColor(Color.TRANSPARENT)
     }
 
+    private var transitionPackages:MutableList<TransitionPackage> = mutableListOf()
+    fun incrementLivesLeftCount(catButton: CatButton, forOpponent:Boolean) {
+
+        transitionPackages.add(TransitionPackage(spawnParams = LayoutParams(getOriginalParams().width,
+            getOriginalParams().height, (catButton.getOriginalParams().x +
+                    (catButton.getOriginalParams().width * 0.25)).toInt(), (catButton.getOriginalParams().y +
+                    (catButton.getOriginalParams().height * 0.25)).toInt()),
+        targetParams = getOriginalParams(), heartButton = buildHeartButton()))
+    }
+
     private fun setupHeartInteractiveButtons() {
         for (why in (heartButtons.size..1)) {
-            buildHeartButton()
+            currentHeartButton = buildHeartButton()
         }
+    }
+
+    fun removeTransitionPackage(tp:TransitionPackage) {
+        livesLeft += 1
+        transitionPackages.remove(tp)
+    }
+    fun resetLivesLeftCount() {
+        imageButtonText!!.setText(livesLeft.toString())
+        imageButtonText!!.getThis().bringToFront()
     }
 
     private fun setupContainerMeterView() {
@@ -82,13 +105,14 @@ class LivesMeter(meterView: View,
             getOriginalParams().height / 12)
     }
 
-    private fun buildHeartButton() {
-        currentHeartButton = ImageButton(meterView!!.context)
-        currentHeartButton!!.layoutParams = LayoutParams(getOriginalParams().width,
+    private fun buildHeartButton(): ImageButton {
+        val currentHeartButton = ImageButton(meterView!!.context)
+        currentHeartButton.layoutParams = LayoutParams(getOriginalParams().width,
             getOriginalParams().height, getOriginalParams().x, getOriginalParams().y)
-        currentHeartButton!!.setBackgroundResource(imageHeart)
-        heartButtons.add(currentHeartButton!!)
+        currentHeartButton.setBackgroundResource(imageHeart)
+        heartButtons.add(currentHeartButton)
         parentLayout!!.addView(currentHeartButton)
+        return currentHeartButton
     }
 
     private var shape: GradientDrawable? = null
@@ -143,4 +167,58 @@ class LivesMeter(meterView: View,
             darkDominant()
         }
     }
+}
+
+class TransitionPackage(spawnParams:LayoutParams,
+                        targetParams:LayoutParams,
+                        heartButton:ImageButton) {
+
+    private var targetParams:LayoutParams? = null
+    private var spawnParams:LayoutParams? = null
+    private var heartButton:ImageButton? = null
+    private var animatorSet:AnimatorSet = AnimatorSet()
+    private var xAnimation:ValueAnimator? = null
+    private var yAnimation:ValueAnimator? = null
+
+    init {
+        this.targetParams = targetParams
+        this.spawnParams = spawnParams
+        this.heartButton = heartButton
+        heartButton.bringToFront()
+        setupAnimationX()
+        setupAnimationY()
+        setupAnimationSet()
+    }
+
+    private fun setupAnimationX() {
+        xAnimation = ValueAnimator.ofInt(spawnParams!!.x , targetParams!!.x)
+        xAnimation!!.addUpdateListener {
+            heartButton!!.layoutParams = LayoutParams(
+                targetParams!!.width, targetParams!!.height,
+                (it.animatedValue as Int),
+                (heartButton!!.layoutParams as LayoutParams).y)
+        }
+    }
+
+    private fun setupAnimationY() {
+        yAnimation = ValueAnimator.ofInt(spawnParams!!.y, targetParams!!.y)
+        yAnimation!!.addUpdateListener {
+            heartButton!!.layoutParams = LayoutParams(
+                targetParams!!.width, targetParams!!.height,
+                (heartButton!!.layoutParams as LayoutParams).x,
+                (it.animatedValue as Int))
+        }
+    }
+
+    private fun setupAnimationSet() {
+        animatorSet.play(xAnimation!!).with(yAnimation!!)
+        animatorSet.startDelay = 125
+        animatorSet.duration = 2500
+        animatorSet.start()
+        animatorSet.doOnEnd {
+            MainActivity.myLivesMeter!!.removeTransitionPackage(this)
+            MainActivity.myLivesMeter!!.resetLivesLeftCount()
+        }
+    }
+
 }

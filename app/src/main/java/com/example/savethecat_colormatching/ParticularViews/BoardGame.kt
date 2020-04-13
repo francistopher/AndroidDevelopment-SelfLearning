@@ -180,6 +180,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                             gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
                         MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
                         catButton.pod()
+                        MainActivity.myLivesMeter!!.incrementLivesLeftCount(catButton = catButton,
+                            forOpponent = false)
                         verifyRemainingCatsArePodded()
                     } else {
                         MainActivity.attackMeter!!.updateDuration(-0.75f)
