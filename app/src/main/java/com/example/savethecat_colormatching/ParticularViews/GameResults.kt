@@ -4,9 +4,10 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.view.View
-import android.view.ViewGroup
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.TextView
+import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
 
 class GameResults(resultsView: View,
@@ -18,6 +19,8 @@ class GameResults(resultsView: View,
     private var resultsContext: Context? = null
 
     private var parentLayout:AbsoluteLayout? = null
+    private var gameOverLabel:CLabel? = null
+    private var unitHeight:Int = 0
 
     companion object {
         var savedCatButtonsCount:Int = 0
@@ -28,12 +31,17 @@ class GameResults(resultsView: View,
         this.resultsView = resultsView
         this.resultsContext = resultsView.context
         this.resultsView!!.layoutParams = params
+        unitHeight = (params.height / 8.0).toInt()
         setupOriginalParams(params = params)
         this.parentLayout = parentLayout
         parentLayout.addView(resultsView)
         setStyle()
         setCornerRadiusAndBorderWidth(radius = params.height / 2,
             borderWidth = params.height / 36)
+    }
+
+    fun setupContents() {
+        setupTitleView()
     }
 
     private var shape: GradientDrawable? = null
@@ -69,7 +77,7 @@ class GameResults(resultsView: View,
         return resultsView!!
     }
 
-    private fun setupOriginalParams(params:LayoutParams) {
+    fun setupOriginalParams(params:LayoutParams) {
         originalParams = params
     }
 
@@ -91,6 +99,19 @@ class GameResults(resultsView: View,
         } else {
             darkDominant()
         }
+    }
+
+    private fun setupTitleView() {
+        gameOverLabel = CLabel(textView = TextView(resultsContext!!), parentLayout = parentLayout!!,
+        params = LayoutParams((getOriginalParams().width * 0.5).toInt(), (unitHeight * 2.0).toInt(),
+            (getOriginalParams().width * 0.25).toInt() + getOriginalParams().x,
+            getOriginalParams().y + (unitHeight * 0.5).toInt()))
+        gameOverLabel!!.setTextSize(gameOverLabel!!.getOriginalParams().height * 0.1875f)
+        gameOverLabel!!.setText("Game Over")
+        gameOverLabel!!.isInverted = true
+        gameOverLabel!!.setStyle()
+        gameOverLabel!!.setCornerRadiusAndBorderWidth((getOriginalParams().height / 2.0).toInt(),
+            0)
     }
 
     private fun setGameResults() {

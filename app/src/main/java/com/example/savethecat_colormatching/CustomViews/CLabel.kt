@@ -17,7 +17,7 @@ import com.example.savethecat_colormatching.MainActivity
 
 class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutParams) {
 
-    private var isInverted:Boolean = false
+    var isInverted:Boolean = false
 
     private var originalParams:LayoutParams? = null
     private var shrunkParams:LayoutParams? = null
