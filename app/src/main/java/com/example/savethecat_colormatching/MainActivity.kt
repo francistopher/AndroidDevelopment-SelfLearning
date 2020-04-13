@@ -57,6 +57,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         // Lives meters
         var myLivesMeter:LivesMeter? = null
         var opponentLivesMeter:LivesMeter? = null
+        // Game results
+        var gameResults:GameResults? = null
     }
 
     var introAnimation:IntroView? = null
@@ -174,6 +176,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupLivesMeters()
         setupSettingsButton()
         setupAttackMeter()
+        setupGameResults()
         AudioController.mozartSonata(play = true, startOver = false)
     }
 
@@ -327,6 +330,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         params = LayoutParams(height.toInt(), height.toInt(), x.toInt(), dUnitHeight.toInt()),
             isOpponent = true)
         opponentLivesMeter!!.getThis().setBackgroundColor(Color.BLUE)
+    }
+
+    private fun setupGameResults() {
+        gameResults = GameResults(resultsView = View(rootView!!.context), parentLayout = rootLayout!!,
+            params = LayoutParams((dUnitHeight * 7).toInt(), (dUnitHeight * 7.75).toInt(), 0, 0))
+        CenterController.centerView(gameResults!!.getThis(), childParams = gameResults!!.getOriginalParams(),
+            parentParams = LayoutParams(dWidth.toInt(), (dHeight - dUnitHeight).toInt(), 0, 0))
     }
 
 

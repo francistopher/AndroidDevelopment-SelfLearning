@@ -152,9 +152,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                     backgroundColor = gridColors!![rowIndex][columnIndex])
                 catButton!!.rowIndex = rowIndex
                 catButton!!.columnIndex = columnIndex
-                catButton!!.getThis().setOnClickListener {
-                    catButtonSelector(params = (it as View).layoutParams as LayoutParams)
-                }
                 catButton!!.getThisImage().setOnClickListener {
                     catButtonSelector(params = (it as View).layoutParams as LayoutParams)
                 }
@@ -209,26 +206,20 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     private fun verifyRemainingCatsArePodded(catButton:CatButton) {
         MainActivity.attackMeter!!.sendEnemyToStart()
             if (catButtons!!.allSurvived()) {
-                MainActivity.myLivesMeter!!.incrementLivesLeftCount(catButton = catButton,
-                    forOpponent = false)
-                MainActivity.attackMeter!!.updateDuration(0.075f)
-                AttackMeter.didNotInvokeRelease = true
-                unveilHeaven()
-                MainActivity.colorOptions!!.resetSelectedColor()
-                promote()
+                promote(catButton = catButton)
             } else if (catButtons!!.areDead() || (MainActivity.myLivesMeter!!.getLivesLeftCount() == 0)) {
-                catButtons!!.setAllCatButtonsDead()
-                AttackMeter.didNotInvokeRelease = true
-                MainActivity.colorOptions!!.resetSelectedColor()
-                AudioController.mozartSonata(play = false, startOver = false)
-                AudioController.chopinPrelude(play = true, startOver = false)
+                gameOver()
             } else if (catButtons!!.areAliveAndPodded()) {
-                MainActivity.attackMeter!!.updateDuration(0.025f)
-                AttackMeter.didNotInvokeRelease = true
-                unveilHeaven()
-                MainActivity.colorOptions!!.resetSelectedColor()
                 maintain()
             }
+    }
+
+    private fun gameOver() {
+        catButtons!!.setAllCatButtonsDead()
+        AttackMeter.didNotInvokeRelease = true
+        MainActivity.colorOptions!!.resetSelectedColor()
+        AudioController.mozartSonata(play = false, startOver = false)
+        AudioController.chopinPrelude(play = true, startOver = false)
     }
 
     private fun unveilHeaven() {
@@ -307,6 +298,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     private var product:Int = 0
     private var newRowsAndColumns:Pair<Int,Int>? = null
     private fun maintain() {
+        MainActivity.attackMeter!!.updateDuration(0.025f)
+        AttackMeter.didNotInvokeRelease = true
+        unveilHeaven()
+        MainActivity.colorOptions!!.resetSelectedColor()
         countOfAliveCatButtons = catButtons!!.aliveCount()
         newRound = 1
         while (true) {
@@ -338,7 +333,13 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }, 1250)
     }
 
-    private fun promote() {
+    private fun promote(catButton: CatButton) {
+        MainActivity.myLivesMeter!!.incrementLivesLeftCount(catButton = catButton,
+            forOpponent = false)
+        MainActivity.attackMeter!!.updateDuration(0.075f)
+        AttackMeter.didNotInvokeRelease = true
+        unveilHeaven()
+        MainActivity.colorOptions!!.resetSelectedColor()
         reset(true)
         MainActivity.colorOptions!!.shrinkAllColorOptionButtons()
         MainActivity.colorOptions!!.loadSelectionToSelectedButtons()

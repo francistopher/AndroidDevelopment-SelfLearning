@@ -76,9 +76,9 @@ class LivesMeter(meterView: View,
         transitionPackages.add(TransitionPackage(spawnParams = LayoutParams(getOriginalParams().width,
             getOriginalParams().height, (catButton.getOriginalParams().x +
                     (catButton.getOriginalParams().width * 0.25)).toInt(),
-                    (catButton.getOriginalParams().y +
+            (catButton.getOriginalParams().y +
                     (catButton.getOriginalParams().height * 0.25)).toInt()),
-                    targetParams = getOriginalParams(), heartButton = buildHeartButton()))
+            targetParams = getOriginalParams(), heartButton = buildHeartButton()))
     }
 
     private fun setupHeartInteractiveButtons() {
@@ -111,9 +111,9 @@ class LivesMeter(meterView: View,
 
     private fun setupContainerMeterView() {
         containerView = CView(view = View(meterView!!.context), parentLayout = parentLayout!!,
-        params = LayoutParams(((getOriginalParams().width * 2) - borderWidth),
-            getOriginalParams().height, getOriginalParams().x - getOriginalParams().width +
-                    borderWidth, getOriginalParams().y))
+            params = LayoutParams(((getOriginalParams().width * 2) - borderWidth),
+                getOriginalParams().height, getOriginalParams().x - getOriginalParams().width +
+                        borderWidth, getOriginalParams().y))
         containerView!!.setCornerRadiusAndBorderWidth(getOriginalParams().height / 2,
             getOriginalParams().height / 12)
     }
