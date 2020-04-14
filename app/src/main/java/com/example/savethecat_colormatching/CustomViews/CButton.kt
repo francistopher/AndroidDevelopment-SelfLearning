@@ -4,7 +4,6 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.util.TypedValue
 import android.view.ViewPropertyAnimator
@@ -71,7 +70,18 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         shape = null
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
-        shape!!.setColor((button!!.background as ColorDrawable).color)
+        if (backgroundColor != null) {
+            shape!!.setColor(backgroundColor!!)
+        } else if (targetBackgroundColor != null) {
+            shape!!.setColor(targetBackgroundColor!!)
+        } else {
+            if (MainActivity.isThemeDark){
+                shape!!.setColor(Color.BLACK)
+            } else {
+                shape!!.setColor(Color.WHITE)
+            }
+        }
+
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
             if (MainActivity.isThemeDark) {
@@ -101,17 +111,17 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         }
         growWidthAnimator = ValueAnimator.ofFloat(originalParams!!.width.toFloat(), width)
         growWidthAnimator!!.addUpdateListener {
-            originalParams = LayoutParams(
+            button!!.layoutParams = LayoutParams(
                 (it.animatedValue as Float).toInt(),
                 getOriginalParams().height,
                 getOriginalParams().x,
                 getOriginalParams().y
             )
-            button!!.layoutParams = originalParams!!
         }
         transitionColorAnimator = ValueAnimator.ofArgb(getBackgroundColor(), targetBackgroundColor!!)
         transitionColorAnimator!!.addUpdateListener {
             button!!.setBackgroundColor(it.animatedValue as Int)
+            targetBackgroundColor = (it.animatedValue as Int)
             setCornerRadiusAndBorderWidth((originalParams!!.height / 5.0).toInt(), borderWidth)
         }
         growWidthAndChangeColor = AnimatorSet()
@@ -223,7 +233,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
         }
 
-
         translateAnimatorSet = AnimatorSet()
         translateAnimatorSet!!.play(selectAnimator!!).with(translateWidthAnimator!!).
             with(translateXAnimator!!)
@@ -258,7 +267,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 LayoutParams).x.toFloat(), originalParams!!.x.toFloat())
         translateWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as
                 LayoutParams).width.toFloat(), originalParams!!.width.toFloat())
-
         translateXAnimator!!.addUpdateListener {
             x = (it.animatedValue as Float)
             button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
@@ -267,7 +275,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             width = (it.animatedValue as Float)
             button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
         }
-
         unSelectAnimatorSet = AnimatorSet()
         unSelectAnimatorSet!!.play(unSelectAnimator!!).with(translateXAnimator!!).
         with(translateWidthAnimator!!)
@@ -276,6 +283,10 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         unSelectAnimatorSet!!.duration = 500
         isUnSelectRunning = true
         unSelectAnimatorSet!!.start()
+    }
+
+    fun fadeIn() {
+        fade(true, false, 1f, 0.125f)
     }
 
     private var x: Float = 0f
@@ -310,16 +321,14 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         translateXAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).x.toFloat(), x)
         translateXAnimator!!.addUpdateListener {
             x = (it.animatedValue as Float)
-            originalParams = LayoutParams(width.toInt(), (button!!.layoutParams as LayoutParams).height,
+            button!!.layoutParams =  LayoutParams(width.toInt(), (button!!.layoutParams as LayoutParams).height,
                 x.toInt(), (button!!.layoutParams as LayoutParams).y)
-            button!!.layoutParams = originalParams!!
         }
         shrinkWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(), 0f)
         shrinkWidthAnimator!!.addUpdateListener {
             width = (it.animatedValue as Float)
-            originalParams = LayoutParams(width.toInt(), (button!!.layoutParams as LayoutParams).height,
+            button!!.layoutParams = LayoutParams(width.toInt(), (button!!.layoutParams as LayoutParams).height,
                 x.toInt(),(button!!.layoutParams as LayoutParams).y)
-            button!!.layoutParams = originalParams
         }
         shrinkAnimationSet = AnimatorSet()
         shrinkAnimationSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
@@ -438,5 +447,6 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 darkDominant()
             }
         }
+        setCornerRadiusAndBorderWidth(cornerRadius, borderWidth)
     }
 }

@@ -214,6 +214,23 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     private fun gameOver() {
+        singlePlayerButton!!.backgroundColor = null
+        singlePlayerButton!!.targetBackgroundColor = null
+        singlePlayerButton!!.setStyle()
+        singlePlayerButton!!.shrunk()
+        singlePlayerButton!!.grow()
+        singlePlayerButton!!.fadeIn()
+        multiPlayerButton!!.shrunk()
+        multiPlayerButton!!.grow()
+        multiPlayerButton!!.fadeIn()
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                MainActivity.staticSelf!!.runOnUiThread {
+                    MainActivity.rootLayout!!.addView(singlePlayerButton!!.getThis())
+                    MainActivity.rootLayout!!.addView(multiPlayerButton!!.getThis())
+                }
+            }
+        }, 125)
         MainActivity.glovePointer!!.hide()
         catButtons!!.setAllCatButtonsDead()
         GameResults.deadCatButtonsCount += catButtons!!.deadCount()
@@ -428,7 +445,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
         singlePlayerButton!!.shrunk()
         singlePlayerButton!!.grow()
-        singlePlayerButton!!.fade(true, false, 0.5f, 0.125f)
+        singlePlayerButton!!.fadeIn()
     }
 
     fun startGame() {
