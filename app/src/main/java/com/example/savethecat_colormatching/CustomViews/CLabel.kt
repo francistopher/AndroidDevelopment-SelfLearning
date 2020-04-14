@@ -7,12 +7,9 @@ import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.GradientDrawable.RECTANGLE
 import android.util.TypedValue
 import android.view.Gravity
-import android.view.ViewPropertyAnimator
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.TextView
-import com.daasuu.ei.Ease
-import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 
 class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutParams) {
@@ -47,43 +44,6 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutPara
 
     fun shrunk() {
         textView!!.layoutParams = shrunkParams!!
-    }
-
-    private var fadeAnimator:ViewPropertyAnimator? = null
-    private var fadeAnimatorIsRunning:Boolean = false
-    fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
-        if (fadeAnimator != null) {
-            if (fadeAnimatorIsRunning) {
-                fadeAnimator!!.cancel()
-                fadeAnimatorIsRunning = false
-                fadeAnimator = null
-            }
-        }
-         if (In) {
-             fadeAnimator = textView!!.animate().alpha(1.0f)
-             fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-        }
-        if (Out and !In) {
-            fadeAnimator = textView!!.animate().alpha(0.0f)
-            fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-        }
-        fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
-        fadeAnimator!!.duration = (1000.0f * Duration).toLong()
-        fadeAnimator!!.withStartAction {
-            fadeAnimatorIsRunning = true
-        }
-        fadeAnimator!!.withEndAction {
-            if (In and Out) {
-                this.fade(In = false, Out = true, Duration = Duration, Delay = 0.0f)
-            } else {
-                fadeAnimator!!.cancel()
-                fadeAnimatorIsRunning = false
-                fadeAnimator = null
-            }
-        }
-        if (!fadeAnimatorIsRunning) {
-            fadeAnimator!!.start()
-        }
     }
 
     fun setText(text:String) {

@@ -61,6 +61,17 @@ class CatButtons {
         }
     }
 
+    private var deadCount:Int = 0
+    fun deadCount():Int {
+        deadCount = 0
+        for (catButton in currentCatButtons!!) {
+            if (!catButton.isAlive) {
+                deadCount += 1
+            }
+        }
+        return deadCount
+    }
+
     fun areAliveAndPodded():Boolean {
         for (catButton in currentCatButtons!!) {
             if (catButton.isAlive && !catButton.isPodded) {

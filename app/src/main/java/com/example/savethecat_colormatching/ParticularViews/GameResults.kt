@@ -1,5 +1,6 @@
 package com.example.savethecat_colormatching.ParticularViews
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -8,6 +9,8 @@ import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageView
 import android.widget.TextView
+import com.daasuu.ei.Ease
+import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
@@ -50,12 +53,22 @@ class GameResults(resultsView: View,
             borderWidth = params.height / 36)
     }
 
+    private fun hideEverything() {
+        resultsView!!.alpha = 0f
+        gameOverLabel!!.getThis().alpha = 0f
+        smilingCat!!.getThis().alpha = 0f
+        deadCat!!.getThis().alpha = 0f
+        aliveCatCountLabel!!.getThis().alpha = 0f
+        deadCatCountLabel!!.getThis().alpha = 0f
+    }
+
     fun setupContents() {
         setupTitleView()
         setupSmilingCat()
         setupDeadCat()
         setupAliveCatCountLabel()
         setupDeadCatCountLabel()
+        hideEverything()
     }
 
     private var shape: GradientDrawable? = null
@@ -154,7 +167,7 @@ class GameResults(resultsView: View,
         params = LayoutParams((getOriginalParams().width * 0.5).toInt() - (borderWidth * 2.0).toInt(),
             unitHeight, getOriginalParams().x + (borderWidth * 2.0).toInt(), smilingCat!!.getOriginalParams().y +
                     (smilingCat!!.getOriginalParams().height * 0.775).toInt()))
-        aliveCatCountLabel!!.setTextSize(aliveCatCountLabel!!.getOriginalParams().height * 0.1875f)
+        aliveCatCountLabel!!.setTextSize(aliveCatCountLabel!!.getOriginalParams().height * 0.2f)
         aliveCatCountLabel!!.setText("$savedCatButtonsCount")
         aliveCatCountLabel!!.isInverted = true
         aliveCatCountLabel!!.setStyle()
@@ -167,17 +180,47 @@ class GameResults(resultsView: View,
                getOriginalParams().x + (getOriginalParams().width * 0.5).toInt(),
                 deadCat!!.getOriginalParams().y +
                         (deadCat!!.getOriginalParams().height * 0.775).toInt()))
-        deadCatCountLabel!!.setTextSize(aliveCatCountLabel!!.getOriginalParams().height * 0.1875f)
+        deadCatCountLabel!!.setTextSize(aliveCatCountLabel!!.getOriginalParams().height * 0.2f)
         deadCatCountLabel!!.setText("$deadCatButtonsCount")
         deadCatCountLabel!!.isInverted = true
         deadCatCountLabel!!.setStyle()
     }
 
-    private fun setGameResults() {
-
+    private var fadeInAnimator: ValueAnimator? = null
+    private var fadeAnimatorIsRunning:Boolean = false
+    private fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        if (fadeInAnimator != null) {
+            if (fadeAnimatorIsRunning) {
+                fadeInAnimator!!.cancel()
+                fadeAnimatorIsRunning = false
+                fadeInAnimator = null
+            }
+        }
+        if (In) {
+            fadeInAnimator = ValueAnimator.ofFloat(0f, 1f)
+        } else if (Out and !In) {
+            fadeInAnimator = ValueAnimator.ofFloat(1f, 0f)
+        }
+        fadeInAnimator!!.addUpdateListener {
+            resultsView!!.alpha = it.animatedValue as Float
+            gameOverLabel!!.getThis().alpha = it.animatedValue as Float
+            smilingCat!!.getThis().alpha = it.animatedValue as Float
+            deadCat!!.getThis().alpha = it.animatedValue as Float
+            aliveCatCountLabel!!.getThis().alpha = it.animatedValue as Float
+            deadCatCountLabel!!.getThis().alpha = it.animatedValue as Float
+        }
+        fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
+        fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
+        fadeInAnimator!!.start()
+        fadeAnimatorIsRunning = true
     }
 
-    private fun resetGameResults() {
-
+    fun fadeIn() {
+        aliveCatCountLabel!!.setText("$savedCatButtonsCount")
+        deadCatCountLabel!!.setText("$deadCatButtonsCount")
+        savedCatButtonsCount = 0
+        deadCatButtonsCount = 0
+        fade(true, false, 1f, 0.125f)
     }
 }

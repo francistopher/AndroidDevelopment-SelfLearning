@@ -188,7 +188,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                     return
                 }
             }
-
         }
     }
 
@@ -207,7 +206,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         MainActivity.attackMeter!!.sendEnemyToStart()
             if (catButtons!!.allSurvived()) {
                 promote(catButton = catButton)
-            } else if (catButtons!!.areDead() || (MainActivity.myLivesMeter!!.getLivesLeftCount() == 0)) {
+            } else if (MainActivity.myLivesMeter!!.getLivesLeftCount() == 0) {
                 gameOver()
             } else if (catButtons!!.areAliveAndPodded()) {
                 maintain()
@@ -215,9 +214,14 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     private fun gameOver() {
+        MainActivity.glovePointer!!.hide()
         catButtons!!.setAllCatButtonsDead()
+        GameResults.deadCatButtonsCount += catButtons!!.deadCount()
+        MainActivity.gameResults!!.fadeIn()
         AttackMeter.didNotInvokeRelease = true
         MainActivity.colorOptions!!.resetSelectedColor()
+        MainActivity.colorOptions!!.shrinkAllColorOptionButtons()
+        MainActivity.colorOptions!!.loadSelectionToSelectedButtons()
         AudioController.mozartSonata(play = false, startOver = false)
         AudioController.chopinPrelude(play = true, startOver = false)
     }
@@ -303,6 +307,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         unveilHeaven()
         MainActivity.colorOptions!!.resetSelectedColor()
         countOfAliveCatButtons = catButtons!!.aliveCount()
+        GameResults.savedCatButtonsCount += catButtons!!.aliveCount()
+        GameResults.deadCatButtonsCount += catButtons!!.deadCount()
         newRound = 1
         while (true) {
             newRowsAndColumns = getRowsAndColumns(newRound)
@@ -334,6 +340,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     private fun promote(catButton: CatButton) {
+        MainActivity.glovePointer!!.hide()
+        GameResults.savedCatButtonsCount += catButtons!!.aliveCount()
         MainActivity.myLivesMeter!!.incrementLivesLeftCount(catButton = catButton,
             forOpponent = false)
         MainActivity.attackMeter!!.updateDuration(0.075f)
@@ -411,6 +419,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                     override fun run() {
                         MainActivity.staticSelf!!.runOnUiThread {
                             MainActivity.successGradientView!!.alpha = 0f
+                            MainActivity.glovePointer!!.fadeIn()
                             startGame()
                         }
                     }
@@ -423,6 +432,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     fun startGame() {
+        MainActivity.glovePointer!!.sway()
         MainActivity.colorOptions!!.buildColorOptionButtons(setup = true)
         MainActivity.attackMeter!!.invokeRelease()
     }

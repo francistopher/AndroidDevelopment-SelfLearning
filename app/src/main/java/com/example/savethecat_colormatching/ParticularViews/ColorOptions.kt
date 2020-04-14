@@ -179,6 +179,11 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     }
 
     private fun colorOptionSelector(color: Int) {
+        val catButtonParams:LayoutParams = MainActivity.boardGame!!.getCatButtons().
+        getCurrentCatButtons()[0].getOriginalParams()
+        val x:Int = catButtonParams.x + (catButtonParams.width * 0.35).toInt()
+        val y:Int = catButtonParams.y + (catButtonParams.height * 0.35).toInt()
+        MainActivity.glovePointer!!.translate(x, y)
         clearBoardGameGridButtonsColorIndicator()
         if (color != selectedColor) {
             for (selectionButton in selectionButtons!!) {

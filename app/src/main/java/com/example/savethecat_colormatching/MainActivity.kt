@@ -21,6 +21,7 @@ import com.example.savethecat_colormatching.Controllers.AspectRatio
 import com.example.savethecat_colormatching.Controllers.AspectRatio.Companion.setupAspectRatio
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
+import com.example.savethecat_colormatching.CustomViews.GlovePointer
 import com.example.savethecat_colormatching.ParticularViews.*
 import com.google.android.gms.ads.*
 import java.util.*
@@ -59,6 +60,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var opponentLivesMeter:LivesMeter? = null
         // Game results
         var gameResults:GameResults? = null
+        // Glove pointer
+        var glovePointer:GlovePointer? = null
     }
 
     var introAnimation:IntroView? = null
@@ -177,6 +180,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupSettingsButton()
         setupAttackMeter()
         setupGameResults()
+        setupGlovePointer()
         AudioController.mozartSonata(play = true, startOver = false)
     }
 
@@ -341,5 +345,11 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         gameResults!!.setupContents()
     }
 
-
+    private fun setupGlovePointer() {
+        val sideLength:Int = (dUnitHeight * 1.5).toInt()
+        glovePointer = GlovePointer(view = ImageView(rootView!!.context), parentLayout = rootLayout!!,
+        params = LayoutParams(sideLength, sideLength, colorOptions!!.getOriginalParams().x -
+                (dUnitHeight * 0.15).toInt(), colorOptions!!.getOriginalParams().y +
+                (dUnitHeight * 0.175).toInt()))
+    }
 }
