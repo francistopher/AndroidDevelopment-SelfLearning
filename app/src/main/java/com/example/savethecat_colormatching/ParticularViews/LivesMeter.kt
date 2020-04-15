@@ -30,10 +30,9 @@ class LivesMeter(meterView: View,
     private var imageHeart:Int = 0
 
     private var livesLeft:Int = 1
-    private var heartButtons:MutableList<ImageButton> = mutableListOf()
 
     private var currentHeartButton:ImageButton? = null
-    private var imageButtonText:CLabel? = null
+    private var livesCountLabel:CLabel? = null
     private var parentLayout:AbsoluteLayout? = null
 
     private var containerView:CView? = null
@@ -61,14 +60,24 @@ class LivesMeter(meterView: View,
         setupImageButtonText()
     }
 
+    fun hideCurrentHeartButton() {
+        currentHeartButton!!.alpha = 0f
+        livesCountLabel!!.getThis().alpha = 0f
+    }
+
+    fun showCurrentHeartButton() {
+        currentHeartButton!!.alpha = 1f
+        livesCountLabel!!.getThis().alpha = 1f
+    }
+
     private fun setupImageButtonText() {
-        imageButtonText = CLabel(textView = TextView(meterView!!.context),
+        livesCountLabel = CLabel(textView = TextView(meterView!!.context),
             parentLayout = MainActivity.rootLayout!!, params =  LayoutParams(getOriginalParams().width,
                 getOriginalParams().height, getOriginalParams().x,
                 (getOriginalParams().y + (getOriginalParams().height * 0.05).toInt())))
-        imageButtonText!!.setText(livesLeft.toString())
-        imageButtonText!!.setTextSize((getOriginalParams().height * 0.15).toFloat())
-        imageButtonText!!.getThis().setBackgroundColor(Color.TRANSPARENT)
+        livesCountLabel!!.setText(livesLeft.toString())
+        livesCountLabel!!.setTextSize((getOriginalParams().height * 0.15).toFloat())
+        livesCountLabel!!.getThis().setBackgroundColor(Color.TRANSPARENT)
     }
 
     private var transitionPackages:MutableList<TransitionPackage> = mutableListOf()
@@ -82,9 +91,7 @@ class LivesMeter(meterView: View,
     }
 
     private fun setupHeartInteractiveButtons() {
-        for (why in (heartButtons.size..1)) {
-            currentHeartButton = buildHeartButton()
-        }
+        currentHeartButton = buildHeartButton()
     }
 
     fun getLivesLeftCount():Int {
@@ -97,7 +104,7 @@ class LivesMeter(meterView: View,
             transitionPackages[0].drop()
             transitionPackages.remove(transitionPackages[0])
         }
-        resetLivesLeftCount()
+        setLivesLeftTextCount()
     }
 
     fun incrementLivesLeftCount() {
@@ -105,8 +112,13 @@ class LivesMeter(meterView: View,
     }
 
     fun resetLivesLeftCount() {
-        imageButtonText!!.setText(livesLeft.toString())
-        imageButtonText!!.getThis().bringToFront()
+        livesLeft = 1
+        setLivesLeftTextCount()
+    }
+
+    fun setLivesLeftTextCount() {
+        livesCountLabel!!.setText(livesLeft.toString())
+        livesCountLabel!!.getThis().bringToFront()
     }
 
     private fun setupContainerMeterView() {
@@ -123,7 +135,6 @@ class LivesMeter(meterView: View,
         currentHeartButton.layoutParams = LayoutParams(getOriginalParams().width,
             getOriginalParams().height, getOriginalParams().x, getOriginalParams().y)
         currentHeartButton.setBackgroundResource(imageHeart)
-        heartButtons.add(currentHeartButton)
         parentLayout!!.addView(currentHeartButton)
         return currentHeartButton
     }
@@ -236,7 +247,7 @@ class TransitionPackage(spawnParams:LayoutParams,
             if (!transitionedToBase) {
                 transitionedToBase = true
                 MainActivity.myLivesMeter!!.incrementLivesLeftCount()
-                MainActivity.myLivesMeter!!.resetLivesLeftCount()
+                MainActivity.myLivesMeter!!.setLivesLeftTextCount()
             } else {
                 MainActivity.rootLayout!!.removeView(heartButton!!)
             }
@@ -256,5 +267,4 @@ class TransitionPackage(spawnParams:LayoutParams,
             MainActivity.rootLayout!!.removeView(heartButton!!)
         }
     }
-
 }

@@ -199,7 +199,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         AudioController.setupHeaven(this)
         AudioController.setupGearSpinning(this)
         AudioController.setupAnimeWowPlayer(this)
-        AudioController.setupCoinEarnedPlayer(this)
+        AudioController.setupCoinEarnedPlayers(this)
         AudioController.setupKittenMeowPlayer(this)
         AudioController.setupKittenDiePlayer(this)
         AudioController.setupChopinPrelude(this)

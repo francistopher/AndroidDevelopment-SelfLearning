@@ -214,6 +214,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     private fun gameOver() {
+        MainActivity.myLivesMeter!!.hideCurrentHeartButton()
         singlePlayerButton!!.backgroundColor = null
         singlePlayerButton!!.targetBackgroundColor = null
         singlePlayerButton!!.setStyle()
@@ -226,8 +227,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 MainActivity.staticSelf!!.runOnUiThread {
-                    MainActivity.rootLayout!!.addView(singlePlayerButton!!.getThis())
-                    MainActivity.rootLayout!!.addView(multiPlayerButton!!.getThis())
+                    singlePlayerButton!!.getParentLayout().addView(singlePlayerButton!!.getThis())
+                    singlePlayerButton!!.getParentLayout().addView(multiPlayerButton!!.getThis())
+                    singlePlayerButton!!.getThis().bringToFront()
+                    multiPlayerButton!!.getThis().bringToFront()
                 }
             }
         }, 125)
@@ -237,10 +240,16 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         MainActivity.gameResults!!.fadeIn()
         AttackMeter.didNotInvokeRelease = true
         MainActivity.colorOptions!!.resetSelectedColor()
+        gridColors = null
         MainActivity.colorOptions!!.shrinkAllColorOptionButtons()
         MainActivity.colorOptions!!.loadSelectionToSelectedButtons()
         AudioController.mozartSonata(play = false, startOver = false)
         AudioController.chopinPrelude(play = true, startOver = false)
+        // Build the game and hide the cat button
+        currentStage = 1
+        buildGame()
+        catButtons!!.getCurrentCatButtons()[0].fade(false, true,
+            0f, 0f)
     }
 
     private fun unveilHeaven() {
@@ -428,7 +437,13 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
+            MainActivity.myLivesMeter!!.resetLivesLeftCount()
             if (!singlePlayerButton!!.growWidthAndChangeColorIsRunning) {
+                MainActivity.myLivesMeter!!.showCurrentHeartButton()
+                if (!AudioController.isMozartSonataPlaying()) {
+                    AudioController.mozartSonata(play = true, startOver = true)
+                    AudioController.chopinPrelude(play = false, startOver = false)
+                }
                 singlePlayerButton!!.targetBackgroundColor = gridColors!![0][0]
                 singlePlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
                 multiPlayerButton!!.shrink()
@@ -437,6 +452,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         MainActivity.staticSelf!!.runOnUiThread {
                             MainActivity.successGradientView!!.alpha = 0f
                             MainActivity.glovePointer!!.fadeIn()
+                            MainActivity.glovePointer!!.sway()
+                            MainActivity.gameResults!!.fadeOut()
                             startGame()
                         }
                     }
@@ -449,7 +466,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     fun startGame() {
-        MainActivity.glovePointer!!.sway()
+        catButtons!!.getCurrentCatButtons()[0].fade(true, false, 1f, 0.125f)
         MainActivity.colorOptions!!.buildColorOptionButtons(setup = true)
         MainActivity.attackMeter!!.invokeRelease()
     }

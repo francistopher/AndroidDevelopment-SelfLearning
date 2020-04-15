@@ -32,6 +32,23 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         var leaderBoardButton: LeaderBoard? = null
         var volumeButton: Volume? = null
         var moreCatsButton: MoreCats? = null
+
+        fun looseMouseCoin() {
+            val mcButton:LayoutParams = mouseCoinButton!!.
+            getThis().layoutParams as LayoutParams
+           val x:Int = if ((0..1).random() == 0) {
+                (0..(MainActivity.dWidth * 0.5).toInt()).random()
+            } else {
+                ((MainActivity.dWidth * 0.5).toInt()..(MainActivity.dWidth.toInt() -
+                        mcButton.width)).random()
+            }
+            com.example.savethecat_colormatching.Characters.MouseCoin(
+                spawnParams = mcButton,
+                targetParams = LayoutParams(mcButton.width, mcButton.height,
+                    x, MainActivity.dHeight.toInt()),
+                isEarned = false
+            )
+        }
     }
 
     private var spaceBetween:Float = 0f

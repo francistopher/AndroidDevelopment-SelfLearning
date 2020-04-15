@@ -50,6 +50,10 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         return this.button!!
     }
 
+    fun getParentLayout():AbsoluteLayout {
+        return parentLayout!!
+    }
+
     fun setTextSize(size: Float) {
         button!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, size)
     }
@@ -133,6 +137,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         growWidthAndChangeColor!!.start()
 
         growWidthAndChangeColor!!.doOnEnd {
+            growWidthAndChangeColorIsRunning = false
             fadeOutAnimator = ValueAnimator.ofFloat(1f, 0f)
             fadeOutAnimator!!.addUpdateListener{
                 button!!.alpha = it.animatedValue as Float
@@ -142,7 +147,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             fadeOutAnimator!!.start()
             // Do on end
             fadeOutAnimator!!.doOnEnd {
-                parentLayout!!.removeView(this.getThis())
+                parentLayout!!.removeView(getThis())
             }
         }
     }

@@ -9,7 +9,11 @@ class AudioController {
         private var gearSpinningPlayer:MediaPlayer? = null
         private var heavenPlayer:MediaPlayer? = null
         private var animeWowPlayer:MediaPlayer? = null
+
         private var coinEarnedPlayer:MediaPlayer? = null
+        private var coinEarnedPlayer2:MediaPlayer? = null
+        private var coinEarnedPlayer3:MediaPlayer? = null
+
         private var kittenMeowPlayer:MediaPlayer? = null
         private var kittenDiePlayer:MediaPlayer? = null
         private var mozartSonataPlayer: MediaPlayer? = null
@@ -47,14 +51,24 @@ class AudioController {
             animeWowPlayer!!.start()
         }
 
-        fun setupCoinEarnedPlayer(context: Context) {
+        fun setupCoinEarnedPlayers(context: Context) {
             if (coinEarnedPlayer == null) {
                 coinEarnedPlayer = MediaPlayer.create(context, R.raw.coinearned)
+                coinEarnedPlayer2 = MediaPlayer.create(context, R.raw.coinearned)
+                coinEarnedPlayer3 = MediaPlayer.create(context, R.raw.coinearned)
             }
         }
 
         fun coinEarned() {
-            coinEarnedPlayer!!.start()
+            if (coinEarnedPlayer!!.isPlaying) {
+                if (coinEarnedPlayer2!!.isPlaying) {
+                    coinEarnedPlayer3!!.start()
+                } else {
+                    coinEarnedPlayer2!!.start()
+                }
+            } else {
+                coinEarnedPlayer!!.start()
+            }
         }
 
         fun setupKittenMeowPlayer(context: Context) {
@@ -84,10 +98,15 @@ class AudioController {
             }
         }
 
+        fun isMozartSonataPlaying():Boolean {
+            return mozartSonataPlayer!!.isPlaying
+        }
+
         fun mozartSonata(play:Boolean, startOver:Boolean) {
             if (play) {
                 if (startOver) {
                     mozartSonataPlayer!!.stop()
+                    mozartSonataPlayer!!.prepare()
                     mozartSonataPlayer!!.start()
                 } else {
                     mozartSonataPlayer!!.start()

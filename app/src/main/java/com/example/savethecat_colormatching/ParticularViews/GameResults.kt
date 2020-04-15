@@ -197,9 +197,9 @@ class GameResults(resultsView: View,
             }
         }
         if (In) {
-            fadeInAnimator = ValueAnimator.ofFloat(0f, 1f)
+            fadeInAnimator = ValueAnimator.ofFloat(resultsView!!.alpha, 1f)
         } else if (Out and !In) {
-            fadeInAnimator = ValueAnimator.ofFloat(1f, 0f)
+            fadeInAnimator = ValueAnimator.ofFloat(resultsView!!.alpha, 0f)
         }
         fadeInAnimator!!.addUpdateListener {
             resultsView!!.alpha = it.animatedValue as Float
@@ -222,5 +222,9 @@ class GameResults(resultsView: View,
         savedCatButtonsCount = 0
         deadCatButtonsCount = 0
         fade(true, false, 1f, 0.125f)
+    }
+
+    fun fadeOut() {
+        fade(false, true, 1f, 0.125f)
     }
 }
