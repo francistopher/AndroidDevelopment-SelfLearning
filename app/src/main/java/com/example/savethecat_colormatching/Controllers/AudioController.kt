@@ -2,6 +2,7 @@ package com.example.savethecat_colormatching.Controllers
 import android.content.Context
 import android.media.MediaPlayer
 import com.example.savethecat_colormatching.R
+import com.example.savethecat_colormatching.SettingsMenu.Volume
 
 class AudioController {
 
@@ -114,11 +115,24 @@ class AudioController {
             } else {
                 mozartSonataPlayer!!.stop()
             }
+            if (!Volume.isVolumeOn) {
+                mozartSonataPlayer?.setVolume(0f, 0f)
+            }
         }
 
         fun setupChopinPrelude(context: Context) {
             if (chopinPreludePlayer == null) {
                 chopinPreludePlayer = MediaPlayer.create(context, R.raw.chopinprelude)
+            }
+        }
+
+        fun setVolume(on:Boolean) {
+            if (on) {
+                chopinPreludePlayer?.setVolume(1f, 1f)
+                mozartSonataPlayer?.setVolume(1f, 1f)
+            } else {
+                chopinPreludePlayer?.setVolume(0f, 0f)
+                mozartSonataPlayer?.setVolume(0f, 0f)
             }
         }
 
@@ -132,6 +146,9 @@ class AudioController {
                 }
             } else {
                 chopinPreludePlayer!!.stop()
+            }
+            if (!Volume.isVolumeOn) {
+                chopinPreludePlayer?.setVolume(0f, 0f)
             }
         }
 

@@ -2,13 +2,15 @@ package com.example.savethecat_colormatching.SettingsMenu
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.widget.AbsoluteLayout
-import android.widget.Button
 import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
+import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
@@ -20,11 +22,19 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
 
     private var volumeButton: ImageButton? = null
 
+    private var sharedPrefs:SharedPreferences? = null
+    private var sharedPrefsEditor:SharedPreferences.Editor? = null
+
+    companion object {
+        var isVolumeOn:Boolean = true
+    }
+
     init {
         this.volumeButton = imageButton
         this.volumeButton!!.layoutParams = params
         parentLayout.addView(imageButton)
         this.volumeButton!!.setBackgroundColor(Color.TRANSPARENT)
+        setupSelector()
         setStyle()
     }
 
@@ -119,6 +129,26 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
 
     private fun darkDominant() {
         volumeButton!!.setBackgroundResource(R.drawable.darkmusicon)
+    }
+
+    private fun setupSelector() {
+        loadData()
+        this.volumeButton!!.setOnClickListener {
+            saveData()
+            AudioController.setVolume(isVolumeOn)
+        }
+    }
+
+    private fun saveData() {
+        isVolumeOn = !isVolumeOn
+        sharedPrefsEditor!!.putBoolean("stcVolume", isVolumeOn)
+        sharedPrefsEditor!!.apply()
+    }
+
+    private fun loadData() {
+        sharedPrefs = MainActivity.staticSelf!!.getSharedPreferences("saveTheCatColorMatching", Context.MODE_PRIVATE)
+        sharedPrefsEditor = sharedPrefs!!.edit()
+        isVolumeOn = sharedPrefs!!.getBoolean("stcVolume", isVolumeOn)
     }
 
     fun setStyle() {

@@ -22,7 +22,6 @@ import com.example.savethecat_colormatching.Controllers.AspectRatio
 import com.example.savethecat_colormatching.Controllers.AspectRatio.Companion.setupAspectRatio
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
-import com.example.savethecat_colormatching.CustomViews.GlovePointer
 import com.example.savethecat_colormatching.ParticularViews.*
 import com.google.android.gms.ads.*
 import java.util.*
@@ -62,7 +61,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         // Game results
         var gameResults:GameResults? = null
         // Glove pointer
-        var glovePointer:GlovePointer? = null
+        var glovePointer: GlovePointer? = null
         // Mouse coin view
         var mouseCoinView:MCView? = null
     }
@@ -161,6 +160,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                                 boardGame!!.setupSinglePlayerButton()
                                 boardGame!!.setupTwoPlayerButton()
                                 boardGame!!.buildGame()
+                                mouseCoinView!!.fadeIn()
+                                myLivesMeter!!.fadeIn()
+                                opponentLivesMeter!!.fadeIn()
                                 enemies!!.sway()
                                 adView!!.alpha = 1f
                             }
@@ -344,7 +346,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         opponentLivesMeter = LivesMeter(meterView = View(this), parentLayout = rootLayout!!,
         params = LayoutParams(height.toInt(), height.toInt(), x.toInt(), dUnitHeight.toInt()),
             isOpponent = true)
-        opponentLivesMeter!!.getThis().setBackgroundColor(Color.BLUE)
     }
 
     private fun setupGameResults() {
@@ -358,9 +359,14 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupGlovePointer() {
         val sideLength:Int = (dUnitHeight * 1.5).toInt()
-        glovePointer = GlovePointer(view = ImageView(rootView!!.context), parentLayout = rootLayout!!,
-        params = LayoutParams(sideLength, sideLength, colorOptions!!.getOriginalParams().x -
-                (dUnitHeight * 0.15).toInt(), colorOptions!!.getOriginalParams().y +
-                (dUnitHeight * 0.175).toInt()))
+        glovePointer =
+            GlovePointer(
+                view = ImageView(rootView!!.context), parentLayout = rootLayout!!,
+                params = LayoutParams(
+                    sideLength, sideLength, colorOptions!!.getOriginalParams().x -
+                            (dUnitHeight * 0.15).toInt(), colorOptions!!.getOriginalParams().y +
+                            (dUnitHeight * 0.175).toInt()
+                )
+            )
     }
 }

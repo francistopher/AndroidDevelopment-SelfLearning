@@ -1,4 +1,4 @@
-package com.example.savethecat_colormatching.CustomViews
+package com.example.savethecat_colormatching.ParticularViews
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
@@ -154,12 +154,12 @@ class GlovePointer (view: ImageView,
         }
         swayAnimation!!.doOnEnd {
             if (!quitSwaying) {
+                quitSwaying = false
                 if (translateInstead) {
                     translateInstead = false
                     isSwayingAway = true
                 }
                 sway()
-                quitSwaying = false
             }
         }
         swayAnimation!!.start()

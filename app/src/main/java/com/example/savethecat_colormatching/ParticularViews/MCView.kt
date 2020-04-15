@@ -1,5 +1,6 @@
 package com.example.savethecat_colormatching.ParticularViews
 
+import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
@@ -8,6 +9,8 @@ import android.view.Gravity
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.TextView
+import com.daasuu.ei.Ease
+import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 
 class MCView(textView: TextView, parentLayout: AbsoluteLayout,
@@ -29,7 +32,36 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
         setupLayout(layout = parentLayout)
         setCornerRadiusAndBorderWidth((params.height / 2.0).toInt(),
             (params.height / 12.0).toInt())
+        mouseCoinView!!.alpha = 0f
+    }
 
+    fun fadeIn() {
+        fade(true, false, 1f, 0.125f)
+    }
+
+    private var fadeInAnimator: ValueAnimator? = null
+    private var fadeAnimatorIsRunning:Boolean = false
+    private fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        if (fadeInAnimator != null) {
+            if (fadeAnimatorIsRunning) {
+                fadeInAnimator!!.cancel()
+                fadeAnimatorIsRunning = false
+                fadeInAnimator = null
+            }
+        }
+        if (In) {
+            fadeInAnimator = ValueAnimator.ofFloat(0f, 1f)
+        } else if (Out and !In) {
+            fadeInAnimator = ValueAnimator.ofFloat(1f, 0f)
+        }
+        fadeInAnimator!!.addUpdateListener {
+            mouseCoinView!!.alpha = it.animatedValue as Float
+        }
+        fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
+        fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
+        fadeInAnimator!!.start()
+        fadeAnimatorIsRunning = true
     }
 
     private var shape: GradientDrawable? = null
@@ -72,6 +104,10 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
             "SleepyFatCat.ttf"
         )
         mouseCoinView!!.gravity = Gravity.CENTER
+    }
+
+    fun getThis():TextView {
+        return mouseCoinView!!
     }
 
     fun setTextSize(size:Float) {

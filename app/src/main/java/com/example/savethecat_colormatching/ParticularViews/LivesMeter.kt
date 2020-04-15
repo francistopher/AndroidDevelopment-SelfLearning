@@ -11,6 +11,8 @@ import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.animation.doOnEnd
+import com.daasuu.ei.Ease
+import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Characters.CatButton
 import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.CustomViews.CView
@@ -58,6 +60,10 @@ class LivesMeter(meterView: View,
         // Setup heart interactive buttons
         setupHeartInteractiveButtons()
         setupImageButtonText()
+        this.meterView!!.alpha = 0f
+        currentHeartButton!!.alpha = 0f
+        containerView!!.getThis().alpha = 0f
+        livesCountLabel!!.getThis().alpha = 0f
     }
 
     fun hideCurrentHeartButton() {
@@ -119,6 +125,38 @@ class LivesMeter(meterView: View,
     fun setLivesLeftTextCount() {
         livesCountLabel!!.setText(livesLeft.toString())
         livesCountLabel!!.getThis().bringToFront()
+    }
+
+    fun fadeIn() {
+        fade(true, false, 1f, 0.125f)
+    }
+
+    private var fadeInAnimator: ValueAnimator? = null
+    private var fadeAnimatorIsRunning:Boolean = false
+    private fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        if (fadeInAnimator != null) {
+            if (fadeAnimatorIsRunning) {
+                fadeInAnimator!!.cancel()
+                fadeAnimatorIsRunning = false
+                fadeInAnimator = null
+            }
+        }
+        if (In) {
+            fadeInAnimator = ValueAnimator.ofFloat(0f, 1f)
+        } else if (Out and !In) {
+            fadeInAnimator = ValueAnimator.ofFloat(1f, 0f)
+        }
+        fadeInAnimator!!.addUpdateListener {
+            currentHeartButton!!.alpha = it.animatedValue as Float
+            containerView!!.getThis().alpha = it.animatedValue as Float
+            livesCountLabel!!.getThis().alpha = it.animatedValue as Float
+            meterView!!.alpha = it.animatedValue as Float
+        }
+        fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
+        fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
+        fadeInAnimator!!.start()
+        fadeAnimatorIsRunning = true
     }
 
     private fun setupContainerMeterView() {

@@ -176,6 +176,9 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             getOriginalParams().y))
         mouseCoinButton!!.getThis().layoutParams = mouseCoinButton!!.getExpandedParams()
         mouseCoinButton!!.getThis().alpha = 0f
+        mouseCoinButton!!.getThis().setOnClickListener {
+            AudioController.coinEarned()
+        }
     }
 
     private fun setupLeaderBoardButton() {
