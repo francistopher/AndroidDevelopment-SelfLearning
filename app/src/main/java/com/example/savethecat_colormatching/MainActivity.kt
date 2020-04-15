@@ -252,7 +252,14 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             override fun onAdClosed() {
                 gameResults!!.hideWatchAdButtonChildren()
                 glovePointer!!.getThis().alpha = 0f
-
+                Timer().schedule(object : TimerTask() {
+                    override fun run() {
+                        staticSelf!!.runOnUiThread {
+                            gameResults!!.giveMouseCoins()
+                            GameResults.mouseCoinsEarned += 1
+                        }
+                    }
+                }, 500)
             }
         }
 

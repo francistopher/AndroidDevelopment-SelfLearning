@@ -581,7 +581,7 @@ class MouseCoin(spawnParams:LayoutParams, targetParams:LayoutParams, isEarned:Bo
     private fun setupAnimationSet() {
         animatorSet = AnimatorSet()
         animatorSet!!.play(xAnimation!!).with(yAnimation!!)
-        animatorSet!!.startDelay = 125
+        animatorSet!!.startDelay = 500
         animatorSet!!.duration = 1000
         animatorSet!!.start()
         animatorSet!!.doOnEnd {

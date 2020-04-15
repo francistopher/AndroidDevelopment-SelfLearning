@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
+import com.example.savethecat_colormatching.Characters.MouseCoin
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.CImageView
@@ -19,6 +20,9 @@ import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.MainActivity.Companion.mInterstitialAd
 import com.example.savethecat_colormatching.R
+import kotlin.math.PI
+import kotlin.math.cos
+import kotlin.math.sin
 
 class GameResults(resultsView: View,
                   parentLayout: AbsoluteLayout,
@@ -44,6 +48,8 @@ class GameResults(resultsView: View,
     companion object {
         var savedCatButtonsCount:Int = 0
         var deadCatButtonsCount:Int = 0
+
+        var mouseCoinsEarned:Int = 5
     }
 
     init {
@@ -271,6 +277,25 @@ class GameResults(resultsView: View,
         fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
         fadeInAnimator!!.start()
         fadeAnimatorIsRunning = true
+    }
+
+    private var angle:Float = 0f
+    private var increment:Float = 0f
+    private var mouseCoinParams:LayoutParams = SettingsMenu.mouseCoinButton!!.getThis().layoutParams as LayoutParams
+    fun giveMouseCoins() {
+        angle = 52.5f
+        increment = 360f / mouseCoinsEarned
+        for (iteration in 1..mouseCoinsEarned) {
+            val x:Int = ((mouseCoinParams.width * -0.5) + (MainActivity.dWidth * 0.5) +
+                    (MainActivity.dWidth * 0.35 * cos(PI * angle / 180f))).toInt()
+            val y:Int = ((mouseCoinParams.height * -1.0) + (MainActivity.dHeight * 0.5) +
+                    (MainActivity.dWidth * 0.35 * sin(PI * angle / 180f))).toInt()
+            MouseCoin(spawnParams = LayoutParams(mouseCoinParams.width,
+                mouseCoinParams.height, x, y),
+                targetParams = mouseCoinParams,
+                isEarned = true)
+            angle += increment
+        }
     }
 
     fun fadeIn() {
