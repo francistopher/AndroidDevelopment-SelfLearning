@@ -55,12 +55,12 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutPara
         textView!!.gravity = Gravity.CENTER
     }
 
-    fun getOriginalParams():LayoutParams {
-        return originalParams!!
-    }
-
     fun setTextSize(size:Float) {
         textView!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, size)
+    }
+
+    fun getOriginalParams():LayoutParams {
+        return originalParams!!
     }
 
     private var shape:GradientDrawable? = null

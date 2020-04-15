@@ -154,6 +154,10 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         return originalParams!!
     }
 
+    fun getEnemy(): ImageView {
+        return enemyImage!!.getThis()
+    }
+
     private fun lightDominant() {
         meterView!!.setBackgroundColor(Color.BLACK)
     }

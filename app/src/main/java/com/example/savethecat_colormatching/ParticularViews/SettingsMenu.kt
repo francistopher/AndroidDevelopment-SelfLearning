@@ -42,6 +42,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                 ((MainActivity.dWidth * 0.5).toInt()..(MainActivity.dWidth.toInt() -
                         mcButton.width)).random()
             }
+            MainActivity.mouseCoinView!!.decreaseCount()
             com.example.savethecat_colormatching.Characters.MouseCoin(
                 spawnParams = mcButton,
                 targetParams = LayoutParams(mcButton.width, mcButton.height,

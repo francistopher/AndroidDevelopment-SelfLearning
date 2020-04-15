@@ -14,6 +14,7 @@ import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Characters.Enemies
 import com.example.savethecat_colormatching.Controllers.ARType
@@ -62,6 +63,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var gameResults:GameResults? = null
         // Glove pointer
         var glovePointer:GlovePointer? = null
+        // Mouse coin view
+        var mouseCoinView:MCView? = null
     }
 
     var introAnimation:IntroView? = null
@@ -179,6 +182,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupLivesMeters()
         setupSettingsButton()
         setupAttackMeter()
+        setupMouseCoinView()
         setupGameResults()
         setupGlovePointer()
         AudioController.mozartSonata(play = true, startOver = false)
@@ -315,6 +319,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             x.toInt(), y.toInt())
         attackMeter = AttackMeter(meterView = View(this), parentLayout = rootLayout!!,
             params = attackMeterParams)
+    }
+
+    private fun setupMouseCoinView() {
+        mouseCoinView = MCView(textView = TextView(rootView!!.context), parentLayout = rootLayout!!,
+        params = attackMeter!!.getOriginalParams())
+        mouseCoinView!!.setTextSize(mouseCoinView!!.getOriginalParams().height * 0.2f)
+        mouseCoinView!!.displayCount()
     }
 
     private fun setupLivesMeters() {
