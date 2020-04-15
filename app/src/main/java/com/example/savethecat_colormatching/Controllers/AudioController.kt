@@ -16,6 +16,8 @@ class AudioController {
         private var coinEarnedPlayer3:MediaPlayer? = null
 
         private var kittenMeowPlayer:MediaPlayer? = null
+        private var kittenMeowPlayer2:MediaPlayer? = null
+        private var kittenMeowPlayer3:MediaPlayer? = null
         private var kittenDiePlayer:MediaPlayer? = null
         private var mozartSonataPlayer: MediaPlayer? = null
         private var chopinPreludePlayer:MediaPlayer? = null
@@ -75,11 +77,21 @@ class AudioController {
         fun setupKittenMeowPlayer(context: Context) {
             if (kittenMeowPlayer == null) {
                 kittenMeowPlayer = MediaPlayer.create(context, R.raw.kittenmeow)
+                kittenMeowPlayer2 = MediaPlayer.create(context, R.raw.kittenmeow)
+                kittenMeowPlayer3 = MediaPlayer.create(context, R.raw.kittenmeow)
             }
         }
 
         fun kittenMeow() {
-            kittenMeowPlayer!!.start()
+            if (kittenMeowPlayer!!.isPlaying) {
+                if (kittenMeowPlayer2!!.isPlaying) {
+                    kittenMeowPlayer3!!.start()
+                } else {
+                    kittenMeowPlayer2!!.start()
+                }
+            } else {
+                kittenMeowPlayer!!.start()
+            }
         }
 
         fun setupKittenDiePlayer(context: Context) {

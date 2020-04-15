@@ -124,11 +124,19 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
     }
 
     private fun lightDominant() {
-        volumeButton!!.setBackgroundResource(R.drawable.lightmusicon)
+        if (isVolumeOn) {
+            volumeButton!!.setBackgroundResource(R.drawable.lightmusicon)
+        } else {
+            volumeButton!!.setBackgroundResource(R.drawable.lightmusicoff)
+        }
     }
 
     private fun darkDominant() {
-        volumeButton!!.setBackgroundResource(R.drawable.darkmusicon)
+        if (isVolumeOn) {
+            volumeButton!!.setBackgroundResource(R.drawable.darkmusicon)
+        } else {
+            volumeButton!!.setBackgroundResource(R.drawable.darkmusicoff)
+        }
     }
 
     private fun setupSelector() {
@@ -136,6 +144,7 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
         this.volumeButton!!.setOnClickListener {
             saveData()
             AudioController.setVolume(isVolumeOn)
+            setStyle()
         }
     }
 
@@ -149,6 +158,7 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
         sharedPrefs = MainActivity.staticSelf!!.getSharedPreferences("saveTheCatColorMatching", Context.MODE_PRIVATE)
         sharedPrefsEditor = sharedPrefs!!.edit()
         isVolumeOn = sharedPrefs!!.getBoolean("stcVolume", isVolumeOn)
+        setStyle()
     }
 
     fun setStyle() {
