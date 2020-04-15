@@ -61,6 +61,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var glovePointer: GlovePointer? = null
         // Mouse coin view
         var mouseCoinView:MCView? = null
+        // Intersitial ad
+        var mInterstitialAd: InterstitialAd? = null
     }
 
     var introAnimation:IntroView? = null
@@ -239,6 +241,21 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private fun setupAdvertisement() {
         MobileAds.initialize(this) {}
         setupBannerAds()
+        setupInterstitialAds()
+    }
+
+    private fun setupInterstitialAds() {
+        mInterstitialAd = InterstitialAd(this)
+        mInterstitialAd!!.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd!!.loadAd(AdRequest.Builder().build())
+        mInterstitialAd!!.adListener = object: AdListener() {
+            override fun onAdClosed() {
+                gameResults!!.hideWatchAdButtonChildren()
+                glovePointer!!.getThis().alpha = 0f
+
+            }
+        }
+
     }
 
     private var adView:AdView? = null

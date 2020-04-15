@@ -17,6 +17,7 @@ import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.MainActivity.Companion.mInterstitialAd
 import com.example.savethecat_colormatching.R
 
 class GameResults(resultsView: View,
@@ -150,6 +151,11 @@ class GameResults(resultsView: View,
             0)
     }
 
+    fun hideWatchAdButtonChildren() {
+        watchAdButton!!.setText("", false)
+        mouseCoin!!.alpha = 0f
+    }
+
     private fun setupSmilingCat() {
         smilingCat = CImageView(imageView = ImageView(resultsContext!!), parentLayout = parentLayout!!,
         params = LayoutParams((getOriginalParams().width * 0.625).toInt(),
@@ -206,6 +212,11 @@ class GameResults(resultsView: View,
             (borderWidth * 0.75).toInt())
         watchAdButton!!.setText("Watch Short Ad to Win ····· s!", false)
         watchAdButton!!.setTextSize(watchAdButton!!.getOriginalParams().height * 0.2f)
+        watchAdButton!!.getThis().setOnClickListener {
+            if (mInterstitialAd!!.isLoaded) {
+                mInterstitialAd!!.show()
+            }
+        }
     }
 
     private fun setupMouseCoin() {
@@ -218,6 +229,9 @@ class GameResults(resultsView: View,
         mouseCoin!!.setBackgroundResource(R.drawable.mousecoin)
         mouseCoin!!.setOnClickListener {
             AudioController.coinEarned()
+            if (mInterstitialAd!!.isLoaded) {
+                mInterstitialAd!!.show()
+            }
         }
     }
 
@@ -237,6 +251,7 @@ class GameResults(resultsView: View,
         }
         if (In) {
             fadeInAnimator = ValueAnimator.ofFloat(resultsView!!.alpha, 1f)
+            watchAdButton!!.setText("Watch Short Ad to Win ····· s!", false)
         } else if (Out and !In) {
             fadeInAnimator = ValueAnimator.ofFloat(resultsView!!.alpha, 0f)
         }
