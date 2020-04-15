@@ -446,6 +446,11 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
+            // Decrease mouse coins given
+            if (GameResults.mouseCoinsEarned > 5 && !GameResults.watchAdButtonWasSelected) {
+                GameResults.watchAdButtonWasSelected = false
+                GameResults.mouseCoinsEarned -= 1
+            }
             // Translate the glove pointer back to start
             val x:Int = MainActivity.colorOptions!!.getOriginalParams().x -
                     (MainActivity.dUnitHeight * 0.15).toInt()

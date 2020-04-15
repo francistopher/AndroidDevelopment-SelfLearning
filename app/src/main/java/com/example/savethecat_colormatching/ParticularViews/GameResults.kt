@@ -50,6 +50,8 @@ class GameResults(resultsView: View,
         var deadCatButtonsCount:Int = 0
 
         var mouseCoinsEarned:Int = 5
+
+        var watchAdButtonWasSelected:Boolean = false
     }
 
     init {

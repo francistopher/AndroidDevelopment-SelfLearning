@@ -257,6 +257,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                         staticSelf!!.runOnUiThread {
                             gameResults!!.giveMouseCoins()
                             GameResults.mouseCoinsEarned += 1
+                            GameResults.watchAdButtonWasSelected = true
                         }
                     }
                 }, 500)
