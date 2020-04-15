@@ -214,7 +214,15 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     private fun gameOver() {
+        // Glove pointer on watch ad button
+        val watchAdButtonParams:LayoutParams = MainActivity.gameResults!!.getWatchAdButton().getOriginalParams()
+        MainActivity.glovePointer!!.translate(
+            watchAdButtonParams.x - (watchAdButtonParams.width * 0.1125).toInt(),
+            watchAdButtonParams.y - (watchAdButtonParams.height * 0.05).toInt())
+        MainActivity.glovePointer!!.fadeIn()
+        // Hide my lives meter heart button
         MainActivity.myLivesMeter!!.hideCurrentHeartButton()
+        // Show single and multi player button
         singlePlayerButton!!.backgroundColor = null
         singlePlayerButton!!.targetBackgroundColor = null
         singlePlayerButton!!.setStyle()
@@ -233,11 +241,12 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                     multiPlayerButton!!.getThis().bringToFront()
                 }
             }
-        }, 125)
+        }, 250)
         MainActivity.glovePointer!!.hide()
         catButtons!!.setAllCatButtonsDead()
         GameResults.deadCatButtonsCount += catButtons!!.deadCount()
         MainActivity.gameResults!!.fadeIn()
+        MainActivity.glovePointer!!.getThis().bringToFront()
         AttackMeter.didNotInvokeRelease = true
         MainActivity.colorOptions!!.resetSelectedColor()
         gridColors = null
@@ -437,6 +446,12 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
+            // Translate the glove pointer back to start
+            val x:Int = MainActivity.colorOptions!!.getOriginalParams().x -
+                    (MainActivity.dUnitHeight * 0.15).toInt()
+            val y:Int = MainActivity.colorOptions!!.getOriginalParams().y +
+                    (MainActivity.dUnitHeight * 0.175).toInt()
+            MainActivity.glovePointer!!.translate(x, y)
             MainActivity.myLivesMeter!!.resetLivesLeftCount()
             if (!singlePlayerButton!!.growWidthAndChangeColorIsRunning) {
                 MainActivity.myLivesMeter!!.showCurrentHeartButton()
@@ -452,7 +467,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         MainActivity.staticSelf!!.runOnUiThread {
                             MainActivity.successGradientView!!.alpha = 0f
                             MainActivity.glovePointer!!.fadeIn()
-                            MainActivity.glovePointer!!.sway()
                             MainActivity.gameResults!!.fadeOut()
                             startGame()
                         }

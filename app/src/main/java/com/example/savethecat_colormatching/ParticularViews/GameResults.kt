@@ -7,10 +7,13 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
+import com.example.savethecat_colormatching.Controllers.AudioController
+import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
@@ -34,6 +37,8 @@ class GameResults(resultsView: View,
     private var aliveCatCountLabel:CLabel? = null
     private var deadCatCountLabel:CLabel? = null
 
+    private var watchAdButton:CButton? = null
+    private var mouseCoin:Button? = null
 
     companion object {
         var savedCatButtonsCount:Int = 0
@@ -50,7 +55,7 @@ class GameResults(resultsView: View,
         parentLayout.addView(resultsView)
         setStyle()
         setCornerRadiusAndBorderWidth(radius = params.height / 2,
-            borderWidth = params.height / 36)
+            borderWidth = params.height / 60)
     }
 
     private fun hideEverything() {
@@ -60,6 +65,8 @@ class GameResults(resultsView: View,
         deadCat!!.getThis().alpha = 0f
         aliveCatCountLabel!!.getThis().alpha = 0f
         deadCatCountLabel!!.getThis().alpha = 0f
+        watchAdButton!!.getThis().alpha = 0f
+        mouseCoin!!.alpha = 0f
     }
 
     fun setupContents() {
@@ -68,6 +75,8 @@ class GameResults(resultsView: View,
         setupDeadCat()
         setupAliveCatCountLabel()
         setupDeadCatCountLabel()
+        setupWatchAdButton()
+        setupMouseCoin()
         hideEverything()
     }
 
@@ -186,6 +195,36 @@ class GameResults(resultsView: View,
         deadCatCountLabel!!.setStyle()
     }
 
+    private fun setupWatchAdButton() {
+        watchAdButton = CButton(button = Button(resultsContext!!), parentLayout = parentLayout!!,
+        params = LayoutParams((getOriginalParams().width * 0.8).toInt(), unitHeight,
+            (getOriginalParams().x + (getOriginalParams().width * 0.1)).toInt(),
+            deadCatCountLabel!!.getOriginalParams().y +
+                    (deadCatCountLabel!!.getOriginalParams().height * 1.1).toInt()))
+        watchAdButton!!.isBorderGold = true
+        watchAdButton!!.setCornerRadiusAndBorderWidth((cornerRadius * 0.07).toInt(),
+            (borderWidth * 0.75).toInt())
+        watchAdButton!!.setText("Watch Short Ad to Win ····· s!", false)
+        watchAdButton!!.setTextSize(watchAdButton!!.getOriginalParams().height * 0.2f)
+    }
+
+    private fun setupMouseCoin() {
+        mouseCoin = Button(resultsContext!!)
+        parentLayout!!.addView(mouseCoin!!)
+        mouseCoin!!.layoutParams = LayoutParams((watchAdButton!!.getOriginalParams().height * 0.8).toInt(),
+            (watchAdButton!!.getOriginalParams().height * 0.8).toInt(),
+            (getOriginalParams().x + getOriginalParams().width * 0.7).toInt(),
+            (watchAdButton!!.getOriginalParams().y + (watchAdButton!!.getOriginalParams().height * 0.1).toInt()))
+        mouseCoin!!.setBackgroundResource(R.drawable.mousecoin)
+        mouseCoin!!.setOnClickListener {
+            AudioController.coinEarned()
+        }
+    }
+
+    fun getWatchAdButton():CButton {
+        return watchAdButton!!
+    }
+
     private var fadeInAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     private fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
@@ -202,12 +241,15 @@ class GameResults(resultsView: View,
             fadeInAnimator = ValueAnimator.ofFloat(resultsView!!.alpha, 0f)
         }
         fadeInAnimator!!.addUpdateListener {
-            resultsView!!.alpha = it.animatedValue as Float
-            gameOverLabel!!.getThis().alpha = it.animatedValue as Float
-            smilingCat!!.getThis().alpha = it.animatedValue as Float
-            deadCat!!.getThis().alpha = it.animatedValue as Float
-            aliveCatCountLabel!!.getThis().alpha = it.animatedValue as Float
-            deadCatCountLabel!!.getThis().alpha = it.animatedValue as Float
+            val alpha:Float = it.animatedValue as Float
+            resultsView!!.alpha = alpha
+            gameOverLabel!!.getThis().alpha = alpha
+            smilingCat!!.getThis().alpha = alpha
+            deadCat!!.getThis().alpha = alpha
+            aliveCatCountLabel!!.getThis().alpha = alpha
+            deadCatCountLabel!!.getThis().alpha = alpha
+            watchAdButton!!.getThis().alpha = alpha
+            mouseCoin!!.alpha = alpha
         }
         fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()

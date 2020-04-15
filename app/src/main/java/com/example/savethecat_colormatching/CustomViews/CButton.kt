@@ -33,6 +33,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     var willBeShrunk:Boolean = false
 
     private var parentLayout:AbsoluteLayout? = null
+    var isBorderGold:Boolean = false
 
     init {
         this.button = button
@@ -85,15 +86,17 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 shape!!.setColor(Color.WHITE)
             }
         }
-
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
-            if (MainActivity.isThemeDark) {
-                shape!!.setStroke(borderWidth, Color.WHITE)
+            if (isBorderGold) {
+                shape!!.setStroke(borderWidth, Color.parseColor("#ffd60a"))
             } else {
-                shape!!.setStroke(borderWidth, Color.BLACK)
+                if (MainActivity.isThemeDark) {
+                    shape!!.setStroke(borderWidth, Color.WHITE)
+                } else {
+                    shape!!.setStroke(borderWidth, Color.BLACK)
+                }
             }
-
         }
         cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()

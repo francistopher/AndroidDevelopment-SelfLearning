@@ -10,11 +10,8 @@ import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
-import android.widget.AbsoluteLayout
+import android.widget.*
 import android.widget.AbsoluteLayout.LayoutParams
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Characters.Enemies
 import com.example.savethecat_colormatching.Controllers.ARType
@@ -163,6 +160,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                                 mouseCoinView!!.fadeIn()
                                 myLivesMeter!!.fadeIn()
                                 opponentLivesMeter!!.fadeIn()
+                                glovePointer!!.sway()
                                 enemies!!.sway()
                                 adView!!.alpha = 1f
                             }
@@ -359,14 +357,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupGlovePointer() {
         val sideLength:Int = (dUnitHeight * 1.5).toInt()
-        glovePointer =
-            GlovePointer(
-                view = ImageView(rootView!!.context), parentLayout = rootLayout!!,
-                params = LayoutParams(
-                    sideLength, sideLength, colorOptions!!.getOriginalParams().x -
-                            (dUnitHeight * 0.15).toInt(), colorOptions!!.getOriginalParams().y +
-                            (dUnitHeight * 0.175).toInt()
-                )
-            )
+        glovePointer = GlovePointer(view = Button(rootView!!.context),
+            parentLayout = rootLayout!!,
+            params = LayoutParams(sideLength, sideLength, colorOptions!!.getOriginalParams().x -
+                    (dUnitHeight * 0.15).toInt(), colorOptions!!.getOriginalParams().y +
+                    (dUnitHeight * 0.175).toInt()))
     }
 }

@@ -5,7 +5,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
-import android.widget.ImageView
+import android.widget.Button
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
 import com.daasuu.ei.Ease
@@ -14,14 +14,14 @@ import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
 import java.util.*
 
-class GlovePointer (view: ImageView,
+class GlovePointer (view: Button,
                     parentLayout: AbsoluteLayout,
                     params: LayoutParams){
 
     private var originalParams:LayoutParams? = null
 
     private var gpContext: Context? = null
-    private var gpView:ImageView? = null
+    private var gpView:Button? = null
     private var parentLayout:AbsoluteLayout? = null
 
     private var lightGloveTapImage:Int = R.drawable.lightglovetap
@@ -65,8 +65,6 @@ class GlovePointer (view: ImageView,
 
     fun hide() {
         gpView!!.alpha = 0f
-        quitSwaying = true
-        swayAnimation!!.cancel()
     }
 
     private var fadeInAnimator: ValueAnimator? = null
@@ -94,12 +92,14 @@ class GlovePointer (view: ImageView,
         fadeAnimatorIsRunning = true
     }
 
+    fun getThis():Button {
+        return gpView!!
+    }
+
     fun translate(initX:Int, initY:Int) {
-        if (quitSwaying) return
         this.initX = initX
         this.initY = initY
         this.translateInstead = true
-        this.gpView!!.bringToFront()
     }
 
     private var swayAnimation:AnimatorSet? = null
@@ -107,8 +107,8 @@ class GlovePointer (view: ImageView,
     private var swayYAnimation:ValueAnimator? = null
     private var isSwayingAway:Boolean = false
     private var translateInstead:Boolean = false
-    private var quitSwaying:Boolean = false
     fun sway() {
+        gpView!!.bringToFront()
         isSwayingAway = !isSwayingAway
         if (translateInstead) {
             swayXAnimation = ValueAnimator.ofInt(getOriginalParams().x, initX)
@@ -153,19 +153,12 @@ class GlovePointer (view: ImageView,
             }, 125)
         }
         swayAnimation!!.doOnEnd {
-            if (!quitSwaying) {
-                quitSwaying = false
-                if (translateInstead) {
-                    translateInstead = false
-                    isSwayingAway = true
-                }
-                sway()
+            if (translateInstead) {
+                translateInstead = false
+                isSwayingAway = true
             }
+            sway()
         }
         swayAnimation!!.start()
     }
-
-
-
-
 }
