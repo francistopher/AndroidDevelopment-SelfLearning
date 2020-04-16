@@ -16,7 +16,6 @@ import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.MainActivity
 import java.util.*
 
-
 class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
     private var boardView: View? = null
@@ -447,8 +446,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
             // Decrease mouse coins given
-            if (GameResults.mouseCoinsEarned > 5 && !GameResults.watchAdButtonWasSelected) {
+            if (GameResults.watchAdButtonWasSelected) {
                 GameResults.watchAdButtonWasSelected = false
+            }
+            if (GameResults.mouseCoinsEarned > 5 && !GameResults.watchAdButtonWasSelected) {
                 GameResults.mouseCoinsEarned -= 1
             }
             // Translate the glove pointer back to start

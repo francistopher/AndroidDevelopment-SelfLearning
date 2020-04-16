@@ -3,8 +3,12 @@ package com.example.savethecat_colormatching.SettingsMenu
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import android.view.View
 import android.widget.AbsoluteLayout
+import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
+import android.widget.PopupWindow
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
@@ -12,10 +16,10 @@ import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
 
-class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
+class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
-    private var expandedParams: AbsoluteLayout.LayoutParams? = null
-    private var contractedParams: AbsoluteLayout.LayoutParams? = null
+    private var expandedParams: LayoutParams? = null
+    private var contractedParams: LayoutParams? = null
 
     private var moreCatsButton: ImageButton? = null
 
@@ -24,7 +28,57 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         this.moreCatsButton!!.layoutParams = params
         parentLayout.addView(imageButton)
         this.moreCatsButton!!.setBackgroundColor(Color.TRANSPARENT)
+        setupPopupView()
+        setupPopupWindow()
+        setupSelector()
         setStyle()
+    }
+
+    private fun setupPopupView() {
+        popupContainerView = View(MainActivity.rootView!!.context)
+        popupContainerView!!.setBackgroundColor(Color.TRANSPARENT)
+    }
+
+    private fun setupPopupWindow() {
+        popupWindow = PopupWindow(MainActivity.rootView!!.context)
+        popupWindow!!.contentView = popupContainerView!!
+        popupWindow!!.height = (MainActivity.dUnitHeight * 14.125).toInt()
+        popupWindow!!.width = (MainActivity.dWidth - (MainActivity.dWidth * 0.025 * 2)).toInt()
+
+        var shape: GradientDrawable?
+        fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int) {
+            shape = null
+            shape = GradientDrawable()
+            shape!!.shape = GradientDrawable.RECTANGLE
+            if (MainActivity.isThemeDark) {
+                shape!!.setColor(Color.BLACK)
+            } else {
+                shape!!.setColor(Color.WHITE)
+            }
+            if (borderWidth > 0) {
+                if (MainActivity.isThemeDark) {
+                    shape!!.setStroke(borderWidth, Color.WHITE)
+                } else {
+                    shape!!.setStroke(borderWidth, Color.BLACK)
+                }
+            }
+            shape!!.cornerRadii = floatArrayOf(radius.toFloat(), radius.toFloat(), radius.toFloat(),
+                radius.toFloat(), 0f, 0f, 0f, 0f)
+            popupWindow!!.setBackgroundDrawable(shape)
+        }
+        setCornerRadiusAndBorderWidth(MainActivity.dUnitWidth.toInt(),
+            (MainActivity.dUnitWidth / 3).toInt())
+    }
+
+    private var popupWindow:PopupWindow? = null
+    private var popupContainerView: View? = null
+    private fun setupSelector() {
+        moreCatsButton!!.setOnClickListener {
+            popupWindow!!.showAsDropDown(MainActivity.rootView!!,
+                (MainActivity.dWidth * 0.025).toInt(),
+                (MainActivity.dWidth * 0.025).toInt())
+            popupWindow!!.isFocusable = true
+        }
     }
 
     private var transformingSet: AnimatorSet? = null
