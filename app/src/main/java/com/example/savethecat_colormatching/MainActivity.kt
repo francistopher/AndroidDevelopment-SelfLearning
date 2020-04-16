@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         // Custom Font
         var rootLayout:AbsoluteLayout? = null
         // Absolute Layout Params
-        var params:AbsoluteLayout.LayoutParams? = null
+        var params:LayoutParams? = null
         var successGradientView:View? = null
         var enemies:Enemies? = null
         // Board Game

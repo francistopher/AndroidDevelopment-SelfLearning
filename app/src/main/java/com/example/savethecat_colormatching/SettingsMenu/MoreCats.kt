@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
@@ -37,6 +38,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var popupContainerView: Button? = null
 
     private var presentationCat:PCatButton? = null
+    private var catViewHandler: View? = null
 
     init {
         this.moreCatsButton = imageButton
@@ -49,6 +51,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setupPreviousButton()
         setupNextButton()
         setupCatPresentation()
+        setupCatHandler()
         setupSelector()
         setStyle()
     }
@@ -75,6 +78,12 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             shape!!.setColor(Color.RED)
         } else if (viewID == 4 || viewID == 5) {
             shape!!.setColor(ColorOptions.yellow)
+        } else if (viewID == 6) {
+            if (MainActivity.isThemeDark) {
+                shape!!.setColor(Color.WHITE)
+            } else {
+                shape!!.setColor(Color.BLACK)
+            }
         }
         if (borderWidth > 0) {
             if (MainActivity.isThemeDark) {
@@ -102,6 +111,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             shape!!.cornerRadii = floatArrayOf(radius.toFloat(), radius.toFloat(), 0f, 0f,
                 radius.toFloat(), radius.toFloat(), 0f, 0f)
             nextButton!!.getThis().setBackgroundDrawable(shape)
+        } else if (viewID == 6) {
+            shape!!.cornerRadius = radius.toFloat()
+            catViewHandler!!.setBackgroundDrawable(shape)
         }
     }
 
@@ -118,8 +130,30 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 contentViewParams!!.x + ((contentViewParams!!.width - sideLength) * 0.5).toInt(),
                 contentViewParams!!.y + ((contentViewParams!!.height - sideLength) * 0.5).toInt()),
             backgroundColor = color)
+        presentationCat!!.setCornerRadiusAndBorderWidth(
+            presentationCat!!.getOriginalParams().height / 5, 0,
+            withBackground = true)
         presentationCat!!.removeFromParent()
         presentationCat!!.show()
+    }
+
+    private fun setupCatHandler() {
+        val sideLength:Int = (contentViewParams!!.width * 0.7).toInt()
+        val color:Int = if (MainActivity.isThemeDark) {
+            Color.WHITE
+        } else {
+            Color.BLACK
+        }
+        val width:Int = (sideLength * 1.1).toInt()
+        val height:Int = sideLength + (infoButton!!.getOriginalParams().height * 1.75).toInt()
+        val x:Int = contentViewParams!!.x + ((contentViewParams!!.width - width) * 0.5).toInt()
+        val y:Int = contentViewParams!!.y + ((contentViewParams!!.height - height) * 0.5).toInt()
+        catViewHandler = View(MainActivity.rootView!!.context)
+        catViewHandler!!.layoutParams = LayoutParams(width, height, x, y)
+        catViewHandler!!.setBackgroundColor(color)
+        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 2.5).toInt(),
+            (MainActivity.dUnitWidth / 3).toInt(), 6)
+
     }
 
     private fun setupPopupView() {
@@ -175,6 +209,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             parentLayout!!.removeView(infoButton!!.getThis())
             parentLayout!!.removeView(popupContainerView!!)
             presentationCat!!.removeFromParent()
+            parentLayout!!.removeView(catViewHandler!!)
         }
     }
 
@@ -223,6 +258,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             parentLayout!!.addView(closeButton!!.getThis())
             parentLayout!!.addView(previousButton!!.getThis())
             parentLayout!!.addView(nextButton!!.getThis())
+            parentLayout!!.addView(catViewHandler!!)
             presentationCat!!.addToParent()
         }
     }
