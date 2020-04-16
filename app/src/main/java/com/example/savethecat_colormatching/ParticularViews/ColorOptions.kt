@@ -27,7 +27,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         var selectionColors:MutableList<Int>? = null
 
         var green = Color.rgb(48, 209, 88)
-        var yellow = Color.rgb(255, 114, 10)
+        var yellow = Color.rgb(255, 214, 10)
         var orange = Color.rgb(255, 159, 10)
         var red = Color.rgb(255, 69, 58)
         var purple = Color.rgb(191, 90, 242)

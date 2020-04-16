@@ -43,8 +43,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setupPopupView()
         setupInfoButton()
         setupCloseButton()
-//        setupPreviousButton()
-//        setupNextButton()
+        setupPreviousButton()
+        setupNextButton()
         setupSelector()
         setStyle()
     }
@@ -69,6 +69,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             shape!!.setColor(ColorOptions.blue)
         } else if (viewID == 3) {
             shape!!.setColor(Color.RED)
+        } else if (viewID == 4 || viewID == 5) {
+            shape!!.setColor(ColorOptions.yellow)
         }
         if (borderWidth > 0) {
             if (MainActivity.isThemeDark) {
@@ -78,8 +80,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             }
         }
         if (viewID == 1) {
-            shape!!.cornerRadii = floatArrayOf(radius.toFloat(), radius.toFloat(), radius.toFloat(),
-                radius.toFloat(), 0f, 0f, 0f, 0f)
+            shape!!.cornerRadius = radius.toFloat()
             popupContainerView!!.setBackgroundDrawable(shape)
         } else if (viewID == 2) {
             shape!!.cornerRadii = floatArrayOf(radius.toFloat(), radius.toFloat(), 0f, 0f,
@@ -89,6 +90,14 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             shape!!.cornerRadii = floatArrayOf(0f, 0f, radius.toFloat(), radius.toFloat(),
                 0f, 0f, radius.toFloat(), radius.toFloat())
             closeButton!!.getThis().setBackgroundDrawable(shape)
+        } else if (viewID == 4) {
+            shape!!.cornerRadii = floatArrayOf(0f, 0f, radius.toFloat(), radius.toFloat(),
+                0f, 0f, radius.toFloat(), radius.toFloat())
+            previousButton!!.getThis().setBackgroundDrawable(shape)
+        } else if (viewID == 5) {
+            shape!!.cornerRadii = floatArrayOf(radius.toFloat(), radius.toFloat(), 0f, 0f,
+                radius.toFloat(), radius.toFloat(), 0f, 0f)
+            nextButton!!.getThis().setBackgroundDrawable(shape)
         }
     }
 
@@ -97,7 +106,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         popupContainerView!!.setBackgroundColor(Color.BLUE)
         popupContainerView!!.layoutParams = LayoutParams((MainActivity.dWidth -
                 (MainActivity.dWidth * 0.025 * 2)).toInt(),
-            (MainActivity.dUnitHeight * 16).toInt(),
+            (MainActivity.dUnitHeight * 16 - ((MainActivity.dWidth * 0.05) +
+                    (MainActivity.dNavigationBarHeight * 5.0))).toInt(),
             (MainActivity.dWidth * 0.025).toInt(),
             ((MainActivity.dWidth * 0.025) + (MainActivity.dNavigationBarHeight * 2.0)).toInt())
         setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
@@ -137,15 +147,40 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         closeButton!!.setText("x", false)
         parentLayout!!.removeView(closeButton!!.getThis())
         closeButton!!.getThis().alpha = 1f
-
     }
 
     private fun setupPreviousButton() {
-
+        previousButton = CButton(button = Button(popupContainerView!!.context),
+            parentLayout = parentLayout!!,
+            params = LayoutParams((contentViewParams!!.width * 0.3f).toInt(),
+                (contentViewParams!!.width * 0.18f).toInt(),
+                (contentViewParams!!.x), contentViewParams!!.y + contentViewParams!!.height -
+                        (contentViewParams!!.width * 0.18f).toInt()))
+        previousButton!!.getThis().setBackgroundColor(Color.YELLOW)
+        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
+            (MainActivity.dUnitWidth / 3).toInt(), 4)
+        previousButton!!.setTextSize(previousButton!!.getOriginalParams().height * 0.3f)
+        previousButton!!.setText("<", false)
+        parentLayout!!.removeView(previousButton!!.getThis())
+        previousButton!!.getThis().alpha = 1f
     }
 
     private fun setupNextButton() {
-
+        nextButton = CButton(button = Button(popupContainerView!!.context),
+            parentLayout = parentLayout!!,
+            params = LayoutParams((contentViewParams!!.width * 0.3f).toInt(),
+                (contentViewParams!!.width * 0.18f).toInt(),
+                (contentViewParams!!.x + contentViewParams!!.width -
+                        (contentViewParams!!.width * 0.3f)).toInt(),
+                contentViewParams!!.y + contentViewParams!!.height -
+                        (contentViewParams!!.width * 0.18f).toInt()))
+        nextButton!!.getThis().setBackgroundColor(Color.YELLOW)
+        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
+            (MainActivity.dUnitWidth / 3).toInt(), 5)
+        nextButton!!.setTextSize(nextButton!!.getOriginalParams().height * 0.3f)
+        nextButton!!.setText(">", false)
+        parentLayout!!.removeView(nextButton!!.getThis())
+        nextButton!!.getThis().alpha = 1f
     }
 
     private fun setupContentViewParams() {
@@ -157,6 +192,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             parentLayout!!.addView(popupContainerView!!)
             parentLayout!!.addView(infoButton!!.getThis())
             parentLayout!!.addView(closeButton!!.getThis())
+            parentLayout!!.addView(previousButton!!.getThis())
+            parentLayout!!.addView(nextButton!!.getThis())
         }
     }
 
