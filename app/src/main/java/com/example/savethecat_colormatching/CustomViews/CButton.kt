@@ -35,6 +35,9 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     private var parentLayout:AbsoluteLayout? = null
     var isBorderGold:Boolean = false
 
+    private var lightImageR: Int = 0
+    private var darkImageR: Int = 0
+
     init {
         this.button = button
         this.button!!.layoutParams = params
@@ -439,6 +442,22 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
             button!!.setBackgroundColor(backgroundColor!!)
         }
         button!!.setTextColor(Color.BLACK)
+    }
+
+    fun loadImages(lightImageR:Int, darkImageR:Int) {
+        this.lightImageR = lightImageR
+        this.darkImageR = darkImageR
+        fun lightDominant() {
+            button!!.setBackgroundResource(lightImageR)
+        }
+        fun darkDominant() {
+            button!!.setBackgroundResource(darkImageR)
+        }
+        if (MainActivity.isThemeDark) {
+            darkDominant()
+        } else {
+            lightDominant()
+        }
     }
 
     fun setStyle() {

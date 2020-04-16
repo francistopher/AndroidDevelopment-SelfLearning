@@ -11,6 +11,7 @@ import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
+import com.example.savethecat_colormatching.Characters.PCatButton
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.ColorOptions
@@ -35,6 +36,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private var popupContainerView: Button? = null
 
+    private var presentationCat:PCatButton? = null
+
     init {
         this.moreCatsButton = imageButton
         this.moreCatsButton!!.layoutParams = params
@@ -45,6 +48,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setupCloseButton()
         setupPreviousButton()
         setupNextButton()
+        setupCatPresentation()
         setupSelector()
         setStyle()
     }
@@ -101,6 +105,23 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    private fun setupCatPresentation() {
+        val sideLength:Int = (contentViewParams!!.width * 0.7).toInt()
+        val color:Int = if (MainActivity.isThemeDark) {
+            Color.BLACK
+        } else {
+            Color.WHITE
+        }
+        presentationCat = PCatButton(button = Button(popupContainerView!!.context),
+            parentLayout = parentLayout!!,
+            params = LayoutParams(sideLength, sideLength,
+                contentViewParams!!.x + ((contentViewParams!!.width - sideLength) * 0.5).toInt(),
+                contentViewParams!!.y + ((contentViewParams!!.height - sideLength) * 0.5).toInt()),
+            backgroundColor = color)
+        presentationCat!!.removeFromParent()
+        presentationCat!!.show()
+    }
+
     private fun setupPopupView() {
         popupContainerView = Button(MainActivity.rootView!!.context)
         popupContainerView!!.setBackgroundColor(Color.BLUE)
@@ -147,6 +168,14 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         closeButton!!.setText("x", false)
         parentLayout!!.removeView(closeButton!!.getThis())
         closeButton!!.getThis().alpha = 1f
+        closeButton!!.getThis().setOnClickListener {
+            parentLayout!!.removeView(nextButton!!.getThis())
+            parentLayout!!.removeView(previousButton!!.getThis())
+            parentLayout!!.removeView(closeButton!!.getThis())
+            parentLayout!!.removeView(infoButton!!.getThis())
+            parentLayout!!.removeView(popupContainerView!!)
+            presentationCat!!.removeFromParent()
+        }
     }
 
     private fun setupPreviousButton() {
@@ -194,6 +223,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             parentLayout!!.addView(closeButton!!.getThis())
             parentLayout!!.addView(previousButton!!.getThis())
             parentLayout!!.addView(nextButton!!.getThis())
+            presentationCat!!.addToParent()
         }
     }
 
