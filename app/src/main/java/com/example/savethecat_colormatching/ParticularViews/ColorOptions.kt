@@ -32,6 +32,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         var red = Color.rgb(255, 69, 58)
         var purple = Color.rgb(191, 90, 242)
         var blue = Color.rgb(10, 132, 255)
+        var pink = Color.rgb(255, 55, 95)
 
         fun setSelectionColors() {
             selectionColors = mutableListOf(green, yellow,

@@ -9,11 +9,14 @@ import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
+import com.example.savethecat_colormatching.Characters.Cat
 import com.example.savethecat_colormatching.Characters.PCatButton
 import com.example.savethecat_colormatching.CustomViews.CButton
+import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.ColorOptions
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
@@ -39,6 +42,18 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private var presentationCat:PCatButton? = null
     private var catViewHandler: View? = null
+    private var catTitleLabel:CLabel? = null
+    private var controlButton:CButton? = null
+
+    companion object {
+        var myCatsDict:MutableMap<Cat, Int> =
+            mutableMapOf(Cat.STANDARD to 1, Cat.BREADING to 0, Cat.TACO to 0, Cat.EGYPTIAN to 0,
+            Cat.SUPER to 0, Cat.CHICKEN to 0, Cat.COOL to 0, Cat.NINJA to 0, Cat.FAT to 0)
+        var displayedCatIndex:Int = -1
+
+        private var catPrices:MutableList<Int> = mutableListOf(0, 420, 420, 420, 420, 420, 420, 420,
+            420)
+    }
 
     init {
         this.moreCatsButton = imageButton
@@ -52,6 +67,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setupNextButton()
         setupCatPresentation()
         setupCatHandler()
+        setupCatTitleLabel()
+        setupControlButton()
         setupSelector()
         setStyle()
     }
@@ -84,6 +101,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             } else {
                 shape!!.setColor(Color.BLACK)
             }
+        } else if (viewID == 7) {
+            shape!!.setColor(ColorOptions.pink)
         }
         if (borderWidth > 0) {
             if (MainActivity.isThemeDark) {
@@ -114,6 +133,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         } else if (viewID == 6) {
             shape!!.cornerRadius = radius.toFloat()
             catViewHandler!!.setBackgroundDrawable(shape)
+        } else if (viewID == 7) {
+            shape!!.cornerRadius = radius.toFloat()
+            controlButton!!.getThis().setBackgroundDrawable(shape)
         }
     }
 
@@ -135,6 +157,42 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             withBackground = true)
         presentationCat!!.removeFromParent()
         presentationCat!!.show()
+    }
+
+    private fun setupCatTitleLabel() {
+        val width:Int = (presentationCat!!.getOriginalParams().width * 0.8).toInt()
+        val height:Int = (infoButton!!.getOriginalParams().height * 0.75).toInt()
+        val x:Int = presentationCat!!.getOriginalParams().x +
+                (presentationCat!!.getOriginalParams().width * 0.1).toInt()
+        val y:Int = (catViewHandler!!.layoutParams as LayoutParams).y +
+                (infoButton!!.getOriginalParams().height * 0.1).toInt()
+        catTitleLabel = CLabel(textView = TextView(popupContainerView!!.context),
+            parentLayout = parentLayout!!, params = LayoutParams(width, height, x, y))
+        catTitleLabel!!.isInverted
+        catTitleLabel!!.setStyle()
+        parentLayout!!.removeView(catTitleLabel!!.getThis())
+        catTitleLabel!!.setText("Standard Cat")
+        catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.35f)
+    }
+
+    private fun setupControlButton() {
+        val width:Int = (presentationCat!!.getOriginalParams().width * 0.8).toInt()
+        val height:Int = (infoButton!!.getOriginalParams().height * 0.75).toInt()
+        val x:Int = presentationCat!!.getOriginalParams().x +
+                (presentationCat!!.getOriginalParams().width * 0.1).toInt()
+        val y:Int = (catViewHandler!!.layoutParams as LayoutParams).y +
+                (catViewHandler!!.layoutParams as LayoutParams).height  -
+                (infoButton!!.getOriginalParams().height * 0.06).toInt() -
+                catTitleLabel!!.getOriginalParams().height
+        controlButton = CButton(button = Button(popupContainerView!!.context),
+            parentLayout = parentLayout!!,
+            params =  LayoutParams(width, height, x, y))
+        controlButton!!.backgroundColor = ColorOptions.pink
+        parentLayout!!.removeView(controlButton!!.getThis())
+        controlButton!!.getThis().alpha = 1f
+        controlButton!!.setStyle()
+        setCornerRadiusAndBorderWidth((controlButton!!.getOriginalParams().height / 2.0).toInt(),
+            0, 7)
     }
 
     private fun setupCatHandler() {
@@ -209,6 +267,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             parentLayout!!.removeView(infoButton!!.getThis())
             parentLayout!!.removeView(popupContainerView!!)
             presentationCat!!.removeFromParent()
+            parentLayout!!.removeView(controlButton!!.getThis())
+            parentLayout!!.removeView(catTitleLabel!!.getThis())
             parentLayout!!.removeView(catViewHandler!!)
         }
     }
@@ -260,6 +320,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             parentLayout!!.addView(nextButton!!.getThis())
             parentLayout!!.addView(catViewHandler!!)
             presentationCat!!.addToParent()
+            parentLayout!!.addView(catTitleLabel!!.getThis())
+            parentLayout!!.addView(controlButton!!.getThis())
         }
     }
 
