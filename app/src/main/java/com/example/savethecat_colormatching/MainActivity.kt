@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var glovePointer: GlovePointer? = null
         // Mouse coin view
         var mouseCoinView:MCView? = null
-        // Intersitial ad
+        // Interstitial ad
         var mInterstitialAd: InterstitialAd? = null
     }
 

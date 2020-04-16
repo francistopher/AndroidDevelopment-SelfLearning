@@ -4,80 +4,137 @@ import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.Button
 import android.widget.ImageButton
-import android.widget.PopupWindow
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
+import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.ParticularViews.ColorOptions
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
+
 
 class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
     private var expandedParams: LayoutParams? = null
     private var contractedParams: LayoutParams? = null
 
+    private var parentLayout:AbsoluteLayout? = null
+
     private var moreCatsButton: ImageButton? = null
+
+    private var contentViewParams:LayoutParams? = null
+    private var infoButton:CButton? = null
+    private var closeButton:CButton? = null
+    private var previousButton:CButton? = null
+    private var nextButton:CButton? = null
+
+    private var popupContainerView: Button? = null
 
     init {
         this.moreCatsButton = imageButton
         this.moreCatsButton!!.layoutParams = params
-        parentLayout.addView(imageButton)
+        setupParentLayout(parentLayout)
         this.moreCatsButton!!.setBackgroundColor(Color.TRANSPARENT)
         setupPopupView()
-        setupPopupWindow()
+        setupInfoButton()
+//        setupCloseButton()
+//        setupPreviousButton()
+//        setupNextButton()
         setupSelector()
         setStyle()
     }
 
-    private fun setupPopupView() {
-        popupContainerView = View(MainActivity.rootView!!.context)
-        popupContainerView!!.setBackgroundColor(Color.TRANSPARENT)
+    private fun setupParentLayout(layout:AbsoluteLayout) {
+        this.parentLayout = layout
+        layout.addView(this.moreCatsButton!!)
     }
 
-    private fun setupPopupWindow() {
-        popupWindow = PopupWindow(MainActivity.rootView!!.context)
-        popupWindow!!.contentView = popupContainerView!!
-        popupWindow!!.height = (MainActivity.dUnitHeight * 14.125).toInt()
-        popupWindow!!.width = (MainActivity.dWidth - (MainActivity.dWidth * 0.025 * 2)).toInt()
-
-        var shape: GradientDrawable?
-        fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int) {
-            shape = null
-            shape = GradientDrawable()
-            shape!!.shape = GradientDrawable.RECTANGLE
+    private var shape: GradientDrawable? = null
+    fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int, viewID:Int) {
+        shape = null
+        shape = GradientDrawable()
+        shape!!.shape = GradientDrawable.RECTANGLE
+        if (viewID == 1) {
             if (MainActivity.isThemeDark) {
                 shape!!.setColor(Color.BLACK)
             } else {
                 shape!!.setColor(Color.WHITE)
             }
-            if (borderWidth > 0) {
-                if (MainActivity.isThemeDark) {
-                    shape!!.setStroke(borderWidth, Color.WHITE)
-                } else {
-                    shape!!.setStroke(borderWidth, Color.BLACK)
-                }
+        } else if (viewID == 2) {
+            shape!!.setColor(ColorOptions.blue)
+        }
+        if (borderWidth > 0) {
+            if (MainActivity.isThemeDark) {
+                shape!!.setStroke(borderWidth, Color.WHITE)
+            } else {
+                shape!!.setStroke(borderWidth, Color.BLACK)
             }
+        }
+        if (viewID == 1) {
             shape!!.cornerRadii = floatArrayOf(radius.toFloat(), radius.toFloat(), radius.toFloat(),
                 radius.toFloat(), 0f, 0f, 0f, 0f)
-            popupWindow!!.setBackgroundDrawable(shape)
+            popupContainerView!!.setBackgroundDrawable(shape)
+        } else if (viewID == 2) {
+            shape!!.cornerRadii = floatArrayOf(radius.toFloat(), radius.toFloat(), 0f, 0f,
+                radius.toFloat(), radius.toFloat(), 0f, 0f)
+            infoButton!!.getThis().setBackgroundDrawable(shape)
         }
-        setCornerRadiusAndBorderWidth(MainActivity.dUnitWidth.toInt(),
-            (MainActivity.dUnitWidth / 3).toInt())
     }
 
-    private var popupWindow:PopupWindow? = null
-    private var popupContainerView: View? = null
+    private fun setupPopupView() {
+        popupContainerView = Button(MainActivity.rootView!!.context)
+        popupContainerView!!.setBackgroundColor(Color.BLUE)
+        popupContainerView!!.layoutParams = LayoutParams((MainActivity.dWidth -
+                (MainActivity.dWidth * 0.025 * 2)).toInt(),
+            (MainActivity.dUnitHeight * 16).toInt(),
+            (MainActivity.dWidth * 0.025).toInt(),
+            ((MainActivity.dWidth * 0.025) + (MainActivity.dNavigationBarHeight * 2.0)).toInt())
+        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
+            (MainActivity.dUnitWidth / 3).toInt(), 1)
+        setupContentViewParams()
+
+    }
+
+    private fun setupInfoButton() {
+        infoButton = CButton(button = Button(popupContainerView!!.context),
+                            parentLayout = parentLayout!!,
+                            params = LayoutParams((contentViewParams!!.width * 0.3f).toInt(),
+                            (contentViewParams!!.width * 0.18f).toInt(), contentViewParams!!.x,
+                                contentViewParams!!.y ))
+        infoButton!!.getThis().setBackgroundColor(ColorOptions.blue)
+        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
+            (MainActivity.dUnitWidth / 3).toInt(), 2)
+        infoButton!!.setTextSize(infoButton!!.getOriginalParams().height * 0.3f)
+        infoButton!!.setText("i", false)
+        parentLayout!!.removeView(infoButton!!.getThis())
+        infoButton!!.getThis().alpha = 1f
+    }
+
+    private fun setupCloseButton() {
+
+    }
+
+    private fun setupPreviousButton() {
+
+    }
+
+    private fun setupNextButton() {
+
+    }
+
+    private fun setupContentViewParams() {
+        contentViewParams = popupContainerView!!.layoutParams as LayoutParams
+    }
+
     private fun setupSelector() {
         moreCatsButton!!.setOnClickListener {
-            popupWindow!!.showAsDropDown(MainActivity.rootView!!,
-                (MainActivity.dWidth * 0.025).toInt(),
-                (MainActivity.dWidth * 0.025).toInt())
-            popupWindow!!.isFocusable = true
+            parentLayout!!.addView(popupContainerView!!)
+            parentLayout!!.addView(infoButton!!.getThis())
         }
     }
 
@@ -121,19 +178,19 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
         transformX!!.addUpdateListener {
             x = it.animatedValue as Int
-            moreCatsButton!!.layoutParams = AbsoluteLayout.LayoutParams(width, height, x, y)
+            moreCatsButton!!.layoutParams = LayoutParams(width, height, x, y)
         }
         transformY!!.addUpdateListener {
             y = it.animatedValue as Int
-            moreCatsButton!!.layoutParams = AbsoluteLayout.LayoutParams(width, height, x, y)
+            moreCatsButton!!.layoutParams = LayoutParams(width, height, x, y)
         }
         transformWidth!!.addUpdateListener {
             width = it.animatedValue as Int
-            moreCatsButton!!.layoutParams = AbsoluteLayout.LayoutParams(width, height, x, y)
+            moreCatsButton!!.layoutParams = LayoutParams(width, height, x, y)
         }
         transformHeight!!.addUpdateListener {
             height = it.animatedValue as Int
-            moreCatsButton!!.layoutParams = AbsoluteLayout.LayoutParams(width, height, x, y)
+            moreCatsButton!!.layoutParams = LayoutParams(width, height, x, y)
         }
         transformingSet = AnimatorSet()
         transformingSet!!.play(transformX!!).with(transformY!!).with(transformWidth!!).with(transformHeight!!)
@@ -150,19 +207,19 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         return moreCatsButton!!
     }
 
-    fun setContractedParams(params: AbsoluteLayout.LayoutParams) {
+    fun setContractedParams(params: LayoutParams) {
         contractedParams = params
     }
 
-    fun getContractedParams(): AbsoluteLayout.LayoutParams {
+    fun getContractedParams(): LayoutParams {
         return contractedParams!!
     }
 
-    fun setExpandedParams(params: AbsoluteLayout.LayoutParams) {
+    fun setExpandedParams(params: LayoutParams) {
         expandedParams = params
     }
 
-    fun getExpandedParams(): AbsoluteLayout.LayoutParams {
+    fun getExpandedParams(): LayoutParams {
         return expandedParams!!
     }
 
