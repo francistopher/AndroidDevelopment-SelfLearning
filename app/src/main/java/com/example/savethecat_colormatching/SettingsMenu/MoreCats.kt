@@ -52,6 +52,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         var displayedCatIndex:Int = -1
         private var catPrices:MutableList<Int> = mutableListOf(0, 420, 420, 420, 420,
             420, 420, 420, 420)
+        private var catNames:MutableList<String> = mutableListOf("Standard Cat", "Cat Breading",
+            "Taco Cat", "Egyptian Cat", "Super Cat", "Chicken Cat", "Cool Cat", "Ninja Cat", "Fat Cat")
     }
 
     init {
@@ -75,14 +77,21 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private fun selectCat() {
         // Loop for selecting cat for display
-        var index:Int = 0
+        var index = 0
         for (state in myCatsDict.values) {
             if (state > 0) {
                 displayedCatIndex = index
+                break
             }
             index += 1
         }
+        setCat()
+    }
 
+    private fun setCat() {
+        presentationCat!!.cat = myCatsDict.keys.toTypedArray()[displayedCatIndex]
+        catTitleLabel!!.setText(catNames[displayedCatIndex])
+        presentationCat!!.setStyle()
     }
 
     private fun setupParentLayout(layout:AbsoluteLayout) {
@@ -299,6 +308,14 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         previousButton!!.setText("<", false)
         parentLayout!!.removeView(previousButton!!.getThis())
         previousButton!!.getThis().alpha = 1f
+        previousButton!!.getThis().setOnClickListener {
+            if (displayedCatIndex == 0) {
+                displayedCatIndex = 8
+            } else {
+                displayedCatIndex -= 1
+            }
+            setCat()
+        }
     }
 
     private fun setupNextButton() {
@@ -317,6 +334,14 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         nextButton!!.setText(">", false)
         parentLayout!!.removeView(nextButton!!.getThis())
         nextButton!!.getThis().alpha = 1f
+        nextButton!!.getThis().setOnClickListener {
+            if (displayedCatIndex == 8) {
+                displayedCatIndex = 0
+            } else {
+                displayedCatIndex += 1
+            }
+            setCat()
+        }
     }
 
     private fun setupContentViewParams() {
