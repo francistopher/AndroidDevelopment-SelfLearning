@@ -2,8 +2,14 @@ package com.example.savethecat_colormatching.SettingsMenu
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.text.Layout
+import android.text.SpannableString
+import android.text.style.AlignmentSpan
+import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
@@ -15,6 +21,7 @@ import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Characters.Cat
 import com.example.savethecat_colormatching.Characters.PCatButton
+import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
@@ -44,6 +51,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var catViewHandler: View? = null
     private var catTitleLabel:CLabel? = null
     private var controlButton:CButton? = null
+    private var mouseCoin:Button? = null
+
+    private var purchaseDialog:AlertDialog? = null
 
     companion object {
         var myCatsDict:MutableMap<Cat, Int> = mutableMapOf(Cat.STANDARD to 1, Cat.BREADING to 0,
@@ -72,6 +82,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setupControlButton()
         setupSelector()
         selectCat()
+        setupAlertDialog()
         setStyle()
     }
 
@@ -86,6 +97,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             index += 1
         }
         setCat()
+        setControlButtonAppearance()
     }
 
     private fun setCat() {
@@ -100,6 +112,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     }
 
     private var shape: GradientDrawable? = null
+    private var controlButtonColor:Int = ColorOptions.pink
     fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int, viewID:Int) {
         shape = null
         shape = GradientDrawable()
@@ -123,7 +136,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 shape!!.setColor(Color.BLACK)
             }
         } else if (viewID == 7) {
-            shape!!.setColor(ColorOptions.pink)
+            shape!!.setColor(controlButtonColor)
         }
         if (borderWidth > 0) {
             if (MainActivity.isThemeDark) {
@@ -214,6 +227,55 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         controlButton!!.setStyle()
         setCornerRadiusAndBorderWidth((controlButton!!.getOriginalParams().height / 2.0).toInt(),
             0, 7)
+        controlButton!!.setTextSize(height * 0.2f)
+        fun setupMouseCoin() {
+            mouseCoin = Button(popupContainerView!!.context)
+            mouseCoin!!.layoutParams = LayoutParams((height * 0.8).toInt(), (height * 0.8).toInt(),
+                x + (width * 0.66).toInt(), y + (height * 0.1).toInt())
+            mouseCoin!!.setBackgroundResource(R.drawable.mousecoin)
+            mouseCoin!!.setOnClickListener {
+                controlButtonSelector()
+            }
+        }
+        setupMouseCoin()
+        controlButton!!.getThis().isFocusable = false
+        controlButton!!.getThis().setOnClickListener {
+            controlButtonSelector()
+        }
+    }
+
+    private fun setupAlertDialog() {
+        val dialogBuilder = AlertDialog.Builder(MainActivity.staticSelf!!)
+        val spannableText = SpannableString("Cat Purchase")
+        spannableText.setSpan(
+            AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+            0, spannableText.length, 0
+        )
+        dialogBuilder.setTitle(spannableText)
+        val dialogClickListener = DialogInterface.OnClickListener{_, which ->
+            when(which) {
+                DialogInterface.BUTTON_POSITIVE -> print("ok")
+                DialogInterface.BUTTON_NEUTRAL -> purchaseDialog!!.hide()
+            }
+        }
+        dialogBuilder.setPositiveButton("Buy", dialogClickListener)
+        dialogBuilder.setNegativeButton("Cancel", dialogClickListener)
+        purchaseDialog = dialogBuilder.create()
+    }
+
+    private fun controlButtonSelector() {
+        if (controlButton!!.getText()!!.toString() == "Selected") {
+            Log.i("CONTROL BUTTON", "Selected")
+        }
+        if (controlButton!!.getText()!!.contains("Get for")) {
+            AudioController.coinEarned()
+            purchaseDialog!!.setMessage("Do you want to buy ${catNames[displayedCatIndex]}\n" +
+                    "for ${catPrices[displayedCatIndex]} Mouse Coins")
+            purchaseDialog!!.show()
+        }
+        if (controlButton!!.getText().toString() == "Select") {
+            Log.i("CONTROL BUTTON", "Select")
+        }
     }
 
     private fun setupCatHandler() {
@@ -232,7 +294,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         catViewHandler!!.setBackgroundColor(color)
         setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 2.5).toInt(),
             (MainActivity.dUnitWidth / 3).toInt(), 6)
-
     }
 
     private fun setupPopupView() {
@@ -248,7 +309,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             (MainActivity.dUnitWidth / 3).toInt(), 1)
         popupContainerView!!.isEnabled = false
         setupContentViewParams()
-
     }
 
     private fun setupInfoButton() {
@@ -288,6 +348,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             parentLayout!!.removeView(infoButton!!.getThis())
             parentLayout!!.removeView(popupContainerView!!)
             presentationCat!!.removeFromParent()
+            parentLayout!!.removeView(mouseCoin!!)
             parentLayout!!.removeView(controlButton!!.getThis())
             parentLayout!!.removeView(catTitleLabel!!.getThis())
             parentLayout!!.removeView(catViewHandler!!)
@@ -315,6 +376,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 displayedCatIndex -= 1
             }
             setCat()
+            setControlButtonAppearance()
         }
     }
 
@@ -341,7 +403,22 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 displayedCatIndex += 1
             }
             setCat()
+            setControlButtonAppearance()
         }
+    }
+
+    private fun setControlButtonAppearance() {
+        if (myCatsDict[presentationCat!!.cat]!! > 0) {
+            controlButton!!.setText("Selected", false)
+            controlButtonColor = ColorOptions.pink
+            mouseCoin!!.alpha = 0f
+        } else {
+            controlButton!!.setText("Get for ${catPrices[displayedCatIndex]}  MCs", false)
+            controlButtonColor = ColorOptions.orange
+            mouseCoin!!.alpha = 1f
+        }
+        setCornerRadiusAndBorderWidth((controlButton!!.getOriginalParams().height / 2.0).toInt(),
+            0, 7)
     }
 
     private fun setupContentViewParams() {
@@ -359,6 +436,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             presentationCat!!.addToParent()
             parentLayout!!.addView(catTitleLabel!!.getThis())
             parentLayout!!.addView(controlButton!!.getThis())
+            parentLayout!!.addView(mouseCoin!!)
         }
     }
 
@@ -463,3 +541,4 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 }
+

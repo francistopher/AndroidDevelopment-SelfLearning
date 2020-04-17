@@ -62,6 +62,10 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         button!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, size)
     }
 
+    fun getText(): CharSequence? {
+        return button!!.text
+    }
+
     fun setText(text: String, caps: Boolean) {
         button!!.isAllCaps = caps
         button!!.typeface = Typeface.createFromAsset(
