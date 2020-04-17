@@ -43,6 +43,9 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     var isPodded: Boolean = false
     var isAlive: Boolean = true
 
+    var cat:Cat = Cat.STANDARD
+    private var catState:CatState = CatState.SMILING
+
     init {
         this.imageButton = imageButton
         this.buttonContext = imageButton.context
@@ -166,8 +169,148 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             imageView = ImageView(buttonContext!!),
             parentLayout = parentLayout!!, params = originalParams!!
         )
-        imageView!!.loadImages(R.drawable.lightsmilingcat, R.drawable.darksmilingcat)
+        setStyle()
         startImageRotation()
+    }
+
+    fun setStyle() {
+        when (cat) {
+            Cat.STANDARD -> {
+                if (catState == CatState.SMILING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightsmilingcat,
+                        R.drawable.darksmilingcat)
+                } else if (catState == CatState.CHEERING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightcheeringcat,
+                        R.drawable.darkcheeringcat)
+                } else if (catState == CatState.DEAD) {
+                    imageView!!.loadImages(
+                        R.drawable.lightdeadcat,
+                        R.drawable.darkdeadcat)
+                }
+            }
+            Cat.BREADING -> {
+                if (catState == CatState.SMILING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightbreadingsmilingcat,
+                        R.drawable.darkbreadingsmilingcat)
+                } else if (catState == CatState.CHEERING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightbreadingcheeringcat,
+                        R.drawable.darkbreadingcheeringcat)
+                } else if (catState == CatState.DEAD) {
+                    imageView!!.loadImages(
+                        R.drawable.lightbreadingdeadcat,
+                        R.drawable.darkbreadingdeadcat)
+                }
+            }
+            Cat.TACO -> {
+                if (catState == CatState.SMILING) {
+                    imageView!!.loadImages(
+                        R.drawable.lighttacosmilingcat,
+                        R.drawable.darktacosmilingcat)
+                } else if (catState == CatState.CHEERING) {
+                    imageView!!.loadImages(
+                        R.drawable.lighttacocheeringcat,
+                        R.drawable.darktacocheeringcat)
+                } else if (catState == CatState.DEAD) {
+                    imageView!!.loadImages(
+                        R.drawable.lighttacodeadcat,
+                        R.drawable.darktacodeadcat)
+                }
+            }
+            Cat.EGYPTIAN -> {
+                if (catState == CatState.SMILING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightegyptiansmilingcat,
+                        R.drawable.darkegyptiansmilingcat)
+                } else if (catState == CatState.CHEERING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightegyptiancheeringcat,
+                        R.drawable.darkegyptiancheeringcat)
+                } else if (catState == CatState.DEAD) {
+                    imageView!!.loadImages(
+                        R.drawable.lightegyptiandeadcat,
+                        R.drawable.darkegyptiandeadcat)
+                }
+            }
+            Cat.SUPER -> {
+                if (catState == CatState.SMILING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightsupersmilingcat,
+                        R.drawable.darksupersmilingcat)
+                } else if (catState == CatState.CHEERING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightsupercheeringcat,
+                        R.drawable.darksupercheeringcat)
+                } else if (catState == CatState.DEAD) {
+                    imageView!!.loadImages(
+                        R.drawable.lightsuperdeadcat,
+                        R.drawable.darksuperdeadcat)
+                }
+            }
+            Cat.CHICKEN -> {
+                if (catState == CatState.SMILING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightchickensmilingcat,
+                        R.drawable.darkchickensmilingcat)
+                } else if (catState == CatState.CHEERING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightchickencheeringcat,
+                        R.drawable.darkchickencheeringcat)
+                } else if (catState == CatState.DEAD) {
+                    imageView!!.loadImages(
+                        R.drawable.lightchickendeadcat,
+                        R.drawable.darkchickendeadcat)
+                }
+            }
+            Cat.COOL -> {
+                if (catState == CatState.SMILING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightcoolsmilingcat,
+                        R.drawable.darkcoolsmilingcat)
+                } else if (catState == CatState.CHEERING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightcoolcheeringcat,
+                        R.drawable.darkcoolcheeringcat)
+                } else if (catState == CatState.DEAD) {
+                    imageView!!.loadImages(
+                        R.drawable.lightcooldeadcat,
+                        R.drawable.darkcooldeadcat)
+                }
+            }
+            Cat.NINJA -> {
+                if (catState == CatState.SMILING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightninjasmilingcat,
+                        R.drawable.darkninjasmilingcat)
+                } else if (catState == CatState.CHEERING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightninjacheeringcat,
+                        R.drawable.darkninjacheeringcat)
+                } else if (catState == CatState.DEAD) {
+                    imageView!!.loadImages(
+                        R.drawable.lightninjadeadcat,
+                        R.drawable.darkninjadeadcat)
+                }
+            }
+            Cat.FAT -> {
+                if (catState == CatState.SMILING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightfatsmilingcat,
+                        R.drawable.darkfatsmilingcat)
+                } else if (catState == CatState.CHEERING) {
+                    imageView!!.loadImages(
+                        R.drawable.lightfatcheeringcat,
+                        R.drawable.darkfatcheeringcat)
+                } else if (catState == CatState.DEAD) {
+                    imageView!!.loadImages(
+                        R.drawable.lightfatdeadcat,
+                        R.drawable.darkfatdeadcat)
+                }
+            }
+        }
     }
 
     fun doNotStartRotationAndShow() {
@@ -311,7 +454,8 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var targetY: Float = 0.0f
 
     fun disperseVertically() {
-        imageView!!.loadImages(R.drawable.lightcheeringcat, R.drawable.darkcheeringcat)
+        catState = CatState.CHEERING
+        setStyle()
         angle = (0..30).random().toFloat()
         disperseXAnimator =
             ValueAnimator.ofFloat(originalParams!!.x.toFloat(), getElevatedTargetX())
@@ -374,10 +518,8 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         transitionColor(targetColor = originalBackgroundColor)
         isAlive = false
         AudioController.kittenDie()
-        imageView!!.loadImages(
-            lightImageR = R.drawable.lightdeadcat,
-            darkImageR = R.drawable.darkdeadcat
-        )
+        catState = CatState.DEAD
+        setStyle()
         disperseXAnimator = ValueAnimator.ofFloat(originalParams!!.x.toFloat(), getRadialTargetX())
         disperseXAnimator!!.addUpdateListener {
             targetX = (it.animatedValue as Float)

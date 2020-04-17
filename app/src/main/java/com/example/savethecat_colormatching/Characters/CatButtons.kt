@@ -128,6 +128,13 @@ class CatButtons {
         }
     }
 
+    fun updateCatType(cat: Cat) {
+        for (catButton in currentCatButtons!!) {
+            catButton.cat = cat
+            catButton.setStyle()
+        }
+    }
+
     fun removeAll() {
         currentCatButtons!!.clear()
     }

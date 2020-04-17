@@ -225,6 +225,7 @@ class GameResults(resultsView: View,
                 mInterstitialAd!!.show()
             }
         }
+        watchAdButton!!.getThis().isEnabled = false
     }
 
     private fun setupMouseCoin() {
@@ -241,6 +242,7 @@ class GameResults(resultsView: View,
                 mInterstitialAd!!.show()
             }
         }
+        mouseCoin!!.isEnabled = false
     }
 
     fun getWatchAdButton():CButton {
@@ -301,6 +303,8 @@ class GameResults(resultsView: View,
     }
 
     fun fadeIn() {
+        watchAdButton!!.getThis().isEnabled = true
+        mouseCoin!!.isEnabled = true
         aliveCatCountLabel!!.setText("$savedCatButtonsCount")
         deadCatCountLabel!!.setText("$deadCatButtonsCount")
         savedCatButtonsCount = 0
@@ -309,6 +313,8 @@ class GameResults(resultsView: View,
     }
 
     fun fadeOut() {
+        mouseCoin!!.isEnabled = false
+        watchAdButton!!.getThis().isEnabled = false
         fade(false, true, 1f, 0.125f)
     }
 }

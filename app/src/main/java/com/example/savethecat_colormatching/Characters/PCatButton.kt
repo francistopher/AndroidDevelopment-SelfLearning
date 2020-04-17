@@ -328,8 +328,6 @@ class PCatButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutPar
        }
     }
 
-
-
     fun doNotStartRotationAndShow() {
         doNotStartImageRotation = true
     }

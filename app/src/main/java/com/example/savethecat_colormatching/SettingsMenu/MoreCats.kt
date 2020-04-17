@@ -288,6 +288,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 }
             }
             setControlButtonAppearance()
+            MainActivity.boardGame!!.getCatButtons().updateCatType(presentationCat!!.cat)
         }
     }
 
