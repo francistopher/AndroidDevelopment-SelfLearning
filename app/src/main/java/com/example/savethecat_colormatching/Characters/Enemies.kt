@@ -29,7 +29,7 @@ class Enemies {
         sideLength = (MainActivity.dUnitHeight * 2.0).toFloat()
         // Spacing
         totalWidthSpacing = (MainActivity.dWidth).toFloat() - (sideLength * 3.0f)
-        totalHeightSpacing = (MainActivity.dUnitHeight * 16).toFloat() - (sideLength * 4.0f)
+        totalHeightSpacing = (MainActivity.dHeight).toFloat() - (sideLength * 4.0f)
         // Enemy Spacing
         enemyWidthSpacing = totalWidthSpacing / 2.625f
         enemyHeightSpacing = totalHeightSpacing / 4.0f

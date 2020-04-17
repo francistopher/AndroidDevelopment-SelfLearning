@@ -2,6 +2,7 @@ package com.example.savethecat_colormatching.CustomViews
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Color
 import android.view.ViewPropertyAnimator
 import android.view.animation.LinearInterpolator
 import android.widget.AbsoluteLayout
@@ -106,16 +107,14 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
             fadeAnimatorIsRunning = true
         }
         fadeAnimator!!.withEndAction {
-                fadeAnimator!!.cancel()
-                fadeAnimatorIsRunning = false
-                fadeAnimator = null
+            fadeAnimator!!.cancel()
+            fadeAnimatorIsRunning = false
+            fadeAnimator = null
         }
         if (!fadeAnimatorIsRunning) {
             fadeAnimator!!.start()
         }
     }
-
-
 
     fun fadeOut(Duration: Float) {
         if (isCatImage) {
@@ -128,6 +127,8 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
     }
 
     fun setStyle() {
+        imageView!!.setBackgroundColor(Color.TRANSPARENT)
+        imageView!!.scaleType = ImageView.ScaleType.CENTER_INSIDE
         fun lightDominant() {
             imageView!!.setImageResource(lightImageR)
         }

@@ -151,7 +151,35 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                     backgroundColor = gridColors!![rowIndex][columnIndex])
                 catButton!!.rowIndex = rowIndex
                 catButton!!.columnIndex = columnIndex
-                catButton!!.getThisImage().setOnClickListener {
+                catButton!!.getThis().setOnClickListener {
+                    fun catButtonSelector(params:LayoutParams) {
+                        // The user has selected a color option
+                        if (MainActivity.colorOptions!!.getSelectedColor() != Color.LTGRAY) {
+                            for (catButton in catButtons!!.getCurrentCatButtons()) {
+                                // The button is found and colors match
+                                if ((catButton.getOriginalParams().x == params.x) &&
+                                    (catButton.getOriginalParams().y == params.y) &&
+                                    !catButton.isPodded) {
+                                    if (MainActivity.colorOptions!!.getSelectedColor() ==
+                                        catButton.getOriginalBackgroundColor()) {
+                                        catButton.transitionColor(catButton.getOriginalBackgroundColor())
+                                        gridColorsCount!![catButton.getOriginalBackgroundColor()] =
+                                            gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
+                                        MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
+                                        catButton.pod()
+                                        verifyRemainingCatsArePodded(catButton = catButton)
+                                    } else {
+                                        MainActivity.attackMeter!!.updateDuration(-0.75f)
+                                        attackCatButton(catButton = catButton)
+                                    }
+                                    return
+                                } else if (catButton.getOriginalParams() == params && catButton.isPodded) {
+                                    AudioController.kittenMeow()
+                                    return
+                                }
+                            }
+                        }
+                    }
                     catButtonSelector(params = (it as View).layoutParams as LayoutParams)
                 }
                 catButton!!.shrunk()
@@ -160,33 +188,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 gridButtonX += gridButtonWidth
             }
             gridButtonY += gridButtonHeight
-        }
-    }
-
-    private fun catButtonSelector(params:LayoutParams) {
-        // The user has selected a color option
-        if (MainActivity.colorOptions!!.getSelectedColor() != Color.LTGRAY) {
-            for (catButton in catButtons!!.getCurrentCatButtons()) {
-                // The button is found and colors match
-                if (catButton.getOriginalParams() == params && !catButton.isPodded) {
-                    if (MainActivity.colorOptions!!.getSelectedColor() ==
-                        catButton.getOriginalBackgroundColor()) {
-                        catButton.transitionColor(catButton.getOriginalBackgroundColor())
-                        gridColorsCount!![catButton.getOriginalBackgroundColor()] =
-                            gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
-                        MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
-                        catButton.pod()
-                        verifyRemainingCatsArePodded(catButton = catButton)
-                    } else {
-                        MainActivity.attackMeter!!.updateDuration(-0.75f)
-                        attackCatButton(catButton = catButton)
-                    }
-                    return
-                } else if (catButton.getOriginalParams() == params && catButton.isPodded) {
-                    AudioController.kittenMeow()
-                    return
-                }
-            }
         }
     }
 

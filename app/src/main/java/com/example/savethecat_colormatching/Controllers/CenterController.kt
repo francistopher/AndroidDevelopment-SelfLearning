@@ -8,8 +8,8 @@ class CenterController {
 
     companion object {
 
-        var parentParam:LayoutParams? = null
-        var childParam:LayoutParams? = null
+        private var parentParam:LayoutParams? = null
+        private var childParam:LayoutParams? = null
 
         fun centerView(childView: View, childParams: LayoutParams, parentParams: LayoutParams) {
             this.childParam = childParams

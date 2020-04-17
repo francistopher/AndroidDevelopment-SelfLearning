@@ -94,7 +94,7 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     }
 
     private fun setupEnemy() {
-        enemyImage = CImageView(imageView = ImageView(meterContext!!), parentLayout = parentLayout!!,
+        enemyImage = CImageView(imageView = ImageButton(meterContext!!), parentLayout = parentLayout!!,
         params = LayoutParams(getOriginalParams().height, getOriginalParams().height,
             getOriginalParams().x, getOriginalParams().y))
         enemyImage!!.loadImages(R.drawable.lighthairball, R.drawable.darkhairball)

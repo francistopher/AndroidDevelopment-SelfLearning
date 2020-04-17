@@ -167,8 +167,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private fun setupImageView() {
         imageView = CImageView(
             imageView = ImageView(buttonContext!!),
-            parentLayout = parentLayout!!, params = originalParams!!
-        )
+            parentLayout = parentLayout!!, params = originalParams!!)
         setStyle()
         startImageRotation()
     }
@@ -436,14 +435,14 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     }
 
     private fun earnMouseCoin() {
-       val mcSettingsButton:LayoutParams = SettingsMenu.mouseCoinButton!!.
+        val mcSettingsButton:LayoutParams = SettingsMenu.mouseCoinButton!!.
         getThis().layoutParams as LayoutParams
         MouseCoin(spawnParams = LayoutParams(mcSettingsButton.width, mcSettingsButton.height,
             (getOriginalParams().x + (getOriginalParams().width * 0.5) -
                     (mcSettingsButton.width * 0.5)).toInt(),
             (getOriginalParams().y + (getOriginalParams().height * 0.5) -
                     (mcSettingsButton.height * 0.5)).toInt()), targetParams = mcSettingsButton,
-        isEarned = true)
+            isEarned = true)
     }
 
     private var angle: Float = 0f
@@ -452,7 +451,6 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var disperseYAnimator: ValueAnimator? = null
     private var isDispersed: Boolean = false
     private var targetY: Float = 0.0f
-
     fun disperseVertically() {
         catState = CatState.CHEERING
         setStyle()
@@ -460,17 +458,12 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         disperseXAnimator =
             ValueAnimator.ofFloat(originalParams!!.x.toFloat(), getElevatedTargetX())
         disperseXAnimator!!.addUpdateListener {
-            imageButton!!.layoutParams = LayoutParams(
-                originalParams!!.width, originalParams!!.height,
-                (it.animatedValue as Float).toInt(), targetY.toInt()
-            )
-            imageView!!.getThis().layoutParams = LayoutParams(
-                originalParams!!.width, originalParams!!.height,
-                (it.animatedValue as Float).toInt(), targetY.toInt()
-            )
+            val params = LayoutParams(originalParams!!.width, originalParams!!.height,
+                (it.animatedValue as Float).toInt(), targetY.toInt())
+            imageButton!!.layoutParams = params
+            imageView!!.getThis().layoutParams = params
         }
-        disperseYAnimator =
-            ValueAnimator.ofFloat(originalParams!!.y.toFloat(), getElevatedTargetY())
+        disperseYAnimator = ValueAnimator.ofFloat(originalParams!!.y.toFloat(), getElevatedTargetY())
         disperseYAnimator!!.addUpdateListener {
             targetY = (it.animatedValue as Float)
         }
@@ -481,6 +474,10 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         disperseSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         isDispersed = true
         disperseSet!!.start()
+        disperseSet!!.doOnEnd {
+            parentLayout!!.removeView(imageButton!!)
+            parentLayout!!.removeView(imageView!!.getThis())
+        }
     }
 
     var targetX: Float = 0f
@@ -523,29 +520,20 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         disperseXAnimator = ValueAnimator.ofFloat(originalParams!!.x.toFloat(), getRadialTargetX())
         disperseXAnimator!!.addUpdateListener {
             targetX = (it.animatedValue as Float)
-            imageButton!!.layoutParams = LayoutParams(
+            val params = LayoutParams(
                 originalParams!!.width, originalParams!!.height,
-                targetX.toInt(), targetY.toInt()
-            )
-            imageView!!.getThis().layoutParams = LayoutParams(
-                originalParams!!.width, originalParams!!.height,
-                targetX.toInt(), targetY.toInt()
-            )
+                targetX.toInt(), targetY.toInt())
+            imageButton!!.layoutParams = params
+            imageView!!.getThis().layoutParams = params
         }
         disperseYAnimator = ValueAnimator.ofFloat(originalParams!!.y.toFloat(), getRadialTargetY())
         disperseYAnimator!!.addUpdateListener {
             targetY = (it.animatedValue as Float)
         }
         if ((0..1).random() == 0) {
-            radialAnimator = ValueAnimator.ofFloat(
-                0f,
-                360f
-            )
+            radialAnimator = ValueAnimator.ofFloat(0f, 360f)
         } else {
-            radialAnimator = ValueAnimator.ofFloat(
-                0f,
-                -360f
-            )
+            radialAnimator = ValueAnimator.ofFloat(0f, -360f)
         }
         radialAnimator!!.addUpdateListener {
             imageView!!.getThis().rotation = (it.animatedValue as Float)

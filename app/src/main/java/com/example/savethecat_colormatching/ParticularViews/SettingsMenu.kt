@@ -11,7 +11,6 @@ import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
-import com.example.savethecat_colormatching.Controllers.AspectRatio
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.SettingsMenu.*
@@ -142,11 +141,11 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         adsButton = Ads(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
             getOriginalParams().y))
-        if (AspectRatio.dAspectRatio >= 2.09) {
+        if (MainActivity.dAspectRatio >= 2.09) {
             adsButton!!.getThis().scaleX = 0.5f
             adsButton!!.getThis().scaleY = 0.5f
         }
-        else if (AspectRatio.dAspectRatio >= 1.7) {
+        else if (MainActivity.dAspectRatio >= 1.7) {
             adsButton!!.getThis().scaleX = 0.55f
             adsButton!!.getThis().scaleY = 0.55f
         }
@@ -185,11 +184,11 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         leaderBoardButton = LeaderBoard(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
-        if (AspectRatio.dAspectRatio >= 2.09) {
+        if (MainActivity.dAspectRatio >= 2.09) {
             leaderBoardButton!!.getThis().scaleX = 0.5f
             leaderBoardButton!!.getThis().scaleY = 0.5f
         }
-        else if (AspectRatio.dAspectRatio >= 1.7) {
+        else if (MainActivity.dAspectRatio >= 1.7) {
             leaderBoardButton!!.getThis().scaleX = 0.55f
             leaderBoardButton!!.getThis().scaleY = 0.55f
         }
@@ -209,11 +208,11 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         volumeButton = Volume(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
-        if (AspectRatio.dAspectRatio >= 2.09) {
+        if (MainActivity.dAspectRatio >= 2.09) {
             volumeButton!!.getThis().scaleX = 0.4f
             volumeButton!!.getThis().scaleY = 0.4f
         }
-        else if (AspectRatio.dAspectRatio >= 1.7) {
+        else if (MainActivity.dAspectRatio >= 1.7) {
             volumeButton!!.getThis().scaleX = 0.55f
             volumeButton!!.getThis().scaleY = 0.55f
         }
@@ -234,11 +233,11 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         moreCatsButton = MoreCats(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
-        if (AspectRatio.dAspectRatio >= 2.09) {
+        if (MainActivity.dAspectRatio >= 2.09) {
             moreCatsButton!!.getThis().scaleX = 0.4f
             moreCatsButton!!.getThis().scaleY = 0.4f
         }
-        else if (AspectRatio.dAspectRatio >= 1.7) {
+        else if (MainActivity.dAspectRatio >= 1.7) {
             moreCatsButton!!.getThis().scaleX = 0.55f
             moreCatsButton!!.getThis().scaleY = 0.55f
         }

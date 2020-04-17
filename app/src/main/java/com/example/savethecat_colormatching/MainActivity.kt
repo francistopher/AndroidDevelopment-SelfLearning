@@ -8,15 +8,17 @@ import android.graphics.drawable.GradientDrawable
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import android.widget.*
+import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.Button
+import android.widget.ImageButton
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Characters.Enemies
 import com.example.savethecat_colormatching.Controllers.ARType
-import com.example.savethecat_colormatching.Controllers.AspectRatio
-import com.example.savethecat_colormatching.Controllers.AspectRatio.Companion.setupAspectRatio
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
 import com.example.savethecat_colormatching.ParticularViews.*
@@ -39,10 +41,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var dUnitWidth:Double = 0.0
         var dUnitHeight:Double = 0.0
         var dNavigationBarHeight:Double = 0.0
+        var dStatusBarHeight:Double = 0.0
         // Custom Font
         var rootLayout:AbsoluteLayout? = null
-        // Absolute Layout Params
-        var params:LayoutParams? = null
         var successGradientView:View? = null
         var enemies:Enemies? = null
         // Board Game
@@ -63,9 +64,97 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var mouseCoinView:MCView? = null
         // Interstitial ad
         var mInterstitialAd: InterstitialAd? = null
+
+        var dAspectRatio:Double = 0.0
+        var params:LayoutParams? = null
     }
 
     var introAnimation:IntroView? = null
+    private var screenAspectRatio:Double = 0.0
+
+    private fun setupAspectRatio() {
+        setStatusBarHeight()
+        setupScreenDimension()
+        setScreenRatioType()
+        setupUnitScreenDimension()
+        params = LayoutParams(dWidth.toInt(), dHeight.toInt(), 0, 0)
+    }
+
+    private fun setScreenRatioType() {
+        screenAspectRatio = (dHeight / dWidth)
+        when {
+            screenAspectRatio > 2.16 -> {
+                dAspectRatio = 2.16
+                aspectRatio = ARType.ar19point5by9
+            }
+            screenAspectRatio > 2.09 -> {
+                dAspectRatio = 2.09
+                aspectRatio = ARType.ar19by9
+            }
+            screenAspectRatio > 2.07 -> {
+                dAspectRatio = 2.07
+                aspectRatio = ARType.ar18point7by9
+            }
+            screenAspectRatio > 2.05 -> {
+                dAspectRatio = 2.05
+                aspectRatio = ARType.ar18point5by9
+            }
+            screenAspectRatio > 1.9 -> {
+                dAspectRatio = 1.9
+                aspectRatio = ARType.ar18by9
+            }
+            screenAspectRatio > 1.8 -> {
+                dAspectRatio = 1.8
+                aspectRatio = ARType.ar19by10
+            }
+            screenAspectRatio > 1.7 -> {
+                dAspectRatio = 1.7
+                aspectRatio = ARType.ar16by9
+            }
+            screenAspectRatio > 1.66 -> {
+                dAspectRatio = 1.66
+                aspectRatio = ARType.ar5by3
+            }
+            screenAspectRatio > 1.5 -> {
+                dAspectRatio = 1.5
+                aspectRatio = ARType.ar16by10
+            }
+            screenAspectRatio > 1.4 -> {
+                dAspectRatio = 1.4
+                aspectRatio = ARType.ar3by2
+            }
+            else -> {
+                dAspectRatio = 1.3
+                aspectRatio = ARType.ar4by3
+            }
+        }
+    }
+
+    private fun setStatusBarHeight() {
+        var resourceId:Int = resources.getIdentifier("status_bar_height",
+            "dimen", "android")
+        if (resourceId > 0) {
+            dStatusBarHeight = resources.getDimensionPixelSize(resourceId).toDouble()
+        }
+        resourceId = resources.getIdentifier("navigation_bar_height",
+            "dimen", "android")
+        if (resourceId > 0) {
+            dNavigationBarHeight  += resources.getDimensionPixelSize(resourceId).toDouble()
+        }
+    }
+
+    var displayMetrics:DisplayMetrics? = null
+    private fun setupScreenDimension() {
+        displayMetrics = DisplayMetrics()
+        windowManager.defaultDisplay.getMetrics(displayMetrics!!)
+        dWidth = displayMetrics!!.widthPixels.toDouble()
+        dHeight = displayMetrics!!.heightPixels.toDouble() + dNavigationBarHeight + dStatusBarHeight
+        Log.i("DImensions", "$dWidth $dHeight")
+    }
+    private fun setupUnitScreenDimension() {
+        dUnitWidth = dWidth / 18.0
+        dUnitHeight = dHeight / 18.0
+    }
 
     private fun setCurrentTheme() {
         when (resources.configuration.uiMode.and(Configuration.UI_MODE_NIGHT_MASK)) {
@@ -128,12 +217,14 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         MobileAds.setRequestConfiguration(configuration)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setupAspectRatio()
         setupDecorView()
         rootView = window.decorView.rootView
+        rootView!!.layoutParams = params
         rootLayout = AbsoluteLayout(this)
+        rootLayout!!.layoutParams = params
         staticSelf = this
         setupReachability()
-        setupAspectRatio()
         setCurrentTheme()
         setupSaveTheCat()
         setupGamePlayAuthentication()
@@ -214,7 +305,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupIntroAnimation() {
         val width:Double = dUnitWidth * 9.0
-        introAnimation = IntroView(imageView = ImageView(this), parentLayout = rootLayout!!,
+        introAnimation = IntroView(imageView = ImageButton(this), parentLayout = rootLayout!!,
             params = LayoutParams(width.toInt(), width.toInt(), 0, 0))
         introAnimation!!.loadTextImages(lightTextImageR = R.drawable.darkintrotext, darkTextImageR = R.drawable.lightintrotext,
             lightCatImageR = R.drawable.darkcat, darkCatImageR = R.drawable.lightcat)
@@ -287,58 +378,57 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         adRequest = AdRequest.Builder().build()
         adView!!.loadAd(adRequest)
         rootLayout!!.addView(adView)
-        adView!!.translationY = ((dUnitHeight * 15.5) - (getAdaptiveBannerAdSize().height)).toFloat()
+        adView!!.translationY = (dHeight - (getAdaptiveBannerAdSize().height * 2)).toFloat()
         adView!!.alpha = 0f
     }
 
     private fun setupBoardGame() {
-        val boardGameSideLength:Float = (dUnitHeight * 8).toFloat()
+        val boardGameSideLength:Float = (dUnitHeight * 9).toFloat()
         boardGame = BoardGame(boardView = View(this), parentLayout = rootLayout!!,
             params = LayoutParams(boardGameSideLength.toInt(), boardGameSideLength.toInt(), 0,0))
         boardGame!!.getThis().setBackgroundColor(Color.TRANSPARENT)
         CenterController.centerView(childView = boardGame!!.getThis(), childParams =
-        boardGame!!.getOriginalParams(), parentParams = LayoutParams(dWidth.toInt(),
-            (dHeight).toInt(), 0, 0))
+        boardGame!!.getOriginalParams(), parentParams = params!!)
         boardGame!!.setOriginalParams(boardGame!!.getThis().layoutParams as LayoutParams)
     }
 
     private fun setupColorOptions() {
-        val boardGameSideLength:Float = (dUnitHeight * 8).toFloat()
+        val boardGameSideLength:Float = (dUnitHeight * 9).toFloat()
         colorOptions = ColorOptions(view = View(this), parentLayout = rootLayout!!, params =
         LayoutParams(boardGameSideLength.toInt(), (dUnitHeight * 1.5).toInt(),
             boardGame!!.getOriginalParams().x, boardGame!!.getOriginalParams().y + boardGame!!.
             getOriginalParams().height))
-        CenterController.centerViewHorizontally(colorOptions!!.getThis(), parentParams =
-        LayoutParams(dWidth.toInt(), (dHeight).toInt(), 0, 0), childParams =
-        colorOptions!!.getOriginalParams())
+        CenterController.centerViewHorizontally(colorOptions!!.getThis(), parentParams = params!!,
+            childParams = colorOptions!!.getOriginalParams())
         colorOptions!!.setOriginalParams(colorOptions!!.getThis().layoutParams as LayoutParams)
         rootLayout!!.addView(ColorOptions.colorOptionsLayout!!)
     }
 
     private fun setupSettingsButton() {
-        val sideLength:Float = (dHeight * ((1.0/300.0) + 0.08)).toFloat()
+        val sideLength:Float = (dHeight * ((1.0/300.0) + 0.085)).toFloat()
         settingsButton = SettingsButton(imageButton = ImageButton(this), parentLayout = rootLayout!!,
             params = LayoutParams(sideLength.toInt(), sideLength.toInt(), dUnitWidth.toInt(),
                 dUnitHeight.toInt()))
     }
 
     private fun setupAttackMeter() {
-        val height:Float = (dHeight * ((1.0/300.0) + 0.08)).toFloat()
-        var width: Float = (dUnitWidth * 6.5).toFloat()
+        val height:Float = (dHeight * ((1.0/300.0) + 0.085)).toFloat()
+        var width: Float = (dUnitWidth * 9).toFloat()
         var y:Float = (dUnitHeight).toFloat()
         var x: Float
-        if (AspectRatio.dAspectRatio >= 2.09){
+        Log.i("ALRIGHT", "${dAspectRatio}")
+        if (dAspectRatio >= 2.09){
             x = ((dWidth - width) * 0.5).toFloat()
-        } else if (AspectRatio.dAspectRatio >= 1.7) {
+            y = ((settingsButton!!.getOriginalParams().y +
+                    settingsButton!!.getOriginalParams().height) +
+                    (settingsButton!!.borderWidth * 2.0)).toFloat()
+        } else if (dAspectRatio >= 1.7) {
             x = ((dWidth - width) * 0.5).toFloat()
             x += dUnitWidth.toFloat()
             width += (dUnitWidth * 0.5).toFloat()
         } else {
             width *= 1.4f
             x = ((dWidth - width) * 0.5).toFloat()
-            y = (settingsButton!!.getOriginalParams().y +
-                    settingsButton!!.getOriginalParams().height).toFloat() +
-                    settingsButton!!.borderWidth
         }
         val attackMeterParams = LayoutParams(width.toInt(), height.toInt(),
             x.toInt(), y.toInt())
@@ -364,7 +454,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     private fun setupOpponentLivesMeter() {
-        val height:Float = (dHeight * ((1.0/300.0) + 0.08)).toFloat()
+        val height:Float = (dHeight * ((1.0/300.0) + 0.085)).toFloat()
         val x:Float = (dWidth - height - dUnitWidth).toFloat()
         opponentLivesMeter = LivesMeter(meterView = View(this), parentLayout = rootLayout!!,
         params = LayoutParams(height.toInt(), height.toInt(), x.toInt(), dUnitHeight.toInt()),

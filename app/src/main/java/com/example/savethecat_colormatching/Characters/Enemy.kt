@@ -191,9 +191,9 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
 
     fun setStyle() {
         if(MainActivity.isThemeDark) {
-            enemyImage!!.setImageResource(darkImageR)
+            enemyImage!!.setBackgroundResource(darkImageR)
         } else {
-            enemyImage!!.setImageResource(lightImageR)
+            enemyImage!!.setBackgroundResource(lightImageR)
         }
     }
 

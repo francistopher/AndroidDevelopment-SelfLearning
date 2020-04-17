@@ -313,12 +313,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private fun setupPopupView() {
         popupContainerView = Button(MainActivity.rootView!!.context)
         popupContainerView!!.setBackgroundColor(Color.BLUE)
-        popupContainerView!!.layoutParams = LayoutParams((MainActivity.dWidth -
-                (MainActivity.dWidth * 0.025 * 2)).toInt(),
-            (MainActivity.dUnitHeight * 16 - ((MainActivity.dWidth * 0.05) +
-                    (MainActivity.dNavigationBarHeight * 5.0))).toInt(),
-            (MainActivity.dWidth * 0.025).toInt(),
-            ((MainActivity.dWidth * 0.025) + (MainActivity.dNavigationBarHeight * 2.0)).toInt())
+        popupContainerView!!.layoutParams = LayoutParams(((MainActivity.dWidth) - (MainActivity.dWidth * 0.05)).toInt(),
+            (MainActivity.dHeight - (MainActivity.dWidth * 0.0625) - MainActivity.dStatusBarHeight - MainActivity.dNavigationBarHeight).toInt(),
+            (MainActivity.dWidth * 0.025).toInt(), (MainActivity.dStatusBarHeight + (MainActivity.dWidth * 0.0125)).toInt())
         setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
             (MainActivity.dUnitWidth / 3).toInt(), 1)
         popupContainerView!!.isEnabled = false

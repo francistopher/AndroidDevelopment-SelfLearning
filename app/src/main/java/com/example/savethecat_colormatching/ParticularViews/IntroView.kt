@@ -2,16 +2,17 @@ package com.example.savethecat_colormatching.ParticularViews
 
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.ImageButton
 import android.widget.ImageView
 import com.example.savethecat_colormatching.CustomViews.CImageView
 
-class IntroView(imageView: ImageView, parentLayout:AbsoluteLayout, params: LayoutParams) {
+class IntroView(imageView: ImageButton, parentLayout:AbsoluteLayout, params: LayoutParams) {
 
     var textImageView:CImageView? = null
     var catImageView:CImageView? = null
 
     init {
-        textImageView = CImageView(imageView=imageView, parentLayout = parentLayout, params = params)
+        textImageView = CImageView(imageView= imageView, parentLayout = parentLayout, params = params)
         val catImageViewParams = LayoutParams(params.width, params.height, params.x, (params.y - params.height * 0.0015).toInt())
         catImageView = CImageView(imageView= ImageView(textImageView!!.getContext()), parentLayout = parentLayout, params = catImageViewParams)
         catImageView!!.isCatImage = true
