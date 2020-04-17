@@ -465,7 +465,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         gameResults = GameResults(resultsView = View(rootView!!.context), parentLayout = rootLayout!!,
             params = LayoutParams((dUnitHeight * 7).toInt(), (dUnitHeight * 7.75).toInt(), 0, 0))
         CenterController.centerView(gameResults!!.getThis(), childParams = gameResults!!.getOriginalParams(),
-            parentParams = LayoutParams(dWidth.toInt(), (dHeight - dUnitHeight).toInt(), 0, 0))
+            parentParams = LayoutParams(dWidth.toInt(), (dHeight).toInt(), 0, 0))
         gameResults!!.setupOriginalParams(gameResults!!.getThis().layoutParams as LayoutParams)
         gameResults!!.setupContents()
     }
