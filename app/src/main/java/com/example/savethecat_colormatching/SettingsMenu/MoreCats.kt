@@ -46,13 +46,12 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var controlButton:CButton? = null
 
     companion object {
-        var myCatsDict:MutableMap<Cat, Int> =
-            mutableMapOf(Cat.STANDARD to 1, Cat.BREADING to 0, Cat.TACO to 0, Cat.EGYPTIAN to 0,
-            Cat.SUPER to 0, Cat.CHICKEN to 0, Cat.COOL to 0, Cat.NINJA to 0, Cat.FAT to 0)
+        var myCatsDict:MutableMap<Cat, Int> = mutableMapOf(Cat.STANDARD to 1, Cat.BREADING to 0,
+            Cat.TACO to 0, Cat.EGYPTIAN to 0, Cat.SUPER to 0, Cat.CHICKEN to 0, Cat.COOL to 0,
+            Cat.NINJA to 0, Cat.FAT to 0)
         var displayedCatIndex:Int = -1
-
-        private var catPrices:MutableList<Int> = mutableListOf(0, 420, 420, 420, 420, 420, 420, 420,
-            420)
+        private var catPrices:MutableList<Int> = mutableListOf(0, 420, 420, 420, 420,
+            420, 420, 420, 420)
     }
 
     init {
@@ -70,7 +69,20 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setupCatTitleLabel()
         setupControlButton()
         setupSelector()
+        selectCat()
         setStyle()
+    }
+
+    private fun selectCat() {
+        // Loop for selecting cat for display
+        var index:Int = 0
+        for (state in myCatsDict.values) {
+            if (state > 0) {
+                displayedCatIndex = index
+            }
+            index += 1
+        }
+
     }
 
     private fun setupParentLayout(layout:AbsoluteLayout) {
