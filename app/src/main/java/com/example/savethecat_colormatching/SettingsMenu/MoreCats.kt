@@ -9,7 +9,6 @@ import android.graphics.drawable.GradientDrawable
 import android.text.Layout
 import android.text.SpannableString
 import android.text.style.AlignmentSpan
-import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
@@ -28,6 +27,7 @@ import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.ColorOptions
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
+import kotlin.math.abs
 
 
 class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -246,15 +246,15 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private fun setupAlertDialog() {
         val dialogBuilder = AlertDialog.Builder(MainActivity.staticSelf!!)
-        val spannableText = SpannableString("Cat Purchase")
-        spannableText.setSpan(
+        val spannableString = SpannableString("Cat Purchase")
+        spannableString.setSpan(
             AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-            0, spannableText.length, 0
+            0, spannableString.length, 0
         )
-        dialogBuilder.setTitle(spannableText)
+        dialogBuilder.setTitle(spannableString)
         val dialogClickListener = DialogInterface.OnClickListener{_, which ->
             when(which) {
-                DialogInterface.BUTTON_POSITIVE -> print("ok")
+                DialogInterface.BUTTON_POSITIVE -> purchaseCatButton()
                 DialogInterface.BUTTON_NEUTRAL -> purchaseDialog!!.hide()
             }
         }
@@ -263,18 +263,31 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         purchaseDialog = dialogBuilder.create()
     }
 
+    private fun purchaseCatButton() {
+        myCatsDict[presentationCat!!.cat] = -1
+        purchaseDialog!!.hide()
+        setControlButtonAppearance()
+    }
+
     private fun controlButtonSelector() {
-        if (controlButton!!.getText()!!.toString() == "Selected") {
-            Log.i("CONTROL BUTTON", "Selected")
-        }
         if (controlButton!!.getText()!!.contains("Get for")) {
+            val spannableString = SpannableString("Do you want to buy " +
+                    "${catNames[displayedCatIndex]}\n for " +
+                    "${catPrices[displayedCatIndex]} Mouse Coins")
+            spannableString.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                0, spannableString.length, 0)
+            purchaseDialog!!.setMessage(spannableString)
             AudioController.coinEarned()
-            purchaseDialog!!.setMessage("Do you want to buy ${catNames[displayedCatIndex]}\n" +
-                    "for ${catPrices[displayedCatIndex]} Mouse Coins")
             purchaseDialog!!.show()
-        }
-        if (controlButton!!.getText().toString() == "Select") {
-            Log.i("CONTROL BUTTON", "Select")
+        } else if (controlButton!!.getText().toString() == "Select") {
+            for ((cat, state) in myCatsDict) {
+                if (cat == presentationCat!!.cat) {
+                    myCatsDict[cat] = abs(state)
+                } else {
+                    myCatsDict[cat] = -abs(state)
+                }
+            }
+            setControlButtonAppearance()
         }
     }
 
@@ -412,10 +425,14 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             controlButton!!.setText("Selected", false)
             controlButtonColor = ColorOptions.pink
             mouseCoin!!.alpha = 0f
-        } else {
+        } else if (myCatsDict[presentationCat!!.cat]!! == 0) {
             controlButton!!.setText("Get for ${catPrices[displayedCatIndex]}  MCs", false)
             controlButtonColor = ColorOptions.orange
             mouseCoin!!.alpha = 1f
+        } else if (myCatsDict[presentationCat!!.cat]!! < 0) {
+            controlButton!!.setText("Select", false)
+            controlButtonColor = ColorOptions.green
+            mouseCoin!!.alpha = 0f
         }
         setCornerRadiusAndBorderWidth((controlButton!!.getOriginalParams().height / 2.0).toInt(),
             0, 7)
