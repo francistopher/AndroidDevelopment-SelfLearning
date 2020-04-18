@@ -1,6 +1,6 @@
 package com.example.savethecat_colormatching.ParticularViews
 
-enum class NotificationType {
+enum class Notification {
     NO_INTERNET,
     YES_INTERNET,
     NO_GOOGLE_PLAY_GAME,

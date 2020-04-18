@@ -154,7 +154,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         windowManager.defaultDisplay.getMetrics(displayMetrics!!)
         dWidth = displayMetrics!!.widthPixels.toDouble()
         dHeight = displayMetrics!!.heightPixels.toDouble() + dNavigationBarHeight + dStatusBarHeight
-        Log.i("DImensions", "$dWidth $dHeight")
     }
     private fun setupUnitScreenDimension() {
         dUnitWidth = dWidth / 18.0
@@ -184,22 +183,18 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
-        showNetworkMessage(isConnected)
+        if (isConnected) {
+            isInternetReachable = true
+            gameNotification!!.displayYesInternet()
+        } else {
+            isInternetReachable = false
+            gameNotification!!.displayNoInternet()
+        }
     }
 
     override fun onResume() {
         super.onResume()
         Reachability.reachabilityListener = this
-    }
-
-    private fun showNetworkMessage(isConnected: Boolean) {
-        if (isConnected) {
-            isInternetReachable = true
-            print("Internet is reachable")
-        } else {
-            isInternetReachable = false
-            print("Internet is not reachable")
-        }
     }
 
     private fun hideSystemBars(): Int {
@@ -246,7 +241,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         signInClient = GoogleSignIn.getClient(this, signInOptions)
         googleAccount = GoogleSignIn.getLastSignedInAccount(this)
 //        if (googleAccount != null && GoogleSignIn.hasPermissions(googleAccount, Drive.SCOPE_APPFOLDER)) {
-        Log.i("DO IT", "YEAH")
         val intent: Intent = signInClient!!.signInIntent
         startActivity(intent)
 //        }
@@ -394,7 +388,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                 }, 500)
             }
         }
-
     }
 
     private var adView:AdView? = null
