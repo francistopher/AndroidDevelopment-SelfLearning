@@ -189,6 +189,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             }
             gridButtonY += gridButtonHeight
         }
+        SettingsMenu.moreCatsButton!!.bringToFront()
     }
 
     fun attackCatButton(catButton: CatButton) {

@@ -27,6 +27,7 @@ import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.ColorOptions
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
+import java.util.*
 import kotlin.math.abs
 
 
@@ -66,6 +67,31 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             "Taco Cat", "Egyptian Cat", "Super Cat", "Chicken Cat", "Cool Cat", "Ninja Cat", "Fat Cat")
     }
 
+    private var translateAnimatorSet:AnimatorSet? = null
+    private var infoClosePopupYAnimator:ValueAnimator? = null
+    private var previousNextButtonYAnimator:ValueAnimator? = null
+    private var presentationCatYAnimator:ValueAnimator? = null
+    private var catHandlerYAnimator:ValueAnimator? = null
+    private var titleLabelYAnimator:ValueAnimator? = null
+    private var controlButtonYAnimator:ValueAnimator? = null
+    private var mouseCoinYAnimator:ValueAnimator? = null
+
+    private var infoClosePopupShownY:Int = 0
+    private var previousNextShownY:Int = 0
+    private var presentationCatShownY:Int = 0
+    private var catHandlerShownY:Int = 0
+    private var titleLabelShownY:Int = 0
+    private var controlButtonShownY:Int = 0
+    private var mouseCoinShownY:Int = 0
+
+    private var infoClosePopupHiddenY:Int = 0
+    private var previousNextHiddenY:Int = 0
+    private var presentationCatHiddenY:Int = 0
+    private var catHandlerHiddenY:Int = 0
+    private var titleLabelHiddenY:Int = 0
+    private var controlButtonHiddenY:Int = 0
+    private var mouseCoinHiddenY:Int = 0
+
     init {
         this.moreCatsButton = imageButton
         this.moreCatsButton!!.layoutParams = params
@@ -84,6 +110,143 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         selectCat()
         setupAlertDialog()
         setStyle()
+        translate(false, 0f)
+    }
+
+    fun bringToFront() {
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                MainActivity.staticSelf!!.runOnUiThread {
+                    popupContainerView!!.bringToFront()
+                    infoButton!!.getThis().bringToFront()
+                    closeButton!!.getThis().bringToFront()
+                    previousButton!!.getThis().bringToFront()
+                    nextButton!!.getThis().bringToFront()
+                    catViewHandler!!.bringToFront()
+                    catTitleLabel!!.getThis().bringToFront()
+                    presentationCat!!.getThis().bringToFront()
+                    presentationCat!!.getThisImage().bringToFront()
+                    controlButton!!.getThis().bringToFront()
+                    mouseCoin!!.bringToFront()
+                }
+            }
+        } , 10)
+    }
+
+    private fun translate(show:Boolean, duration:Float) {
+        if (show) {
+            bringToFront()
+        }
+        if (translateAnimatorSet != null) {
+            translateAnimatorSet!!.cancel()
+        }
+
+        if (show) {
+            infoClosePopupYAnimator = ValueAnimator.ofInt(infoClosePopupHiddenY, infoClosePopupShownY)
+            previousNextButtonYAnimator = ValueAnimator.ofInt(previousNextHiddenY, previousNextShownY)
+            presentationCatYAnimator = ValueAnimator.ofInt(presentationCatHiddenY, presentationCatShownY)
+            catHandlerYAnimator = ValueAnimator.ofInt(catHandlerHiddenY, catHandlerShownY)
+            titleLabelYAnimator = ValueAnimator.ofInt(titleLabelHiddenY, titleLabelShownY)
+            controlButtonYAnimator = ValueAnimator.ofInt(controlButtonHiddenY, controlButtonShownY)
+            mouseCoinYAnimator = ValueAnimator.ofInt(mouseCoinHiddenY, mouseCoinShownY)
+        } else {
+            infoClosePopupYAnimator = ValueAnimator.ofInt(infoClosePopupShownY, infoClosePopupHiddenY)
+            previousNextButtonYAnimator = ValueAnimator.ofInt(previousNextShownY, previousNextHiddenY)
+            presentationCatYAnimator = ValueAnimator.ofInt(presentationCatShownY, presentationCatHiddenY)
+            catHandlerYAnimator = ValueAnimator.ofInt(catHandlerShownY, catHandlerHiddenY)
+            titleLabelYAnimator = ValueAnimator.ofInt(titleLabelShownY, titleLabelHiddenY)
+            controlButtonYAnimator = ValueAnimator.ofInt(controlButtonShownY, controlButtonHiddenY)
+            mouseCoinYAnimator = ValueAnimator.ofInt(mouseCoinShownY, mouseCoinHiddenY)
+        }
+
+        infoClosePopupYAnimator!!.addUpdateListener {
+            infoButton!!.getThis().layoutParams = LayoutParams(
+                infoButton!!.getOriginalParams().width,
+                infoButton!!.getOriginalParams().height,
+                infoButton!!.getOriginalParams().x,
+                (it.animatedValue as Int))
+            closeButton!!.getThis().layoutParams = LayoutParams(
+                closeButton!!.getOriginalParams().width,
+                closeButton!!.getOriginalParams().height,
+                closeButton!!.getOriginalParams().x,
+                (it.animatedValue as Int))
+            popupContainerView!!.layoutParams = LayoutParams(
+                (popupContainerView!!.layoutParams as LayoutParams).width,
+                (popupContainerView!!.layoutParams as LayoutParams).height,
+                (popupContainerView!!.layoutParams as LayoutParams).x,
+                (it.animatedValue as Int))
+        }
+
+        catHandlerYAnimator!!.addUpdateListener {
+            catViewHandler!!.layoutParams = LayoutParams(
+                (catViewHandler!!.layoutParams as LayoutParams).width,
+                (catViewHandler!!.layoutParams as LayoutParams).height,
+                (catViewHandler!!.layoutParams as LayoutParams).x,
+                (it.animatedValue as Int))
+        }
+
+        titleLabelYAnimator!!.addUpdateListener {
+            catTitleLabel!!.getThis().layoutParams = LayoutParams(
+                catTitleLabel!!.getOriginalParams().width,
+                catTitleLabel!!.getOriginalParams().height,
+                catTitleLabel!!.getOriginalParams().x,
+                (it.animatedValue as Int))
+        }
+
+        presentationCatYAnimator!!.addUpdateListener {
+            presentationCat!!.getThis().layoutParams = LayoutParams(
+                presentationCat!!.getOriginalParams().width,
+                presentationCat!!.getOriginalParams().height,
+                presentationCat!!.getOriginalParams().x,
+                (it.animatedValue as Int))
+            presentationCat!!.getThisImage().layoutParams = LayoutParams(
+                presentationCat!!.getOriginalParams().width,
+                presentationCat!!.getOriginalParams().height,
+                presentationCat!!.getOriginalParams().x,
+                (it.animatedValue as Int))
+        }
+
+        controlButtonYAnimator!!.addUpdateListener {
+            controlButton!!.getThis().layoutParams = LayoutParams(
+                controlButton!!.getOriginalParams().width,
+                controlButton!!.getOriginalParams().height,
+                controlButton!!.getOriginalParams().x,
+                (it.animatedValue as Int))
+        }
+
+        previousNextButtonYAnimator!!.addUpdateListener {
+            previousButton!!.getThis().layoutParams = LayoutParams(
+                previousButton!!.getOriginalParams().width,
+                previousButton!!.getOriginalParams().height,
+                previousButton!!.getOriginalParams().x,
+                (it.animatedValue as Int))
+            nextButton!!.getThis().layoutParams = LayoutParams(
+                nextButton!!.getOriginalParams().width,
+                nextButton!!.getOriginalParams().height,
+                nextButton!!.getOriginalParams().x,
+                (it.animatedValue as Int))
+        }
+
+        mouseCoinYAnimator!!.addUpdateListener {
+            mouseCoin!!.layoutParams = LayoutParams(
+                (mouseCoin!!.layoutParams as LayoutParams).width,
+                (mouseCoin!!.layoutParams as LayoutParams).height,
+                (mouseCoin!!.layoutParams as LayoutParams).x,
+                (it.animatedValue as Int))
+        }
+
+        translateAnimatorSet = AnimatorSet()
+        translateAnimatorSet!!.play(infoClosePopupYAnimator!!).with(previousNextButtonYAnimator!!).
+        with(presentationCatYAnimator!!).with(catHandlerYAnimator!!).with(titleLabelYAnimator!!).
+        with(controlButtonYAnimator!!).with(mouseCoinYAnimator!!)
+
+        translateAnimatorSet!!.duration = (1000 * duration).toLong()
+        if (show) {
+            translateAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN)
+        } else {
+            translateAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_OUT)
+        }
+        translateAnimatorSet!!.start()
     }
 
     private fun selectCat() {
@@ -189,8 +352,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         presentationCat!!.setCornerRadiusAndBorderWidth(
             presentationCat!!.getOriginalParams().height / 5, 0,
             withBackground = true)
-        presentationCat!!.removeFromParent()
         presentationCat!!.show()
+        presentationCatShownY = presentationCat!!.getOriginalParams().y
+        presentationCatHiddenY = (presentationCatShownY + MainActivity.dHeight).toInt()
     }
 
     private fun setupCatTitleLabel() {
@@ -204,9 +368,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             parentLayout = parentLayout!!, params = LayoutParams(width, height, x, y))
         catTitleLabel!!.isInverted
         catTitleLabel!!.setStyle()
-        parentLayout!!.removeView(catTitleLabel!!.getThis())
         catTitleLabel!!.setText("Standard Cat")
         catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.35f)
+        titleLabelShownY = y
+        titleLabelHiddenY = (titleLabelShownY + MainActivity.dHeight).toInt()
     }
 
     private fun setupControlButton() {
@@ -222,7 +387,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             parentLayout = parentLayout!!,
             params =  LayoutParams(width, height, x, y))
         controlButton!!.backgroundColor = ColorOptions.pink
-        parentLayout!!.removeView(controlButton!!.getThis())
         controlButton!!.getThis().alpha = 1f
         controlButton!!.setStyle()
         setCornerRadiusAndBorderWidth((controlButton!!.getOriginalParams().height / 2.0).toInt(),
@@ -233,6 +397,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             mouseCoin!!.layoutParams = LayoutParams((height * 0.8).toInt(), (height * 0.8).toInt(),
                 x + (width * 0.66).toInt(), y + (height * 0.1).toInt())
             mouseCoin!!.setBackgroundResource(R.drawable.mousecoin)
+            mouseCoinShownY = (mouseCoin!!.layoutParams as LayoutParams).y
+            mouseCoinHiddenY = (mouseCoinShownY + MainActivity.dHeight).toInt()
+            parentLayout!!.addView(mouseCoin!!)
             mouseCoin!!.setOnClickListener {
                 controlButtonSelector()
             }
@@ -242,6 +409,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         controlButton!!.getThis().setOnClickListener {
             controlButtonSelector()
         }
+        controlButtonShownY = y
+        controlButtonHiddenY = (controlButtonShownY + MainActivity.dHeight).toInt()
     }
 
     private fun setupAlertDialog() {
@@ -308,6 +477,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         catViewHandler!!.setBackgroundColor(color)
         setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 2.5).toInt(),
             (MainActivity.dUnitWidth / 3).toInt(), 6)
+        MainActivity.rootLayout!!.addView(catViewHandler!!)
+        catHandlerShownY = y
+        catHandlerHiddenY = catHandlerShownY + (MainActivity.dHeight).toInt()
     }
 
     private fun setupPopupView() {
@@ -319,7 +491,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
             (MainActivity.dUnitWidth / 3).toInt(), 1)
         popupContainerView!!.isEnabled = false
+        MainActivity.rootLayout!!.addView(popupContainerView!!)
         setupContentViewParams()
+        infoClosePopupShownY = contentViewParams!!.y
+        infoClosePopupHiddenY = (infoClosePopupShownY + MainActivity.dHeight).toInt()
     }
 
     private fun setupInfoButton() {
@@ -333,7 +508,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             (MainActivity.dUnitWidth / 3).toInt(), 2)
         infoButton!!.setTextSize(infoButton!!.getOriginalParams().height * 0.3f)
         infoButton!!.setText("i", false)
-        parentLayout!!.removeView(infoButton!!.getThis())
         infoButton!!.getThis().alpha = 1f
     }
 
@@ -350,19 +524,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             (MainActivity.dUnitWidth / 3).toInt(), 3)
         closeButton!!.setTextSize(infoButton!!.getOriginalParams().height * 0.3f)
         closeButton!!.setText("x", false)
-        parentLayout!!.removeView(closeButton!!.getThis())
         closeButton!!.getThis().alpha = 1f
         closeButton!!.getThis().setOnClickListener {
-            parentLayout!!.removeView(nextButton!!.getThis())
-            parentLayout!!.removeView(previousButton!!.getThis())
-            parentLayout!!.removeView(closeButton!!.getThis())
-            parentLayout!!.removeView(infoButton!!.getThis())
-            parentLayout!!.removeView(popupContainerView!!)
-            presentationCat!!.removeFromParent()
-            parentLayout!!.removeView(mouseCoin!!)
-            parentLayout!!.removeView(controlButton!!.getThis())
-            parentLayout!!.removeView(catTitleLabel!!.getThis())
-            parentLayout!!.removeView(catViewHandler!!)
+            translate(false, 0.5f)
         }
     }
 
@@ -378,7 +542,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             (MainActivity.dUnitWidth / 3).toInt(), 4)
         previousButton!!.setTextSize(previousButton!!.getOriginalParams().height * 0.3f)
         previousButton!!.setText("<", false)
-        parentLayout!!.removeView(previousButton!!.getThis())
         previousButton!!.getThis().alpha = 1f
         previousButton!!.getThis().setOnClickListener {
             if (displayedCatIndex == 0) {
@@ -389,6 +552,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             setCat()
             setControlButtonAppearance()
         }
+        previousNextShownY = previousButton!!.getOriginalParams().y
+        previousNextHiddenY = (previousNextShownY + MainActivity.dHeight).toInt()
     }
 
     private fun setupNextButton() {
@@ -405,7 +570,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             (MainActivity.dUnitWidth / 3).toInt(), 5)
         nextButton!!.setTextSize(nextButton!!.getOriginalParams().height * 0.3f)
         nextButton!!.setText(">", false)
-        parentLayout!!.removeView(nextButton!!.getThis())
         nextButton!!.getThis().alpha = 1f
         nextButton!!.getThis().setOnClickListener {
             if (displayedCatIndex == 8) {
@@ -442,16 +606,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private fun setupSelector() {
         moreCatsButton!!.setOnClickListener {
-            parentLayout!!.addView(popupContainerView!!)
-            parentLayout!!.addView(infoButton!!.getThis())
-            parentLayout!!.addView(closeButton!!.getThis())
-            parentLayout!!.addView(previousButton!!.getThis())
-            parentLayout!!.addView(nextButton!!.getThis())
-            parentLayout!!.addView(catViewHandler!!)
-            presentationCat!!.addToParent()
-            parentLayout!!.addView(catTitleLabel!!.getThis())
-            parentLayout!!.addView(controlButton!!.getThis())
-            parentLayout!!.addView(mouseCoin!!)
+            translate(true, 0.5f)
         }
     }
 

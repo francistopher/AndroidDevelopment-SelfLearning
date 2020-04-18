@@ -1,6 +1,7 @@
 package com.example.savethecat_colormatching
 
 import Reachability
+import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
@@ -23,6 +24,9 @@ import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
 import com.example.savethecat_colormatching.ParticularViews.*
 import com.google.android.gms.ads.*
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.drive.Drive
 import java.util.*
 
 
@@ -67,6 +71,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
         var dAspectRatio:Double = 0.0
         var params:LayoutParams? = null
+        var gameNotification:GameNotification? = null
     }
 
     var introAnimation:IntroView? = null
@@ -224,6 +229,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         rootLayout = AbsoluteLayout(this)
         rootLayout!!.layoutParams = params
         staticSelf = this
+        setupGameNotificationLabel()
         setupReachability()
         setCurrentTheme()
         setupSaveTheCat()
@@ -231,8 +237,42 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setContentView(rootLayout!!)
     }
 
+    var googleAccount:GoogleSignInAccount? = null
+    var signInClient:GoogleSignInClient? = null
     private fun setupGamePlayAuthentication(){
-        presentSaveTheCat()
+        val signInOptions:GoogleSignInOptions = GoogleSignInOptions.
+        Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).
+        requestScopes(Drive.SCOPE_APPFOLDER).build()
+        signInClient = GoogleSignIn.getClient(this, signInOptions)
+        googleAccount = GoogleSignIn.getLastSignedInAccount(this)
+//        if (googleAccount != null && GoogleSignIn.hasPermissions(googleAccount, Drive.SCOPE_APPFOLDER)) {
+        Log.i("DO IT", "YEAH")
+        val intent: Intent = signInClient!!.signInIntent
+        startActivity(intent)
+//        }
+//        presentSaveTheCat()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val result: GoogleSignInResult? = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+//        if (result!!.isSuccess) {
+//            // The signed in account is stored in the result.
+//            val signedInAccount: GoogleSignInAccount? = result.signInAccount
+//        } else {
+//            var message: String? = result.status.statusMessage
+//            if (message == null || message.isEmpty()) {
+//                message = "Sign in error!!!"
+//            }
+//            AlertDialog.Builder(this).setMessage(message).setNeutralButton(android.R.string.ok, null).show()
+//        }
+    }
+
+    private fun setupGameNotificationLabel() {
+        gameNotification = GameNotification(view = View(this), parentLayout = rootLayout!!,
+        params = LayoutParams((dUnitWidth * 12).toInt(), (dUnitHeight * 1.5).toInt(),
+            ((dWidth - (dUnitWidth * 12)) * 0.5).toInt(),
+            (dStatusBarHeight * 1.5).toInt()))
     }
 
     private fun presentSaveTheCat() {

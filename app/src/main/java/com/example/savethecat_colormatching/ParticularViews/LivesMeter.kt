@@ -84,6 +84,7 @@ class LivesMeter(meterView: View,
         livesCountLabel!!.setText(livesLeft.toString())
         livesCountLabel!!.setTextSize((getOriginalParams().height * 0.15).toFloat())
         livesCountLabel!!.getThis().setBackgroundColor(Color.TRANSPARENT)
+        livesCountLabel!!.getThis().setTextColor(Color.WHITE)
     }
 
     private var transitionPackages:MutableList<TransitionPackage> = mutableListOf()

@@ -142,16 +142,16 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
             getOriginalParams().y))
         if (MainActivity.dAspectRatio >= 2.09) {
-            adsButton!!.getThis().scaleX = 0.5f
-            adsButton!!.getThis().scaleY = 0.5f
+            adsButton!!.getThis().scaleX = 0.55f
+            adsButton!!.getThis().scaleY = 0.55f
         }
         else if (MainActivity.dAspectRatio >= 1.7) {
             adsButton!!.getThis().scaleX = 0.55f
             adsButton!!.getThis().scaleY = 0.55f
         }
         else {
-            adsButton!!.getThis().scaleX = 0.6f
-            adsButton!!.getThis().scaleY = 0.6f
+            adsButton!!.getThis().scaleX = 0.75f
+            adsButton!!.getThis().scaleY = 0.75f
         }
         adsButton!!.setExpandedParams(params = adsButton!!.getThis().layoutParams as LayoutParams)
         adsButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
@@ -185,16 +185,16 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
         if (MainActivity.dAspectRatio >= 2.09) {
-            leaderBoardButton!!.getThis().scaleX = 0.5f
-            leaderBoardButton!!.getThis().scaleY = 0.5f
+            leaderBoardButton!!.getThis().scaleX = 0.55f
+            leaderBoardButton!!.getThis().scaleY = 0.55f
         }
         else if (MainActivity.dAspectRatio >= 1.7) {
             leaderBoardButton!!.getThis().scaleX = 0.55f
             leaderBoardButton!!.getThis().scaleY = 0.55f
         }
         else {
-            leaderBoardButton!!.getThis().scaleX = 0.6f
-            leaderBoardButton!!.getThis().scaleY = 0.6f
+            leaderBoardButton!!.getThis().scaleX = 0.75f
+            leaderBoardButton!!.getThis().scaleY = 0.75f
         }
         leaderBoardButton!!.setExpandedParams(params = leaderBoardButton!!.getThis().layoutParams as LayoutParams)
         leaderBoardButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
@@ -209,16 +209,16 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
         if (MainActivity.dAspectRatio >= 2.09) {
-            volumeButton!!.getThis().scaleX = 0.4f
-            volumeButton!!.getThis().scaleY = 0.4f
+            volumeButton!!.getThis().scaleX = 0.55f
+            volumeButton!!.getThis().scaleY = 0.55f
         }
         else if (MainActivity.dAspectRatio >= 1.7) {
             volumeButton!!.getThis().scaleX = 0.55f
             volumeButton!!.getThis().scaleY = 0.55f
         }
         else {
-            volumeButton!!.getThis().scaleX = 0.6f
-            volumeButton!!.getThis().scaleY = 0.6f
+            volumeButton!!.getThis().scaleX = 0.75f
+            volumeButton!!.getThis().scaleY = 0.75f
         }
         volumeButton!!.setExpandedParams(params = volumeButton!!.getThis().layoutParams as LayoutParams)
         volumeButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
@@ -234,16 +234,16 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
         if (MainActivity.dAspectRatio >= 2.09) {
-            moreCatsButton!!.getThis().scaleX = 0.4f
-            moreCatsButton!!.getThis().scaleY = 0.4f
+            moreCatsButton!!.getThis().scaleX = 0.55f
+            moreCatsButton!!.getThis().scaleY = 0.55f
         }
         else if (MainActivity.dAspectRatio >= 1.7) {
             moreCatsButton!!.getThis().scaleX = 0.55f
             moreCatsButton!!.getThis().scaleY = 0.55f
         }
         else {
-            moreCatsButton!!.getThis().scaleX = 0.6f
-            moreCatsButton!!.getThis().scaleY = 0.6f
+            moreCatsButton!!.getThis().scaleX = 0.75f
+            moreCatsButton!!.getThis().scaleY = 0.75f
         }
         moreCatsButton!!.setExpandedParams(params = moreCatsButton!!.getThis().layoutParams as LayoutParams)
         moreCatsButton!!.setContractedParams(LayoutParams((expandedParams!!.height * 0.5).toInt(),
