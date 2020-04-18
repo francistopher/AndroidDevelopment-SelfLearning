@@ -123,9 +123,9 @@ class GameNotification(view:View, parentLayout: AbsoluteLayout, params: LayoutPa
                     if (timerCount > 3.5) {
                         timerCount = 0.0
                         notificationQueue.removeAt(0)
-                        isShowing = false
                         if (notificationQueue.size == 0) {
                             translate(false, 0.5f, 0f)
+                            isShowing = false
                         } else {
                             setNotificationDisplayed()
                         }

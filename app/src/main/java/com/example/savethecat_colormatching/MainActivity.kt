@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -24,8 +25,10 @@ import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
 import com.example.savethecat_colormatching.ParticularViews.*
 import com.google.android.gms.ads.*
-import com.google.android.gms.auth.api.Auth
-import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.drive.Drive
 import java.util.*
 
@@ -50,28 +53,24 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var rootLayout:AbsoluteLayout? = null
         var successGradientView:View? = null
         var enemies:Enemies? = null
-        // Board Game
+        // Save the cat essential views
         var boardGame:BoardGame? = null
         var colorOptions:ColorOptions? = null
-        // Settings button
         var settingsButton:SettingsButton? = null
-        // Attack meter
         var attackMeter:AttackMeter? = null
-        // Lives meters
         var myLivesMeter:LivesMeter? = null
         var opponentLivesMeter:LivesMeter? = null
-        // Game results
         var gameResults:GameResults? = null
-        // Glove pointer
         var glovePointer: GlovePointer? = null
-        // Mouse coin view
         var mouseCoinView:MCView? = null
-        // Interstitial ad
         var mInterstitialAd: InterstitialAd? = null
 
         var dAspectRatio:Double = 0.0
         var params:LayoutParams? = null
         var gameNotification:GameNotification? = null
+
+        var isGooglePlayGameServicesAvailable:Boolean = false
+        private var isCatDismissed:Boolean = false
     }
 
     var introAnimation:IntroView? = null
@@ -230,26 +229,49 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupSaveTheCat()
         setupGamePlayAuthentication()
         setContentView(rootLayout!!)
+        startCatPresentation()
     }
 
     var googleAccount:GoogleSignInAccount? = null
     var signInClient:GoogleSignInClient? = null
+    private val RC_SIGN_IN = 9001
     private fun setupGamePlayAuthentication(){
         val signInOptions:GoogleSignInOptions = GoogleSignInOptions.
         Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).
         requestScopes(Drive.SCOPE_APPFOLDER).build()
         signInClient = GoogleSignIn.getClient(this, signInOptions)
         googleAccount = GoogleSignIn.getLastSignedInAccount(this)
-//        if (googleAccount != null && GoogleSignIn.hasPermissions(googleAccount, Drive.SCOPE_APPFOLDER)) {
-        val intent: Intent = signInClient!!.signInIntent
-        startActivity(intent)
-//        }
-//        presentSaveTheCat()
+        if (googleAccount != null && GoogleSignIn.hasPermissions(googleAccount, Drive.SCOPE_APPFOLDER)) {
+
+        } else {
+            val intent: Intent = signInClient!!.signInIntent
+            startActivityForResult(intent, RC_SIGN_IN)
+        }
+
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        val result: GoogleSignInResult? = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == 0) {
+                isCatDismissed = true
+                isGooglePlayGameServicesAvailable = false
+                gameNotification!!.displayNoGooglePlayGameServices()
+            }
+        }
+    }
+
+    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
+        super.startActivityForResult(intent, requestCode)
+
+        if (requestCode == RC_SIGN_IN) {
+            Log.i("GUTEN TAG", "GOOD DAY")
+        }
+        Log.i("GUTEN Intent", intent.toString())
+        Log.i("GUTEN request code", requestCode.toString())
+
+//        val result: GoogleSignInResult? = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
 //        if (result!!.isSuccess) {
 //            // The signed in account is stored in the result.
 //            val signedInAccount: GoogleSignInAccount? = result.signInAccount
@@ -269,33 +291,49 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             (dStatusBarHeight * 1.5).toInt()))
     }
 
-    private fun presentSaveTheCat() {
+    private fun startCatPresentation() {
         introAnimation!!.start()
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                staticSelf!!.runOnUiThread {
-                    introAnimation!!.fadeOut(2.0f)
-                    Timer().schedule(object : TimerTask() {
-                        override fun run() {
-                            staticSelf!!.runOnUiThread {
-                                enemies!!.fadeIn()
-                                settingsButton!!.fadeIn()
-                                attackMeter!!.fadeIn()
-                                boardGame!!.setupSinglePlayerButton()
-                                boardGame!!.setupTwoPlayerButton()
-                                boardGame!!.buildGame()
-                                mouseCoinView!!.fadeIn()
-                                myLivesMeter!!.fadeIn()
-                                opponentLivesMeter!!.fadeIn()
-                                glovePointer!!.sway()
-                                enemies!!.sway()
-                                adView!!.alpha = 1f
+            Timer().schedule(object : TimerTask() {
+                override fun run() {
+                    staticSelf!!.runOnUiThread {
+                        val handler = Handler()
+                        handler.postDelayed(object : Runnable {
+                            override fun run() {
+                                if (isCatDismissed) {
+                                    isCatDismissed = false
+                                    startCatDismissal()
+                                    handler.removeCallbacksAndMessages(null)
+                                }
+                                handler.postDelayed(this, 10)
                             }
-                        }
-                    }, 2000)
+                        }, 0)
+                    }
                 }
-            }
-        }, 2000)
+            }, 2000)
+    }
+
+    private fun startCatDismissal() {
+        staticSelf!!.runOnUiThread {
+            introAnimation!!.fadeOut(2.0f)
+            Timer().schedule(object : TimerTask() {
+                override fun run() {
+                    staticSelf!!.runOnUiThread {
+                        enemies!!.fadeIn()
+                        settingsButton!!.fadeIn()
+                        attackMeter!!.fadeIn()
+                        boardGame!!.setupSinglePlayerButton()
+                        boardGame!!.setupTwoPlayerButton()
+                        boardGame!!.buildGame()
+                        mouseCoinView!!.fadeIn()
+                        myLivesMeter!!.fadeIn()
+                        opponentLivesMeter!!.fadeIn()
+                        glovePointer!!.sway()
+                        enemies!!.sway()
+                        adView!!.alpha = 1f
+                    }
+                }
+            }, 2000)
+        }
     }
 
     private fun setupSaveTheCat() {
