@@ -69,6 +69,7 @@ class GameNotification(view:View, parentLayout: AbsoluteLayout, params: LayoutPa
                 imageButtonSpawnY)
             viewMessageLabelYAnimator = ValueAnimator.ofInt((view!!.layoutParams as LayoutParams).y,
                 spawnParams!!.y)
+            toShow = false
         }
 
         imageButtonYAnimator!!.addUpdateListener {

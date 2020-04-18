@@ -288,7 +288,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         gameNotification = GameNotification(view = View(this), parentLayout = rootLayout!!,
         params = LayoutParams((dUnitWidth * 12).toInt(), (dUnitHeight * 1.5).toInt(),
             ((dWidth - (dUnitWidth * 12)) * 0.5).toInt(),
-            (dStatusBarHeight * 1.5).toInt()))
+            (dStatusBarHeight * 1.2).toInt()))
     }
 
     private fun startCatPresentation() {
