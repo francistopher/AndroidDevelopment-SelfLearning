@@ -24,13 +24,13 @@ import com.example.savethecat_colormatching.Controllers.ARType
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
 import com.example.savethecat_colormatching.ParticularViews.*
+import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 import com.google.android.gms.ads.*
 import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.Player
 import com.google.android.gms.games.PlayersClient
-import com.google.android.gms.tasks.Task
 import java.util.*
 
 
@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var isGooglePlayGameServicesAvailable:Boolean = false
         private var isCatDismissed:Boolean = false
         var localPlayer:Player? = null
+        var signedInAccount:GoogleSignInAccount? = null
     }
 
     var introAnimation:IntroView? = null
@@ -231,44 +232,43 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         startCatPresentation()
     }
 
-    private var googleSignInClient:GoogleSignInClient? = null
-    private var googleSignInAccount: GoogleSignInAccount? = null
     private var RC_SIGN_IN:Int = 1
     private fun setupGamePlayAuthentication(){
-        val signInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN
-        googleSignInClient = GoogleSignIn.getClient(this, signInOptions)
-        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this)
-        val intent: Intent = googleSignInClient!!.signInIntent
+        val signInOptions:GoogleSignInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN
+        val googleSignInClient:GoogleSignInClient = GoogleSignIn.getClient(this, signInOptions)
+        val intent: Intent = googleSignInClient.signInIntent
         startActivityForResult(intent, RC_SIGN_IN)
     }
 
     override fun startActivityForResult(intent: Intent?, requestCode: Int) {
         super.startActivityForResult(intent, requestCode)
-        Log.i("Request Code", "$requestCode")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
-            var result: GoogleSignInResult? = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+            val result: GoogleSignInResult? = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
             if (result!!.isSuccess) {
                 // The signed in account is stored in the result.
-               val signedInAccount: GoogleSignInAccount? = result.signInAccount
-                val playersClient:PlayersClient = Games.getPlayersClient(this, signedInAccount!!)
+                val signInAccount: GoogleSignInAccount? = result.signInAccount
+                val playersClient:PlayersClient = Games.getPlayersClient(this, signInAccount!!)
                 var player = playersClient.currentPlayer
                 player.addOnCompleteListener {
                     if (it.isSuccessful) {
                         localPlayer = it.result!!
+                        signedInAccount = signInAccount
                         connectedToGooglePlayGamerServicesSucceeded()
-
                     } else {
                         connectedToGooglePlayGamerServicesFailed()
                     }
                 }
-
             } else {
                connectedToGooglePlayGamerServicesFailed()
             }
+        }
+
+        if (requestCode == LeaderBoard.RC_LEADERBOARD_UI) {
+            Log.i("LeaderBOARD", "BOARD")
         }
     }
 

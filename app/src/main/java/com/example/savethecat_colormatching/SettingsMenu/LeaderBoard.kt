@@ -11,6 +11,7 @@ import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
+import com.google.android.gms.games.Games
 
 class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
 
@@ -19,12 +20,32 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
 
     private var leaderBoardButton: ImageButton? = null
 
+    companion object {
+        var RC_LEADERBOARD_UI:Int = 2
+    }
+
     init {
         this.leaderBoardButton = imageButton
         this.leaderBoardButton!!.layoutParams = params
         parentLayout.addView(imageButton)
         this.leaderBoardButton!!.setBackgroundColor(Color.TRANSPARENT)
         setStyle()
+        setupSelector()
+    }
+
+    private fun setupSelector() {
+        this.leaderBoardButton!!.setOnClickListener {
+            if (MainActivity.isGooglePlayGameServicesAvailable) {
+                Games.getLeaderboardsClient(MainActivity.staticSelf!!, MainActivity.signedInAccount!!).
+                getLeaderboardIntent(MainActivity.staticSelf!!.getString(R.string.leader_id)).
+                addOnSuccessListener {
+                        MainActivity.staticSelf!!.startActivityForResult(it, RC_LEADERBOARD_UI)
+                }
+            } else {
+                MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
+            }
+
+        }
     }
 
     private var transformingSet: AnimatorSet? = null
