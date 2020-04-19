@@ -170,7 +170,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                                         catButton.pod()
                                         verifyRemainingCatsArePodded(catButton = catButton)
                                     } else {
-                                        MainActivity.attackMeter!!.updateDuration(-0.75f)
                                         attackCatButton(catButton = catButton)
                                     }
                                     return
@@ -194,6 +193,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     fun attackCatButton(catButton: CatButton) {
+        MainActivity.attackMeter!!.updateDuration(-0.75f)
         MainActivity.myLivesMeter!!.dropLivesLeftHeart()
         MainActivity.enemies!!.translateToCatAndBack(catButton)
         catButton.disperseRadially()
@@ -216,6 +216,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     private fun gameOver() {
+        // Examine the score
+        LeaderBoard.examineScore(GameResults.savedCatButtonsCount.toLong())
         // Glove pointer on watch ad button
         val watchAdButtonParams:LayoutParams = MainActivity.gameResults!!.getWatchAdButton().getOriginalParams()
         MainActivity.glovePointer!!.translate(
@@ -247,7 +249,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         MainActivity.glovePointer!!.hide()
         catButtons!!.setAllCatButtonsDead()
         GameResults.deadCatButtonsCount += catButtons!!.deadCount()
-        LeaderBoard.examineScore(GameResults.savedCatButtonsCount.toLong())
         MainActivity.gameResults!!.fadeIn()
         MainActivity.glovePointer!!.getThis().bringToFront()
         AttackMeter.didNotInvokeRelease = true
@@ -450,9 +451,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
             // Contract settings menu if opened
-            if (SettingsMenu.isExpanded) {
-                MainActivity.settingsButton!!.getThis().performClick()
-            }
+            MainActivity.settingsButton!!.forceSettingsMenuContraction()
             // Reset attack meter attack duration
             MainActivity.attackMeter!!.resetDisplacementDuration()
             // Decrease mouse coins given

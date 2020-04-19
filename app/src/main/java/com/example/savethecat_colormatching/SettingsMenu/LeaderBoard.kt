@@ -11,6 +11,7 @@ import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.games.AnnotatedData
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.LeaderboardsClient
@@ -79,11 +80,12 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
     private fun setupSelector() {
         this.leaderBoardButton!!.setOnClickListener {
             if (MainActivity.isGooglePlayGameServicesAvailable) {
-                Games.getLeaderboardsClient(MainActivity.staticSelf!!, MainActivity.signedInAccount!!).
-                getLeaderboardIntent(MainActivity.staticSelf!!.getString(R.string.single_leader_id)).
-                addOnSuccessListener {
-                        MainActivity.staticSelf!!.startActivityForResult(it, RC_LEADERBOARD_UI)
-                }
+                Games.Leaderboards.getAllLeaderboardsIntent(GoogleApiClient.Builder(MainActivity.staticSelf!!).addApi(Games.API!!).build())
+//                Games.getLeaderboardsClient(MainActivity.staticSelf!!, MainActivity.signedInAccount!!).
+//                getLeaderboardIntent(MainActivity.staticSelf!!.getString(R.string.single_leader_id)).
+//                addOnSuccessListener {
+//                        MainActivity.staticSelf!!.startActivityForResult(it, RC_LEADERBOARD_UI)
+//                }
             } else {
                 MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
             }

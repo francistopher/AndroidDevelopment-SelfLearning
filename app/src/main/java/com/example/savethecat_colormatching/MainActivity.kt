@@ -10,7 +10,6 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.AbsoluteLayout
@@ -27,14 +26,19 @@ import com.example.savethecat_colormatching.ParticularViews.*
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 import com.google.android.gms.ads.*
 import com.google.android.gms.auth.api.Auth
-import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.Player
 import com.google.android.gms.games.PlayersClient
 import java.util.*
 
 
-class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListener {
+class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListener,
+    GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks  {
 
     companion object {
         var staticSelf: MainActivity? = null
@@ -74,6 +78,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         private var isCatDismissed:Boolean = false
         var localPlayer:Player? = null
         var signedInAccount:GoogleSignInAccount? = null
+        var googleApiClient:GoogleApiClient? = null
     }
 
     var introAnimation:IntroView? = null
@@ -235,16 +240,15 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private var RC_SIGN_IN:Int = 1
     private fun setupGamePlayAuthentication(){
         val signInOptions:GoogleSignInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN
-        val googleSignInClient:GoogleSignInClient = GoogleSignIn.getClient(this, signInOptions)
-        val intent: Intent = googleSignInClient.signInIntent
-        startActivityForResult(intent, RC_SIGN_IN)
-    }
-
-    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
-        super.startActivityForResult(intent, requestCode)
+        googleApiClient = GoogleApiClient.Builder(this).enableAutoManage(this, this).
+        addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).addApi(Games.API).build()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == 0) {
+            connectionToGooglePlayGamerServicesFailed()
+            return
+        }
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
             val result: GoogleSignInResult? = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
@@ -257,25 +261,25 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                     if (it.isSuccessful) {
                         localPlayer = it.result!!
                         signedInAccount = signInAccount
-                        connectedToGooglePlayGamerServicesSucceeded()
+                        connectionToGooglePlayGamerServicesSucceeded()
                     } else {
-                        connectedToGooglePlayGamerServicesFailed()
+                        connectionToGooglePlayGamerServicesFailed()
                     }
                 }
             } else {
-               connectedToGooglePlayGamerServicesFailed()
+               connectionToGooglePlayGamerServicesFailed()
             }
         }
     }
 
-    private fun connectedToGooglePlayGamerServicesSucceeded() {
+    private fun connectionToGooglePlayGamerServicesSucceeded() {
         isCatDismissed = true
         isGooglePlayGameServicesAvailable = true
         gameNotification!!.displayYesGooglePlayGameServices()
         LeaderBoard.setupLeaderBoard()
     }
 
-    private fun connectedToGooglePlayGamerServicesFailed() {
+    private fun connectionToGooglePlayGamerServicesFailed() {
         isCatDismissed = true
         isGooglePlayGameServicesAvailable = false
         gameNotification!!.displayNoGooglePlayGameServices()
@@ -283,7 +287,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
 
     private fun setupGameNotificationLabel() {
-        gameNotification = GameNotification(view = View(this), parentLayout = rootLayout!!,
+        gameNotification = GameNotification(view = Button(this), parentLayout = rootLayout!!,
         params = LayoutParams((dUnitWidth * 12).toInt(), (dUnitHeight * 1.5).toInt(),
             ((dWidth - (dUnitWidth * 12)) * 0.5).toInt(),
             (dStatusBarHeight * 1.2).toInt()))
@@ -485,7 +489,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var width: Float = (dUnitWidth * 9).toFloat()
         var y:Float = (dUnitHeight).toFloat()
         var x: Float
-        Log.i("ALRIGHT", "${dAspectRatio}")
         if (dAspectRatio >= 2.09){
             x = ((dWidth - width) * 0.5).toFloat()
             y = ((settingsButton!!.getOriginalParams().y +
@@ -546,5 +549,17 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             params = LayoutParams(sideLength, sideLength, colorOptions!!.getOriginalParams().x -
                     (dUnitHeight * 0.15).toInt(), colorOptions!!.getOriginalParams().y +
                     (dUnitHeight * 0.175).toInt()))
+    }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onConnected(p0: Bundle?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onConnectionSuspended(p0: Int) {
+        TODO("Not yet implemented")
     }
 }

@@ -50,6 +50,13 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         borderImageView!!.alpha = 0f
     }
 
+    fun forceSettingsMenuContraction() {
+        if (settingsMenu!!.isTransforming && !SettingsMenu.isExpanded) {
+            settingsMenu!!.transformingAnimator!!.cancel()
+            settingsMenu!!.expandOrContract()
+        }
+    }
+
     private var fadeAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {

@@ -128,7 +128,7 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
 
     fun setStyle() {
         imageView!!.setBackgroundColor(Color.TRANSPARENT)
-        imageView!!.scaleType = ImageView.ScaleType.CENTER_INSIDE
+        imageView!!.scaleType = ImageView.ScaleType.FIT_CENTER
         fun lightDominant() {
             imageView!!.setImageResource(lightImageR)
         }

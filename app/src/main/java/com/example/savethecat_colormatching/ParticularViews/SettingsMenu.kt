@@ -102,36 +102,35 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         menuView!!.setBackgroundDrawable(shape)
     }
 
-    private var transforminAnimator:ValueAnimator? = null
-    private var isTransforming:Boolean = false
+    var transformingAnimator:ValueAnimator? = null
+    var isTransforming:Boolean = false
     fun expandOrContract() {
         if (isTransforming) {
             return
         } else {
-            if (transforminAnimator != null) {
-                transforminAnimator!!.cancel()
-                transforminAnimator = null
+            if (transformingAnimator != null) {
+                transformingAnimator!!.cancel()
+                transformingAnimator = null
             }
         }
         AudioController.gearSpinning()
         if (isExpanded) {
-            transforminAnimator = ValueAnimator.ofInt((menuView!!.layoutParams as LayoutParams).
+            transformingAnimator = ValueAnimator.ofInt((menuView!!.layoutParams as LayoutParams).
             width, contractedParams!!.width)
         } else {
-            transforminAnimator = ValueAnimator.ofInt((menuView!!.layoutParams as LayoutParams).
+            transformingAnimator = ValueAnimator.ofInt((menuView!!.layoutParams as LayoutParams).
             width, expandedParams!!.width)
         }
 
-        transforminAnimator!!.addUpdateListener {
+        transformingAnimator!!.addUpdateListener {
             menuView!!.layoutParams = LayoutParams((it.animatedValue as Int),
             expandedParams!!.height, expandedParams!!.x, expandedParams!!.y)
         }
-
-        transforminAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-        transforminAnimator!!.duration = 1000
-        transforminAnimator!!.start()
+        transformingAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        transformingAnimator!!.duration = 1000
+        transformingAnimator!!.start()
         isTransforming = true
-        transforminAnimator!!.doOnEnd {
+        transformingAnimator!!.doOnEnd {
             isTransforming = false
             isExpanded = !isExpanded
         }
@@ -230,7 +229,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
 
 
     private fun setupMoreCatsButton() {
-        moreCatsButton = MoreCats(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
+        moreCatsButton = MoreCats(imageButton = ImageButton(MainActivity.rootView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
         if (MainActivity.dAspectRatio >= 2.09) {

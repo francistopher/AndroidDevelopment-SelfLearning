@@ -9,31 +9,27 @@ import android.text.Layout
 import android.text.SpannableString
 import android.text.style.AlignmentSpan
 import android.view.Gravity
-import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
-import android.widget.TextView
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
 
-class GameNotification(view:View, parentLayout: AbsoluteLayout, params: LayoutParams) {
+class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
     private var parentLayout:AbsoluteLayout? = null
 
-    private var view: View? = null
-    private var messageLabel: TextView? = null
+    private var view: Button? = null
+    private var messageLabel: Button? = null
     private var imageButton: Button? = null
 
     private var spawnParams:LayoutParams? = null
     private var targetParams:LayoutParams? = null
 
     private var isShowing:Boolean = false
-
-    private var notification:Notification? = null
     private var difference:Int = 0
 
     private var notificationQueue:MutableList<Notification> = mutableListOf()
@@ -48,6 +44,12 @@ class GameNotification(view:View, parentLayout: AbsoluteLayout, params: LayoutPa
         setupMessageLabel()
         translate(false, 0f, 0f)
         startSearchingTimer()
+    }
+
+    fun bringToFront() {
+        view!!.bringToFront()
+        messageLabel!!.bringToFront()
+        imageButton!!.bringToFront()
     }
 
     private var translationAnimatorSet:AnimatorSet? = null
@@ -71,7 +73,6 @@ class GameNotification(view:View, parentLayout: AbsoluteLayout, params: LayoutPa
                 spawnParams!!.y)
             toShow = false
         }
-
         imageButtonYAnimator!!.addUpdateListener {
             imageButton!!.layoutParams = LayoutParams(
                 (imageButton!!.layoutParams as LayoutParams).width,
@@ -79,7 +80,6 @@ class GameNotification(view:View, parentLayout: AbsoluteLayout, params: LayoutPa
                 (imageButton!!.layoutParams as LayoutParams).x,
                 (it.animatedValue as Int))
         }
-
         viewMessageLabelYAnimator!!.addUpdateListener {
             view!!.layoutParams = LayoutParams(
                 (view!!.layoutParams as LayoutParams).width,
@@ -92,14 +92,12 @@ class GameNotification(view:View, parentLayout: AbsoluteLayout, params: LayoutPa
                 (messageLabel!!.layoutParams as LayoutParams).x,
                 (it.animatedValue as Int))
         }
-
         translationAnimatorSet = AnimatorSet()
         translationAnimatorSet!!.play(imageButtonYAnimator!!).with(viewMessageLabelYAnimator!!)
         translationAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         translationAnimatorSet!!.duration = (1000 * duration).toLong()
         translationAnimatorSet!!.startDelay = (1000 * delay).toLong()
         translationAnimatorSet!!.start()
-
         translationAnimatorSet!!.doOnEnd {
             if (show) {
                 isShowing = show
@@ -112,9 +110,7 @@ class GameNotification(view:View, parentLayout: AbsoluteLayout, params: LayoutPa
         val handler = Handler()
         handler.postDelayed(object : Runnable {
             override fun run() {
-                view!!.bringToFront()
-                messageLabel!!.bringToFront()
-                imageButton!!.bringToFront()
+                bringToFront()
                 if (notificationQueue.size > 0 && !toShow) {
                     setNotificationDisplayed()
                     translate(true, 0.5f, 0f)
@@ -196,8 +192,9 @@ class GameNotification(view:View, parentLayout: AbsoluteLayout, params: LayoutPa
         notificationQueue.add(notification)
     }
 
-    private fun setupView(view:View) {
+    private fun setupView(view:Button) {
         this.view = view
+        view.isFocusable = false
     }
 
     private fun setupTargetParams(params:LayoutParams) {
@@ -247,16 +244,16 @@ class GameNotification(view:View, parentLayout: AbsoluteLayout, params: LayoutPa
         imageButtonTargetY = y
         imageButtonSpawnY = y - difference
         imageButton!!.layoutParams = LayoutParams(width, height, x, y)
-        imageButton!!.isEnabled = false
         parentLayout!!.addView(imageButton!!)
     }
 
     private fun setupMessageLabel() {
-        messageLabel = TextView(view!!.context)
+        messageLabel = Button(view!!.context)
         messageLabel!!.layoutParams = LayoutParams((targetParams!!.width * 0.65).toInt(),
             targetParams!!.height, x + width + (targetParams!!.width * 0.03).toInt(),
             targetParams!!.y)
         parentLayout!!.addView(messageLabel!!)
+        messageLabel!!.isAllCaps = false
         messageLabel!!.setBackgroundColor(Color.TRANSPARENT)
         messageLabel!!.textSize = height * 0.15f
         messageLabel!!.gravity = Gravity.CENTER

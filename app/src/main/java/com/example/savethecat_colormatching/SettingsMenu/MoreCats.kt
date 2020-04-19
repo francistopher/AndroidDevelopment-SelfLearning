@@ -134,25 +134,30 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     }
 
     private fun translate(show:Boolean, duration:Float) {
-        if (show) {
-            bringToFront()
-        }
         if (translateAnimatorSet != null) {
             translateAnimatorSet!!.cancel()
         }
-
         if (show) {
-            infoClosePopupYAnimator = ValueAnimator.ofInt(infoClosePopupHiddenY, infoClosePopupShownY)
-            previousNextButtonYAnimator = ValueAnimator.ofInt(previousNextHiddenY, previousNextShownY)
-            presentationCatYAnimator = ValueAnimator.ofInt(presentationCatHiddenY, presentationCatShownY)
+            bringToFront()
+        }
+        if (show) {
+            infoClosePopupYAnimator =
+                ValueAnimator.ofInt(infoClosePopupHiddenY, infoClosePopupShownY)
+            previousNextButtonYAnimator =
+                ValueAnimator.ofInt(previousNextHiddenY, previousNextShownY)
+            presentationCatYAnimator =
+                ValueAnimator.ofInt(presentationCatHiddenY, presentationCatShownY)
             catHandlerYAnimator = ValueAnimator.ofInt(catHandlerHiddenY, catHandlerShownY)
             titleLabelYAnimator = ValueAnimator.ofInt(titleLabelHiddenY, titleLabelShownY)
             controlButtonYAnimator = ValueAnimator.ofInt(controlButtonHiddenY, controlButtonShownY)
             mouseCoinYAnimator = ValueAnimator.ofInt(mouseCoinHiddenY, mouseCoinShownY)
         } else {
-            infoClosePopupYAnimator = ValueAnimator.ofInt(infoClosePopupShownY, infoClosePopupHiddenY)
-            previousNextButtonYAnimator = ValueAnimator.ofInt(previousNextShownY, previousNextHiddenY)
-            presentationCatYAnimator = ValueAnimator.ofInt(presentationCatShownY, presentationCatHiddenY)
+            infoClosePopupYAnimator =
+                ValueAnimator.ofInt(infoClosePopupShownY, infoClosePopupHiddenY)
+            previousNextButtonYAnimator =
+                ValueAnimator.ofInt(previousNextShownY, previousNextHiddenY)
+            presentationCatYAnimator =
+                ValueAnimator.ofInt(presentationCatShownY, presentationCatHiddenY)
             catHandlerYAnimator = ValueAnimator.ofInt(catHandlerShownY, catHandlerHiddenY)
             titleLabelYAnimator = ValueAnimator.ofInt(titleLabelShownY, titleLabelHiddenY)
             controlButtonYAnimator = ValueAnimator.ofInt(controlButtonShownY, controlButtonHiddenY)
@@ -164,82 +169,85 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 infoButton!!.getOriginalParams().width,
                 infoButton!!.getOriginalParams().height,
                 infoButton!!.getOriginalParams().x,
-                (it.animatedValue as Int))
+                (it.animatedValue as Int)
+            )
             closeButton!!.getThis().layoutParams = LayoutParams(
                 closeButton!!.getOriginalParams().width,
                 closeButton!!.getOriginalParams().height,
                 closeButton!!.getOriginalParams().x,
-                (it.animatedValue as Int))
+                (it.animatedValue as Int)
+            )
             popupContainerView!!.layoutParams = LayoutParams(
                 (popupContainerView!!.layoutParams as LayoutParams).width,
                 (popupContainerView!!.layoutParams as LayoutParams).height,
                 (popupContainerView!!.layoutParams as LayoutParams).x,
-                (it.animatedValue as Int))
+                (it.animatedValue as Int)
+            )
         }
-
         catHandlerYAnimator!!.addUpdateListener {
             catViewHandler!!.layoutParams = LayoutParams(
                 (catViewHandler!!.layoutParams as LayoutParams).width,
                 (catViewHandler!!.layoutParams as LayoutParams).height,
                 (catViewHandler!!.layoutParams as LayoutParams).x,
-                (it.animatedValue as Int))
+                (it.animatedValue as Int)
+            )
         }
-
         titleLabelYAnimator!!.addUpdateListener {
             catTitleLabel!!.getThis().layoutParams = LayoutParams(
                 catTitleLabel!!.getOriginalParams().width,
                 catTitleLabel!!.getOriginalParams().height,
                 catTitleLabel!!.getOriginalParams().x,
-                (it.animatedValue as Int))
+                (it.animatedValue as Int)
+            )
         }
-
         presentationCatYAnimator!!.addUpdateListener {
             presentationCat!!.getThis().layoutParams = LayoutParams(
                 presentationCat!!.getOriginalParams().width,
                 presentationCat!!.getOriginalParams().height,
                 presentationCat!!.getOriginalParams().x,
-                (it.animatedValue as Int))
+                (it.animatedValue as Int)
+            )
             presentationCat!!.getThisImage().layoutParams = LayoutParams(
                 presentationCat!!.getOriginalParams().width,
                 presentationCat!!.getOriginalParams().height,
                 presentationCat!!.getOriginalParams().x,
-                (it.animatedValue as Int))
+                (it.animatedValue as Int)
+            )
         }
-
         controlButtonYAnimator!!.addUpdateListener {
             controlButton!!.getThis().layoutParams = LayoutParams(
                 controlButton!!.getOriginalParams().width,
                 controlButton!!.getOriginalParams().height,
                 controlButton!!.getOriginalParams().x,
-                (it.animatedValue as Int))
+                (it.animatedValue as Int)
+            )
         }
-
         previousNextButtonYAnimator!!.addUpdateListener {
             previousButton!!.getThis().layoutParams = LayoutParams(
                 previousButton!!.getOriginalParams().width,
                 previousButton!!.getOriginalParams().height,
                 previousButton!!.getOriginalParams().x,
-                (it.animatedValue as Int))
+                (it.animatedValue as Int)
+            )
             nextButton!!.getThis().layoutParams = LayoutParams(
                 nextButton!!.getOriginalParams().width,
                 nextButton!!.getOriginalParams().height,
                 nextButton!!.getOriginalParams().x,
-                (it.animatedValue as Int))
+                (it.animatedValue as Int)
+            )
         }
-
         mouseCoinYAnimator!!.addUpdateListener {
             mouseCoin!!.layoutParams = LayoutParams(
                 (mouseCoin!!.layoutParams as LayoutParams).width,
                 (mouseCoin!!.layoutParams as LayoutParams).height,
                 (mouseCoin!!.layoutParams as LayoutParams).x,
-                (it.animatedValue as Int))
+                (it.animatedValue as Int)
+            )
         }
-
         translateAnimatorSet = AnimatorSet()
-        translateAnimatorSet!!.play(infoClosePopupYAnimator!!).with(previousNextButtonYAnimator!!).
-        with(presentationCatYAnimator!!).with(catHandlerYAnimator!!).with(titleLabelYAnimator!!).
-        with(controlButtonYAnimator!!).with(mouseCoinYAnimator!!)
-
+        translateAnimatorSet!!.play(infoClosePopupYAnimator!!).with(previousNextButtonYAnimator!!)
+            .with(presentationCatYAnimator!!).with(catHandlerYAnimator!!)
+            .with(titleLabelYAnimator!!).with(controlButtonYAnimator!!).with(mouseCoinYAnimator!!)
         translateAnimatorSet!!.duration = (1000 * duration).toLong()
         if (show) {
             translateAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN)
@@ -498,7 +506,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     }
 
     private fun setupInfoButton() {
-        infoButton = CButton(button = Button(popupContainerView!!.context),
+        infoButton = CButton(button = Button(MainActivity.rootView!!.context),
                             parentLayout = parentLayout!!,
                             params = LayoutParams((contentViewParams!!.width * 0.3f).toInt(),
                             (contentViewParams!!.width * 0.18f).toInt(), contentViewParams!!.x,
