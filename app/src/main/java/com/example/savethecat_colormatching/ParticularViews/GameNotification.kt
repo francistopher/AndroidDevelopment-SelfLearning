@@ -195,6 +195,9 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
     private fun setupView(view:Button) {
         this.view = view
         view.isFocusable = false
+        view.setOnClickListener {
+            timerCount = 3.5
+        }
     }
 
     private fun setupTargetParams(params:LayoutParams) {
