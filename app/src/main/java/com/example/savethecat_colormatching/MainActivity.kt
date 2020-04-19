@@ -1,7 +1,6 @@
 package com.example.savethecat_colormatching
 
 import Reachability
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
@@ -31,6 +30,7 @@ import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.Player
 import com.google.android.gms.games.PlayersClient
+import com.google.android.gms.tasks.Task
 import java.util.*
 
 
@@ -72,6 +72,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
         var isGooglePlayGameServicesAvailable:Boolean = false
         private var isCatDismissed:Boolean = false
+        var localPlayer:Player? = null
     }
 
     var introAnimation:IntroView? = null
@@ -239,10 +240,11 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this)
         val intent: Intent = googleSignInClient!!.signInIntent
         startActivityForResult(intent, RC_SIGN_IN)
-//            isCatDismissed = true
-//            isGooglePlayGameServicesAvailable = false
-//            gameNotification!!.displayNoGooglePlayGameServices()
+    }
 
+    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
+        super.startActivityForResult(intent, requestCode)
+        Log.i("Request Code", "$requestCode")
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -251,27 +253,35 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             var result: GoogleSignInResult? = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
             if (result!!.isSuccess) {
                 // The signed in account is stored in the result.
-               var signedInAccount: GoogleSignInAccount? = result.signInAccount
-                var playersClient:PlayersClient = Games.getPlayersClient(this, signedInAccount!!)
+               val signedInAccount: GoogleSignInAccount? = result.signInAccount
+                val playersClient:PlayersClient = Games.getPlayersClient(this, signedInAccount!!)
                 var player = playersClient.currentPlayer
                 player.addOnCompleteListener {
                     if (it.isSuccessful) {
-                       var player: Player = it.result!!
-                        Log.i("MESSAGE", "${player.displayName}")
+                        localPlayer = it.result!!
+                        connectedToGooglePlayGamerServicesSucceeded()
+
                     } else {
-                        Log.i("MESSAGE", "BUMMER")
+                        connectedToGooglePlayGamerServicesFailed()
                     }
                 }
 
             } else {
-                var message:String? = result.status.statusMessage
-                if (message == null || message.isEmpty()) {
-                    message = "AHHHHHHHHHHHHHHHHHHHHHHH"
-                }
-                AlertDialog.Builder(this).setMessage(message)
-                    .setNeutralButton(android.R.string.ok, null).show();
+               connectedToGooglePlayGamerServicesFailed()
             }
         }
+    }
+
+    private fun connectedToGooglePlayGamerServicesSucceeded() {
+        isCatDismissed = true
+        isGooglePlayGameServicesAvailable = true
+        gameNotification!!.displayYesGooglePlayGameServices()
+    }
+
+    private fun connectedToGooglePlayGamerServicesFailed() {
+        isCatDismissed = true
+        isGooglePlayGameServicesAvailable = false
+        gameNotification!!.displayNoGooglePlayGameServices()
     }
 
 
