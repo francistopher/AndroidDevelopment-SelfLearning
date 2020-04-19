@@ -3,6 +3,7 @@ package com.example.savethecat_colormatching.SettingsMenu
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.graphics.Color
+import android.util.Log
 import android.widget.AbsoluteLayout
 import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
@@ -12,6 +13,7 @@ import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
 import com.google.android.gms.games.Games
+import com.google.android.gms.games.LeaderboardsClient
 
 class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
 
@@ -22,6 +24,41 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
 
     companion object {
         var RC_LEADERBOARD_UI:Int = 2
+        private var leaderBoardsClient:LeaderboardsClient? = null
+        private var singleGameScore:Long = 0
+        private var allGamesScore:Long = 0
+
+        fun setupLeaderBoard() {
+            leaderBoardsClient = Games.getLeaderboardsClient(MainActivity.staticSelf!!, MainActivity.signedInAccount!!)
+            getSingleGameScore()
+            getAllGamesScore()
+        }
+
+        private fun getSingleGameScore() {
+            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(R.string.single_leader_id.toString(), 2, 0).
+            addOnCompleteListener {
+                if (it.isSuccessful) {
+                    singleGameScore = it.result!!.get()!!.rawScore
+                    Log.i("SCORE SINGLE", singleGameScore.toString())
+                } else {
+                    singleGameScore = 0
+                }
+            }
+        }
+
+        private fun getAllGamesScore() {
+            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(R.string.all_leader_id.toString(), 2, 0).
+            addOnCompleteListener {
+                if (it.isSuccessful) {
+                    allGamesScore = it.result!!.get()!!.rawScore
+                    Log.i("SCORE ALL", allGamesScore.toString())
+                } else {
+                    allGamesScore = 0
+                }
+            }
+        }
+
+
     }
 
     init {
@@ -37,10 +74,11 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
         this.leaderBoardButton!!.setOnClickListener {
             if (MainActivity.isGooglePlayGameServicesAvailable) {
                 Games.getLeaderboardsClient(MainActivity.staticSelf!!, MainActivity.signedInAccount!!).
-                getLeaderboardIntent(MainActivity.staticSelf!!.getString(R.string.leader_id)).
+                getLeaderboardIntent(MainActivity.staticSelf!!.getString(R.string.single_leader_id)).
                 addOnSuccessListener {
                         MainActivity.staticSelf!!.startActivityForResult(it, RC_LEADERBOARD_UI)
                 }
+
             } else {
                 MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
             }

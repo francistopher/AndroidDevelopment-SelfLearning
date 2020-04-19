@@ -266,16 +266,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                connectedToGooglePlayGamerServicesFailed()
             }
         }
-
-        if (requestCode == LeaderBoard.RC_LEADERBOARD_UI) {
-            Log.i("LeaderBOARD", "BOARD")
-        }
     }
 
     private fun connectedToGooglePlayGamerServicesSucceeded() {
         isCatDismissed = true
         isGooglePlayGameServicesAvailable = true
         gameNotification!!.displayYesGooglePlayGameServices()
+        LeaderBoard.setupLeaderBoard()
     }
 
     private fun connectedToGooglePlayGamerServicesFailed() {

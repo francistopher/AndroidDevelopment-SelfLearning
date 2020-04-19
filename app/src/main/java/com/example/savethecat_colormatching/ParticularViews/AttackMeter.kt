@@ -498,6 +498,11 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         }
     }
 
+    fun resetDisplacementDuration() {
+        previousDisplacementDuration = 3.5f
+        displacementDuration = previousDisplacementDuration
+    }
+
     fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()

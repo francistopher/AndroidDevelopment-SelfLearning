@@ -447,6 +447,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
+            // Reset attack meter attack duration
+            MainActivity.attackMeter!!.resetDisplacementDuration()
             // Decrease mouse coins given
             if (GameResults.watchAdButtonWasSelected) {
                 GameResults.watchAdButtonWasSelected = false
