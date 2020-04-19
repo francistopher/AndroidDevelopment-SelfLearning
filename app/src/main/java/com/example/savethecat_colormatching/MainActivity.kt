@@ -1,6 +1,7 @@
 package com.example.savethecat_colormatching
 
 import Reachability
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
@@ -25,11 +26,11 @@ import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
 import com.example.savethecat_colormatching.ParticularViews.*
 import com.google.android.gms.ads.*
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.drive.Drive
+import com.google.android.gms.auth.api.Auth
+import com.google.android.gms.auth.api.signin.*
+import com.google.android.gms.games.Games
+import com.google.android.gms.games.Player
+import com.google.android.gms.games.PlayersClient
 import java.util.*
 
 
@@ -211,9 +212,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val testDeviceIds = Arrays.asList("33BE2250B43518CCDA7DE426D04EE231")
-        val configuration = RequestConfiguration.Builder().setTestDeviceIds(testDeviceIds).build()
-        MobileAds.setRequestConfiguration(configuration)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupAspectRatio()
@@ -232,57 +230,50 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         startCatPresentation()
     }
 
-    var googleAccount:GoogleSignInAccount? = null
-    var signInClient:GoogleSignInClient? = null
-    private val RC_SIGN_IN = 9001
+    private var googleSignInClient:GoogleSignInClient? = null
+    private var googleSignInAccount: GoogleSignInAccount? = null
+    private var RC_SIGN_IN:Int = 1
     private fun setupGamePlayAuthentication(){
-        val signInOptions:GoogleSignInOptions = GoogleSignInOptions.
-        Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).
-        requestScopes(Drive.SCOPE_APPFOLDER).build()
-        signInClient = GoogleSignIn.getClient(this, signInOptions)
-        googleAccount = GoogleSignIn.getLastSignedInAccount(this)
-        if (googleAccount != null && GoogleSignIn.hasPermissions(googleAccount, Drive.SCOPE_APPFOLDER)) {
-
-        } else {
-            val intent: Intent = signInClient!!.signInIntent
-            startActivityForResult(intent, RC_SIGN_IN)
-        }
-
+        val signInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN
+        googleSignInClient = GoogleSignIn.getClient(this, signInOptions)
+        googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this)
+        val intent: Intent = googleSignInClient!!.signInIntent
+        startActivityForResult(intent, RC_SIGN_IN)
+//            isCatDismissed = true
+//            isGooglePlayGameServicesAvailable = false
+//            gameNotification!!.displayNoGooglePlayGameServices()
 
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
-            if (resultCode == 0) {
-                isCatDismissed = true
-                isGooglePlayGameServicesAvailable = false
-                gameNotification!!.displayNoGooglePlayGameServices()
+            var result: GoogleSignInResult? = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
+            if (result!!.isSuccess) {
+                // The signed in account is stored in the result.
+               var signedInAccount: GoogleSignInAccount? = result.signInAccount
+                var playersClient:PlayersClient = Games.getPlayersClient(this, signedInAccount!!)
+                var player = playersClient.currentPlayer
+                player.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                       var player: Player = it.result!!
+                        Log.i("MESSAGE", "${player.displayName}")
+                    } else {
+                        Log.i("MESSAGE", "BUMMER")
+                    }
+                }
+
+            } else {
+                var message:String? = result.status.statusMessage
+                if (message == null || message.isEmpty()) {
+                    message = "AHHHHHHHHHHHHHHHHHHHHHHH"
+                }
+                AlertDialog.Builder(this).setMessage(message)
+                    .setNeutralButton(android.R.string.ok, null).show();
             }
         }
     }
 
-    override fun startActivityForResult(intent: Intent?, requestCode: Int) {
-        super.startActivityForResult(intent, requestCode)
-
-        if (requestCode == RC_SIGN_IN) {
-            Log.i("GUTEN TAG", "GOOD DAY")
-        }
-        Log.i("GUTEN Intent", intent.toString())
-        Log.i("GUTEN request code", requestCode.toString())
-
-//        val result: GoogleSignInResult? = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
-//        if (result!!.isSuccess) {
-//            // The signed in account is stored in the result.
-//            val signedInAccount: GoogleSignInAccount? = result.signInAccount
-//        } else {
-//            var message: String? = result.status.statusMessage
-//            if (message == null || message.isEmpty()) {
-//                message = "Sign in error!!!"
-//            }
-//            AlertDialog.Builder(this).setMessage(message).setNeutralButton(android.R.string.ok, null).show()
-//        }
-    }
 
     private fun setupGameNotificationLabel() {
         gameNotification = GameNotification(view = View(this), parentLayout = rootLayout!!,
