@@ -105,6 +105,10 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
             originalParams!!.x, originalParams!!.y))
     }
 
+    fun getThis():ImageButton {
+        return settingsButton!!
+    }
+
     private fun setupListener() {
         settingsButton!!.setOnClickListener {
             settingsMenu!!.expandOrContract()

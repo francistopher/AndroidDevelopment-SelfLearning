@@ -3,7 +3,6 @@ package com.example.savethecat_colormatching.SettingsMenu
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.graphics.Color
-import android.util.Log
 import android.widget.AbsoluteLayout
 import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
@@ -12,8 +11,10 @@ import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
+import com.google.android.gms.games.AnnotatedData
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.LeaderboardsClient
+import com.google.android.gms.games.leaderboard.LeaderboardScore
 
 class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
 
@@ -34,30 +35,35 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
             getAllGamesScore()
         }
 
+        fun examineScore(score:Long) {
+            submitSingleGameScore(score)
+        }
+
+        private fun submitSingleGameScore(score:Long) {
+            leaderBoardsClient!!.submitScore("CgkIgYGviN0SEAIQAQ", score)
+        }
+
         private fun getSingleGameScore() {
-            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(R.string.single_leader_id.toString(), 2, 0).
-            addOnCompleteListener {
+            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(MainActivity.staticSelf!!.
+            getString(R.string.single_leader_id), 2, 0).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    singleGameScore = it.result!!.get()!!.rawScore
-                    Log.i("SCORE SINGLE", singleGameScore.toString())
-                } else {
-                    singleGameScore = 0
+                    val data:AnnotatedData<LeaderboardScore>? = it.result
+                    val score:LeaderboardScore? = data!!.get()
+                    singleGameScore = score?.rawScore ?: 0
                 }
             }
         }
 
         private fun getAllGamesScore() {
-            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(R.string.all_leader_id.toString(), 2, 0).
-            addOnCompleteListener {
+            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(MainActivity.staticSelf!!.
+            getString(R.string.all_leader_id), 2, 0).addOnCompleteListener {
                 if (it.isSuccessful) {
-                    allGamesScore = it.result!!.get()!!.rawScore
-                    Log.i("SCORE ALL", allGamesScore.toString())
-                } else {
-                    allGamesScore = 0
+                    val data: AnnotatedData<LeaderboardScore>? = it.result
+                    val score: LeaderboardScore? = data!!.get()
+                    allGamesScore = score?.rawScore ?: 0
                 }
             }
         }
-
 
     }
 
@@ -78,11 +84,9 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
                 addOnSuccessListener {
                         MainActivity.staticSelf!!.startActivityForResult(it, RC_LEADERBOARD_UI)
                 }
-
             } else {
                 MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
             }
-
         }
     }
 

@@ -14,6 +14,7 @@ import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 import java.util.*
 
 class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -246,6 +247,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         MainActivity.glovePointer!!.hide()
         catButtons!!.setAllCatButtonsDead()
         GameResults.deadCatButtonsCount += catButtons!!.deadCount()
+        LeaderBoard.examineScore(GameResults.savedCatButtonsCount.toLong())
         MainActivity.gameResults!!.fadeIn()
         MainActivity.glovePointer!!.getThis().bringToFront()
         AttackMeter.didNotInvokeRelease = true
@@ -447,6 +449,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
+            // Contract settings menu if opened
+            if (SettingsMenu.isExpanded) {
+                MainActivity.settingsButton!!.getThis().performClick()
+            }
             // Reset attack meter attack duration
             MainActivity.attackMeter!!.resetDisplacementDuration()
             // Decrease mouse coins given
