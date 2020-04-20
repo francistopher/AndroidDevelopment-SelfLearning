@@ -272,9 +272,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         isCatDismissed = true
         isGooglePlayGameServicesAvailable = true
         gameNotification!!.displayYesGooglePlayGameServices()
-        LeaderBoard.setupLeaderBoard()
         googleApiClient = GoogleApiClient.Builder(this).enableAutoManage(this, this).
         addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions!!).addApi(Games.API).build()
+        LeaderBoard.setupLeaderBoard()
     }
 
     private fun connectionToGooglePlayGamerServicesFailed() {

@@ -3,6 +3,7 @@ package com.example.savethecat_colormatching.SettingsMenu
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.graphics.Color
+import android.util.Log
 import android.widget.AbsoluteLayout
 import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
@@ -11,10 +12,9 @@ import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
-import com.google.android.gms.games.AnnotatedData
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.LeaderboardsClient
-import com.google.android.gms.games.leaderboard.LeaderboardScore
+import com.google.android.gms.games.leaderboard.LeaderboardVariant
 
 class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: AbsoluteLayout.LayoutParams) {
 
@@ -24,48 +24,84 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
     private var leaderBoardButton: ImageButton? = null
 
     companion object {
-        private var leaderBoardsClient:LeaderboardsClient? = null
-        private var singleGameScore:Long = 0
-        private var allGamesScore:Long = 0
+        private var leaderBoardsClient: LeaderboardsClient? = null
+        private var singleGameScore: Long = 0
+        private var allGamesScore: Long = 0
+        private var submitSingleGameScore:Boolean = false
+        private var submitAllGamesScore:Boolean = false
 
         fun setupLeaderBoard() {
-            leaderBoardsClient = Games.getLeaderboardsClient(MainActivity.staticSelf!!, MainActivity.signedInAccount!!)
+            leaderBoardsClient = Games.getLeaderboardsClient(
+                MainActivity.staticSelf!!,
+                MainActivity.signedInAccount!!)
             getSingleGameScore()
             getAllGamesScore()
         }
 
-        fun examineScore(score:Long) {
-            submitSingleGameScore(score)
+        fun examineScore(score: Long) {
+            if (MainActivity.isGooglePlayGameServicesAvailable) {
+                if (submitSingleGameScore) {
+                    submitSingleGameScore(score)
+                }
+                if (submitAllGamesScore) {
+                    submitAllGamesScore(score)
+                }
+            } else {
+                MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
+            }
         }
 
-        private fun submitSingleGameScore(score:Long) {
-            if (MainActivity.isGooglePlayGameServicesAvailable) {
-                leaderBoardsClient!!.submitScore("CgkIgYGviN0SEAIQAQ", score)
+        private fun submitSingleGameScore(score: Long) {
+            try {
+                leaderBoardsClient!!.submitScore(
+                    MainActivity.staticSelf!!.getString(R.string.single_leader_id), score)
+            } catch (e: Exception) {
+                MainActivity.isGooglePlayGameServicesAvailable = false
+                MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
+            }
+        }
+
+        private fun submitAllGamesScore(score: Long) {
+            try {
+                allGamesScore += score
+                leaderBoardsClient!!.submitScore(
+                    MainActivity.staticSelf!!.getString(R.string.all_leader_id), allGamesScore
+                )
+            } catch (e: Exception) {
+                MainActivity.isGooglePlayGameServicesAvailable = false
+                MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
             }
         }
 
         private fun getSingleGameScore() {
-            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(MainActivity.staticSelf!!.
-            getString(R.string.single_leader_id), 2, 0).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val data:AnnotatedData<LeaderboardScore>? = it.result
-                    val score:LeaderboardScore? = data!!.get()
-                    singleGameScore = score?.rawScore ?: 0
+            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(
+                MainActivity.staticSelf!!.getString(R.string.single_leader_id),
+                LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                LeaderboardVariant.COLLECTION_PUBLIC).addOnSuccessListener {
+                if (it != null) {
+                    if (it.get() != null) {
+                        submitSingleGameScore = true
+                        singleGameScore = it.get()!!.rawScore
+                    }
                 }
+                Log.i("SINGLE GAME SCORE", singleGameScore.toString())
             }
         }
 
         private fun getAllGamesScore() {
-            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(MainActivity.staticSelf!!.
-            getString(R.string.all_leader_id), 2, 0).addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val data: AnnotatedData<LeaderboardScore>? = it.result
-                    val score: LeaderboardScore? = data!!.get()
-                    allGamesScore = score?.rawScore ?: 0
+            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(
+                MainActivity.staticSelf!!.getString(R.string.all_leader_id),
+                LeaderboardVariant.TIME_SPAN_ALL_TIME,
+                LeaderboardVariant.COLLECTION_PUBLIC).addOnSuccessListener {
+                if (it != null) {
+                    if (it.get() != null) {
+                        submitAllGamesScore = true
+                        allGamesScore = it.get()!!.rawScore
+                    }
                 }
+                Log.i("ALL GAMES SCORE", allGamesScore.toString())
             }
         }
-
     }
 
     init {
