@@ -45,7 +45,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var closeButton:CButton? = null
     private var previousButton:CButton? = null
     private var nextButton:CButton? = null
-
+    private var memoriamMessage:CButton? = null
     private var popupContainerView: Button? = null
 
     private var presentationCat:PCatButton? = null
@@ -103,6 +103,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setupPreviousButton()
         setupNextButton()
         setupCatPresentation()
+        setupMemoriamMessage()
         setupCatHandler()
         setupCatTitleLabel()
         setupControlButton()
@@ -126,6 +127,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                     catTitleLabel!!.getThis().bringToFront()
                     presentationCat!!.getThis().bringToFront()
                     presentationCat!!.getThisImage().bringToFront()
+                    memoriamMessage!!.getThis().bringToFront()
                     controlButton!!.getThis().bringToFront()
                     mouseCoin!!.bringToFront()
                 }
@@ -139,25 +141,19 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
         if (show) {
             bringToFront()
-        }
-        if (show) {
-            infoClosePopupYAnimator =
-                ValueAnimator.ofInt(infoClosePopupHiddenY, infoClosePopupShownY)
-            previousNextButtonYAnimator =
-                ValueAnimator.ofInt(previousNextHiddenY, previousNextShownY)
-            presentationCatYAnimator =
-                ValueAnimator.ofInt(presentationCatHiddenY, presentationCatShownY)
+            infoClosePopupYAnimator = ValueAnimator.ofInt(infoClosePopupHiddenY, infoClosePopupShownY)
+            previousNextButtonYAnimator = ValueAnimator.ofInt(previousNextHiddenY, previousNextShownY)
+            presentationCatYAnimator = ValueAnimator.ofInt(presentationCatHiddenY, presentationCatShownY)
             catHandlerYAnimator = ValueAnimator.ofInt(catHandlerHiddenY, catHandlerShownY)
             titleLabelYAnimator = ValueAnimator.ofInt(titleLabelHiddenY, titleLabelShownY)
             controlButtonYAnimator = ValueAnimator.ofInt(controlButtonHiddenY, controlButtonShownY)
             mouseCoinYAnimator = ValueAnimator.ofInt(mouseCoinHiddenY, mouseCoinShownY)
         } else {
-            infoClosePopupYAnimator =
-                ValueAnimator.ofInt(infoClosePopupShownY, infoClosePopupHiddenY)
-            previousNextButtonYAnimator =
-                ValueAnimator.ofInt(previousNextShownY, previousNextHiddenY)
-            presentationCatYAnimator =
-                ValueAnimator.ofInt(presentationCatShownY, presentationCatHiddenY)
+            memoriamMessage!!.grow = false
+            memoriamMessage!!.growUnGrow(0.05f)
+            infoClosePopupYAnimator = ValueAnimator.ofInt(infoClosePopupShownY, infoClosePopupHiddenY)
+            previousNextButtonYAnimator = ValueAnimator.ofInt(previousNextShownY, previousNextHiddenY)
+            presentationCatYAnimator = ValueAnimator.ofInt(presentationCatShownY, presentationCatHiddenY)
             catHandlerYAnimator = ValueAnimator.ofInt(catHandlerShownY, catHandlerHiddenY)
             titleLabelYAnimator = ValueAnimator.ofInt(titleLabelShownY, titleLabelHiddenY)
             controlButtonYAnimator = ValueAnimator.ofInt(controlButtonShownY, controlButtonHiddenY)
@@ -365,6 +361,19 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         presentationCatHiddenY = (presentationCatShownY + MainActivity.dHeight).toInt()
     }
 
+    private fun setupMemoriamMessage() {
+        memoriamMessage = CButton(button = Button(MainActivity.rootView!!.context),
+            parentLayout = parentLayout!!, params = presentationCat!!.getOriginalParams())
+        val memoriam = SpannableString("In Memory of\nSchrödinger\nthe Cat")
+        memoriamMessage!!.setText(memoriam.toString(), false)
+        memoriamMessage!!.setTextSize(memoriamMessage!!.getOriginalParams().height * 0.07f)
+        memoriamMessage!!.backgroundColor = ColorOptions.blue
+        memoriamMessage!!.setCornerRadiusAndBorderWidth((memoriamMessage!!.
+        getOriginalParams().height / 5.1).toInt(), 0)
+        memoriamMessage!!.getThis().alpha = 1f
+        memoriamMessage!!.shrunk()
+    }
+
     private fun setupCatTitleLabel() {
         val width:Int = (presentationCat!!.getOriginalParams().width * 0.8).toInt()
         val height:Int = (infoButton!!.getOriginalParams().height * 0.75).toInt()
@@ -517,6 +526,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         infoButton!!.setTextSize(infoButton!!.getOriginalParams().height * 0.3f)
         infoButton!!.setText("i", false)
         infoButton!!.getThis().alpha = 1f
+        infoButton!!.getThis().setOnClickListener {
+            memoriamMessage!!.growUnGrow(0.5f)
+        }
     }
 
     private fun setupCloseButton() {

@@ -162,13 +162,22 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         }
     }
 
+    var grow:Boolean = true
+    fun growUnGrow(duration: Float) {
+        grow(duration, 0f)
+        grow = !grow
+    }
+
     private var growAnimatorSet:AnimatorSet? = null
     private var growHeightAnimator:ValueAnimator? = null
     private var isGrowing:Boolean = false
     private var width:Float = 0f
     private var height:Float = 0f
     private var y:Float = 0f
-    fun grow() {
+    fun grow(duration:Float, delay:Float) {
+        if (shrinkAnimationSet != null) {
+            shrinkAnimationSet!!.cancel()
+        }
         if (growAnimatorSet != null) {
             if (isGrowing) {
                 growAnimatorSet!!.cancel()
@@ -176,14 +185,18 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 growAnimatorSet = null
             }
         }
-        growWidthAnimator = ValueAnimator.ofFloat(1f, originalParams!!.width.toFloat())
+        if (grow) {
+            growWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(), originalParams!!.width.toFloat())
+            growHeightAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(), originalParams!!.height.toFloat())
+        } else {
+            growWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(), 1f)
+            growHeightAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(), 1f)
+        }
         growWidthAnimator!!.addUpdateListener {
             width = (it.animatedValue as Float)
             x = ((originalParams!!.x + (originalParams!!.width * 0.5) - (width * 0.5)).toFloat())
             button!!.layoutParams = LayoutParams(width.toInt(), height.toInt(), x.toInt(), y.toInt())
         }
-
-        growHeightAnimator = ValueAnimator.ofFloat(1f, originalParams!!.height.toFloat())
         growHeightAnimator!!.addUpdateListener {
             height = (it.animatedValue as Float)
             y = (originalParams!!.y + (originalParams!!.height * 0.5) - (height * 0.5)).toFloat()
@@ -192,13 +205,10 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         growAnimatorSet = AnimatorSet()
         growAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         growAnimatorSet!!.play(growHeightAnimator!!).with(growWidthAnimator!!)
-        growAnimatorSet!!.duration = 1000
-        growAnimatorSet!!.startDelay = 125
+        growAnimatorSet!!.duration = (1000 * duration).toLong()
+        growAnimatorSet!!.startDelay = (1000 * delay).toLong()
         isGrowing = true
         growAnimatorSet!!.start()
-        growAnimatorSet!!.doOnEnd {
-            button!!.layoutParams = originalParams!!
-        }
     }
 
     private var translateAnimatorSet:AnimatorSet? = null
@@ -311,6 +321,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     private var shrinkAnimationSet: AnimatorSet? = null
     private var shrinkAnimationSetIsRunning: Boolean = false
     fun shrink() {
+        grow = true
         if (shrinkAnimationSet != null) {
             if (shrinkAnimationSetIsRunning) {
                 shrinkAnimationSet!!.cancel()

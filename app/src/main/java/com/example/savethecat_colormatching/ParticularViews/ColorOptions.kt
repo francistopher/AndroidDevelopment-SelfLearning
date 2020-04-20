@@ -110,7 +110,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                     x.toInt(), (originalParams!!.y + rowGap * 0.9).toInt()))
                 if (numOfUniqueColors != 1 || BoardGame.singlePlayerButton!!.getThis().alpha == 0f) {
                     button!!.shrunk()
-                    button!!.grow()
+                    button!!.grow(1f, 0.125f)
                     button!!.fade(In = true, Out = false, Duration = 0.0f, Delay = 0.125f)
                 } else {
                     button!!.getThis().alpha = 1f

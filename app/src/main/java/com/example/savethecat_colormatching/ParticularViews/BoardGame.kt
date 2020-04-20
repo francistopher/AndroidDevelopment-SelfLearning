@@ -231,10 +231,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         singlePlayerButton!!.targetBackgroundColor = null
         singlePlayerButton!!.setStyle()
         singlePlayerButton!!.shrunk()
-        singlePlayerButton!!.grow()
+        singlePlayerButton!!.grow(1f, 0.125f)
         singlePlayerButton!!.fadeIn()
         multiPlayerButton!!.shrunk()
-        multiPlayerButton!!.grow()
+        multiPlayerButton!!.grow(1f, 0.125f)
         multiPlayerButton!!.fadeIn()
         Timer().schedule(object : TimerTask() {
             override fun run() {
@@ -490,7 +490,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             }
         }
         singlePlayerButton!!.shrunk()
-        singlePlayerButton!!.grow()
+        singlePlayerButton!!.grow(1f, 0.125f)
         singlePlayerButton!!.fadeIn()
     }
 
@@ -517,7 +517,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             Log.i("Click", "Multi Player Button")
         }
         multiPlayerButton!!.shrunk()
-        multiPlayerButton!!.grow()
+        multiPlayerButton!!.grow(1f, 0.125f)
         multiPlayerButton!!.fade(true, false, 0.5f, 0.125f)
     }
 
