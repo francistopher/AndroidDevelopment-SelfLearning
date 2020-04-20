@@ -50,7 +50,6 @@ class AudioController {
         }
 
         fun animeWow() {
-            animeWowPlayer!!.stop()
             animeWowPlayer!!.start()
         }
 

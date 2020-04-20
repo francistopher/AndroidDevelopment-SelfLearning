@@ -17,6 +17,7 @@ import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
+import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 
 class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
@@ -117,7 +118,7 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
                 }
                 if (isShowing) {
                     timerCount += 0.125
-                    if (timerCount > 3.5) {
+                    if (timerCount > 4.0) {
                         timerCount = 0.0
                         notificationQueue.removeAt(0)
                         if (notificationQueue.size == 0) {
@@ -131,6 +132,14 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
                 handler.postDelayed(this, 125)
             }
         }, 0)
+    }
+
+    fun displayNewHighScore() {
+        addToNotificationQueue(Notification.NEW_HIGH_SCORE)
+    }
+
+    fun displayHighScore() {
+        addToNotificationQueue(Notification.HIGH_SCORE)
     }
 
     fun displayNoInternet() {
@@ -167,7 +176,26 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
             spannableString = SpannableString("No internet connection!\nGame " +
                     "Experience is Limited!")
             imageButton!!.setBackgroundResource(R.drawable.nointernet)
+        } else if (notificationQueue[0] == Notification.NEW_HIGH_SCORE) {
+            spannableString = if (LeaderBoard.singleGameScore > 1) {
+                SpannableString("New High Score!!!\n" +
+                        "${LeaderBoard.singleGameScore} Cats Saved")
+            } else {
+                SpannableString("New High Score!!!\n" +
+                        "${LeaderBoard.singleGameScore} Cat Saved")
+            }
+            imageButton!!.setBackgroundResource(R.drawable.heart)
+        } else if (notificationQueue[0] == Notification.HIGH_SCORE) {
+            spannableString = if (LeaderBoard.singleGameScore > 1) {
+                SpannableString("High Score\n" +
+                        "${LeaderBoard.singleGameScore} Cats Saved")
+            } else {
+                SpannableString("High Score\n" +
+                        "${LeaderBoard.singleGameScore} Cat Saved")
+            }
+            imageButton!!.setBackgroundResource(R.drawable.heart)
         }
+
         spannableString.setSpan(
             AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
             0, spannableString.length, 0

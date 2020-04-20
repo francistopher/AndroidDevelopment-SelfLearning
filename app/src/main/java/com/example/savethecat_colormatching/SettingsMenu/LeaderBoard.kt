@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
+import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
@@ -25,15 +26,13 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
 
     companion object {
         private var leaderBoardsClient: LeaderboardsClient? = null
-        private var singleGameScore: Long = 0
+        var singleGameScore: Long = 0
         private var allGamesScore: Long = 0
         private var submitSingleGameScore:Boolean = false
         private var submitAllGamesScore:Boolean = false
 
         fun setupLeaderBoard() {
-            leaderBoardsClient = Games.getLeaderboardsClient(
-                MainActivity.staticSelf!!,
-                MainActivity.signedInAccount!!)
+            leaderBoardsClient = Games.getLeaderboardsClient(MainActivity.staticSelf!!, MainActivity.signedInAccount!!)
             getSingleGameScore()
             getAllGamesScore()
         }
@@ -53,8 +52,14 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
 
         private fun submitSingleGameScore(score: Long) {
             try {
-                leaderBoardsClient!!.submitScore(
-                    MainActivity.staticSelf!!.getString(R.string.single_leader_id), score)
+                if (singleGameScore < score) {
+                    singleGameScore = score
+                    AudioController.animeWow()
+                    MainActivity.gameNotification!!.displayNewHighScore()
+                    leaderBoardsClient!!.submitScore(MainActivity.staticSelf!!.getString(R.string.single_leader_id), score)
+                } else {
+                    MainActivity.gameNotification!!.displayHighScore()
+                }
             } catch (e: Exception) {
                 MainActivity.isGooglePlayGameServicesAvailable = false
                 MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
@@ -64,9 +69,7 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
         private fun submitAllGamesScore(score: Long) {
             try {
                 allGamesScore += score
-                leaderBoardsClient!!.submitScore(
-                    MainActivity.staticSelf!!.getString(R.string.all_leader_id), allGamesScore
-                )
+                leaderBoardsClient!!.submitScore(MainActivity.staticSelf!!.getString(R.string.all_leader_id), allGamesScore)
             } catch (e: Exception) {
                 MainActivity.isGooglePlayGameServicesAvailable = false
                 MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
@@ -84,7 +87,6 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
                         singleGameScore = it.get()!!.rawScore
                     }
                 }
-                Log.i("SINGLE GAME SCORE", singleGameScore.toString())
             }
         }
 
@@ -99,7 +101,7 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
                         allGamesScore = it.get()!!.rawScore
                     }
                 }
-                Log.i("ALL GAMES SCORE", allGamesScore.toString())
+                Log.i("WHY", allGamesScore.toString())
             }
         }
     }
