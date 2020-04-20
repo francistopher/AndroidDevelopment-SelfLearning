@@ -26,9 +26,7 @@ import com.example.savethecat_colormatching.ParticularViews.*
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 import com.google.android.gms.ads.*
 import com.google.android.gms.auth.api.Auth
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.auth.api.signin.GoogleSignInResult
+import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.games.Games
@@ -240,15 +238,16 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private var RC_SIGN_IN:Int = 1
     private fun setupGamePlayAuthentication(){
         val signInOptions:GoogleSignInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN
-        googleApiClient = GoogleApiClient.Builder(this).enableAutoManage(this, this).
-        addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).addApi(Games.API).build()
+        val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(this, signInOptions)
+        val intent: Intent = googleSignInClient.signInIntent
+        startActivityForResult(intent, RC_SIGN_IN)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == 0) {
-            connectionToGooglePlayGamerServicesFailed()
-            return
-        }
+//        if (resultCode == 0) {
+//            connectionToGooglePlayGamerServicesFailed()
+//            return
+//        }
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == RC_SIGN_IN) {
             val result: GoogleSignInResult? = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
@@ -277,6 +276,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         isGooglePlayGameServicesAvailable = true
         gameNotification!!.displayYesGooglePlayGameServices()
         LeaderBoard.setupLeaderBoard()
+        val signInOptions:GoogleSignInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN
+        googleApiClient = GoogleApiClient.Builder(this).enableAutoManage(this, this).
+        addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions).addApi(Games.API).build()
     }
 
     private fun connectionToGooglePlayGamerServicesFailed() {

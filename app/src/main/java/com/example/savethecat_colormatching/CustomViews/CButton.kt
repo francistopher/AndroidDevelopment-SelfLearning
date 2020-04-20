@@ -187,7 +187,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         }
         if (grow) {
             growWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(), originalParams!!.width.toFloat())
-            growHeightAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(), originalParams!!.height.toFloat())
+            growHeightAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).height.toFloat(), originalParams!!.height.toFloat())
         } else {
             growWidthAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(), 1f)
             growHeightAnimator = ValueAnimator.ofFloat((button!!.layoutParams as LayoutParams).width.toFloat(), 1f)
@@ -308,6 +308,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         unSelectAnimatorSet!!.duration = 500
         isUnSelectRunning = true
         unSelectAnimatorSet!!.start()
+
     }
 
     fun fadeIn() {
@@ -437,7 +438,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     }
 
     private fun setShrunkParams() {
-        shrunkParams = LayoutParams(originalParams!!.x / 2, originalParams!!.y / 2, 1, 1)
+        shrunkParams = LayoutParams(1, 1,originalParams!!.x / 2, originalParams!!.y / 2)
     }
 
     private fun lightDominant() {
