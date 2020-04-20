@@ -23,6 +23,7 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
 
     companion object {
         var mouseCoinCount:Int = 0
+        var neededMouseCoinCount:Int = 0
     }
 
     init {
@@ -81,20 +82,22 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
         mouseCoinView!!.setBackgroundDrawable(shape)
     }
 
-    fun displayCount() {
-        setText(mouseCoinCount.toString())
-    }
+    private var mouseCoinValueAnimator:ValueAnimator? = null
 
-    fun increaseCount() {
-        mouseCoinCount += 1
-        displayCount()
-    }
-
-    fun decreaseCount() {
-        if (mouseCoinCount > 0) {
-            mouseCoinCount -= 1
-            displayCount()
+    fun updateCount(difference:Int) {
+        if (mouseCoinCount + difference < 0) {
+            return
         }
+        if (mouseCoinValueAnimator != null) {
+            mouseCoinValueAnimator!!.cancel()
+        }
+        mouseCoinValueAnimator = ValueAnimator.ofInt(mouseCoinCount, mouseCoinCount + difference)
+        mouseCoinValueAnimator!!.addUpdateListener {
+            setText((it.animatedValue as Int).toString())
+        }
+        mouseCoinCount += difference
+        mouseCoinValueAnimator!!.duration = 1000
+        mouseCoinValueAnimator!!.start()
     }
 
     private fun setText(text:String) {

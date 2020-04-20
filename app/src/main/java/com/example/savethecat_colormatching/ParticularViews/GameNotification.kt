@@ -158,6 +158,10 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         addToNotificationQueue(Notification.NO_GOOGLE_PLAY_GAME)
     }
 
+    fun displayNeedMoreMouseCoins() {
+        addToNotificationQueue(Notification.NEED_MOUSE_COINS)
+    }
+
     var spannableString = SpannableString("")
     private fun setNotificationDisplayed() {
         if (notificationQueue[0] == Notification.YES_GOOGLE_PLAY_GAME) {
@@ -194,6 +198,15 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
                         "${LeaderBoard.singleGameScore} Cat Saved")
             }
             imageButton!!.setBackgroundResource(R.drawable.heart)
+        } else if (notificationQueue[0] == Notification.NEED_MOUSE_COINS) {
+            spannableString = if (LeaderBoard.singleGameScore > 1) {
+                SpannableString("You need ${MCView.neededMouseCoinCount}\n" +
+                        "more Mouse Coins!!!")
+            } else {
+                SpannableString("High Score\n" +
+                        "${LeaderBoard.singleGameScore} Cat Saved")
+            }
+            imageButton!!.setBackgroundResource(R.drawable.mousecoin)
         }
 
         spannableString.setSpan(

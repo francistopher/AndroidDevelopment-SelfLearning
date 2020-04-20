@@ -4,5 +4,12 @@
     <string name="app_id">643457335425</string>
     <string name="single_leader_id">"CgkIgYGviN0SEAIQAQ"</string>
     <string name="all_leader_id">"CgkIgYGviN0SEAIQAg"</string>
-
+    <string name="breading_id">CgkIgYGviN0SEAIQAw</string>
+    <string name="taco_id">CgkIgYGviN0SEAIQBA</string>
+    <string name="egyptian_id">CgkIgYGviN0SEAIQBQ</string>
+    <string name="super_id">CgkIgYGviN0SEAIQBg</string>
+    <string name="chicken_id">CgkIgYGviN0SEAIQBw</string>
+    <string name="cool_id">CgkIgYGviN0SEAIQCA</string>
+    <string name="ninja_id">CgkIgYGviN0SEAIQCQ</string>
+    <string name="fat_id">CgkIgYGviN0SEAIQCg</string>
 </resources>

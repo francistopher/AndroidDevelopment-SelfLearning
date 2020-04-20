@@ -25,8 +25,11 @@ import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.ColorOptions
+import com.example.savethecat_colormatching.ParticularViews.MCView
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
+import com.google.android.gms.games.AchievementsClient
+import com.google.android.gms.games.Games
 import java.util.*
 import kotlin.math.abs
 
@@ -61,7 +64,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             Cat.TACO to 0, Cat.EGYPTIAN to 0, Cat.SUPER to 0, Cat.CHICKEN to 0, Cat.COOL to 0,
             Cat.NINJA to 0, Cat.FAT to 0)
         var displayedCatIndex:Int = -1
-        private var catPrices:MutableList<Int> = mutableListOf(0, 420, 420, 420, 420,
+        private var catPrices:MutableList<Int> = mutableListOf(0, 1, 420, 420, 420,
             420, 420, 420, 420)
         private var catNames:MutableList<String> = mutableListOf("Standard Cat", "Cat Breading",
             "Taco Cat", "Egyptian Cat", "Super Cat", "Chicken Cat", "Cool Cat", "Ninja Cat", "Fat Cat")
@@ -92,6 +95,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var controlButtonHiddenY:Int = 0
     private var mouseCoinHiddenY:Int = 0
 
+    private var achievementsClient:AchievementsClient? = null
+
     init {
         this.moreCatsButton = imageButton
         this.moreCatsButton!!.layoutParams = params
@@ -112,6 +117,11 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setupAlertDialog()
         setStyle()
         translate(false, 0f)
+    }
+
+    fun setupAchievementsClient() {
+        achievementsClient = Games.getAchievementsClient(MainActivity.staticSelf!!,
+            MainActivity.signedInAccount!!)
     }
 
     fun bringToFront() {
@@ -453,18 +463,59 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         myCatsDict[presentationCat!!.cat] = -1
         purchaseDialog!!.hide()
         setControlButtonAppearance()
+        unlockAchievement()
+    }
+
+    private fun getAchievement():String {
+        var selectedAchievement = ""
+        when (presentationCat!!.cat) {
+            Cat.BREADING -> {
+                selectedAchievement = MainActivity.staticSelf!!.getString(R.string.breading_id)
+            }
+            Cat.TACO -> {
+                selectedAchievement = MainActivity.staticSelf!!.getString(R.string.taco_id)
+            }
+            Cat.EGYPTIAN -> {
+                selectedAchievement = MainActivity.staticSelf!!.getString(R.string.egyptian_id)
+            }
+            Cat.SUPER -> {
+                selectedAchievement = MainActivity.staticSelf!!.getString(R.string.super_id)
+            }
+            Cat.CHICKEN -> {
+                selectedAchievement = MainActivity.staticSelf!!.getString(R.string.chicken_id)
+            }
+            Cat.COOL -> {
+                selectedAchievement = MainActivity.staticSelf!!.getString(R.string.cool_id)
+            }
+            Cat.NINJA -> {
+                selectedAchievement = MainActivity.staticSelf!!.getString(R.string.ninja_id)
+            }
+            Cat.FAT -> {
+                selectedAchievement = MainActivity.staticSelf!!.getString(R.string.fat_id)
+            }
+        }
+        return selectedAchievement
+    }
+
+    private fun unlockAchievement() {
+        achievementsClient!!.unlock(getAchievement())
     }
 
     private fun controlButtonSelector() {
         if (controlButton!!.getText()!!.contains("Get for")) {
-            val spannableString = SpannableString("Do you want to buy " +
-                    "${catNames[displayedCatIndex]}\n for " +
-                    "${catPrices[displayedCatIndex]} Mouse Coins")
-            spannableString.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                0, spannableString.length, 0)
-            purchaseDialog!!.setMessage(spannableString)
-            AudioController.coinEarned()
-            purchaseDialog!!.show()
+            if (MCView.mouseCoinCount < catPrices[displayedCatIndex]) {
+                MCView.neededMouseCoinCount = catPrices[displayedCatIndex] - MCView.mouseCoinCount
+                MainActivity.gameNotification!!.displayNeedMoreMouseCoins()
+            } else {
+                val spannableString = SpannableString("Do you want to buy " +
+                        "${catNames[displayedCatIndex]}\n for " +
+                        "${catPrices[displayedCatIndex]} Mouse Coins")
+                spannableString.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                    0, spannableString.length, 0)
+                purchaseDialog!!.setMessage(spannableString)
+                AudioController.coinEarned()
+                purchaseDialog!!.show()
+            }
         } else if (controlButton!!.getText().toString() == "Select") {
             for ((cat, state) in myCatsDict) {
                 if (cat == presentationCat!!.cat) {
@@ -626,7 +677,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private fun setupSelector() {
         moreCatsButton!!.setOnClickListener {
-            translate(true, 0.5f)
+            if (MainActivity.isGooglePlayGameServicesAvailable) {
+                translate(true, 0.5f)
+            }
         }
     }
 

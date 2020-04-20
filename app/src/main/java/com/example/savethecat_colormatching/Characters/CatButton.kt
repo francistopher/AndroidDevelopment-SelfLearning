@@ -717,7 +717,7 @@ class MouseCoin(spawnParams:LayoutParams, targetParams:LayoutParams, isEarned:Bo
         animatorSet!!.doOnEnd {
             MainActivity.rootLayout!!.removeView(mouseCoin!!)
             if (isEarned) {
-                MainActivity.mouseCoinView!!.increaseCount()
+                MainActivity.mouseCoinView!!.updateCount(1)
                 AudioController.coinEarned()
             }
         }

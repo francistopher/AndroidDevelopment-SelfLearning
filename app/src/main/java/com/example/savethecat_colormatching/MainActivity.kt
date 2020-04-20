@@ -12,11 +12,8 @@ import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.WindowManager
-import android.widget.AbsoluteLayout
+import android.widget.*
 import android.widget.AbsoluteLayout.LayoutParams
-import android.widget.Button
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Characters.Enemies
 import com.example.savethecat_colormatching.Controllers.ARType
@@ -29,6 +26,7 @@ import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
+import com.google.android.gms.drive.Drive
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.Player
 import com.google.android.gms.games.PlayersClient
@@ -189,9 +187,20 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
         if (isConnected) {
+            if (settingsButton != null && settingsButton!!.getThis().alpha > 0f) {
+                adView!!.alpha = 1f
+                noInternetAdView!!.alpha = 0f
+            }
+            if (adView != null) {
+                adView!!.loadAd(adRequest)
+            }
             isInternetReachable = true
             gameNotification!!.displayYesInternet()
         } else {
+            if (settingsButton != null && settingsButton!!.getThis().alpha > 0f) {
+                adView!!.alpha = 0f
+                noInternetAdView!!.alpha = 1f
+            }
             isInternetReachable = false
             gameNotification!!.displayNoInternet()
         }
@@ -238,7 +247,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private var RC_SIGN_IN:Int = 1
     private var signInOptions:GoogleSignInOptions? = null
     private fun setupGamePlayAuthentication(){
-        signInOptions = GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN
+        signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                .requestScopes(Drive.SCOPE_APPFOLDER)
+                .build()
         val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(this, signInOptions!!)
         val intent: Intent = googleSignInClient.signInIntent
         startActivityForResult(intent, RC_SIGN_IN)
@@ -275,6 +286,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         googleApiClient = GoogleApiClient.Builder(this).enableAutoManage(this, this).
         addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions!!).addApi(Games.API).build()
         LeaderBoard.setupLeaderBoard()
+        SettingsMenu.moreCatsButton!!.setupAchievementsClient()
     }
 
     private fun connectionToGooglePlayGamerServicesFailed() {
@@ -329,7 +341,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                         opponentLivesMeter!!.fadeIn()
                         glovePointer!!.sway()
                         enemies!!.sway()
-                        adView!!.alpha = 1f
+                        if (isInternetReachable) {
+                            adView!!.alpha = 1f
+                            noInternetAdView!!.alpha = 0f
+                        } else {
+                            adView!!.alpha = 0f
+                            noInternetAdView!!.alpha = 1f
+                        }
                     }
                 }
             }, 2000)
@@ -430,7 +448,21 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private var adView:AdView? = null
     private var adRequest:AdRequest? = null
+    private var noInternetAdView: ImageView? = null
     private fun setupBannerAds() {
+        fun setupNoInternetAdView(width:Int, height:Int) {
+            noInternetAdView = ImageView(this)
+            noInternetAdView!!.layoutParams = LayoutParams(width, height, 0,
+                (dHeight - (height * 0.9)).toInt())
+            if (isThemeDark) {
+                noInternetAdView!!.setImageResource(R.drawable.darknointernetbanner)
+            } else {
+                noInternetAdView!!.setImageResource(R.drawable.lightnointernetbanner)
+            }
+            noInternetAdView!!.scaleType = ImageView.ScaleType.CENTER_CROP
+            rootLayout!!.addView(noInternetAdView!!)
+            noInternetAdView!!.alpha = 0f
+        }
         fun getAdaptiveBannerAdSize():AdSize {
             val display = windowManager.defaultDisplay
             val outMetrics = DisplayMetrics()
@@ -443,14 +475,16 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             val adWidth = (adWidthPixels / density).toInt()
             return AdSize.getCurrentOrientationBannerAdSizeWithWidth(this, adWidth)
         }
+        val bannerAdSize:AdSize = getAdaptiveBannerAdSize()
         adView = AdView(this)
         adView!!.adUnitId = "ca-app-pub-3940256099942544/6300978111"
-        adView!!.adSize = getAdaptiveBannerAdSize()
+        adView!!.adSize = bannerAdSize
         adRequest = AdRequest.Builder().build()
         adView!!.loadAd(adRequest)
         rootLayout!!.addView(adView)
-        adView!!.translationY = (dHeight - (getAdaptiveBannerAdSize().height * 2)).toFloat()
+        adView!!.translationY = (dHeight - (bannerAdSize.height * 2)).toFloat()
         adView!!.alpha = 0f
+        setupNoInternetAdView((bannerAdSize.width * 2), (bannerAdSize.height * 2))
     }
 
     private fun setupBoardGame() {
@@ -510,7 +544,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         mouseCoinView = MCView(textView = TextView(rootView!!.context), parentLayout = rootLayout!!,
         params = attackMeter!!.getOriginalParams())
         mouseCoinView!!.setTextSize(mouseCoinView!!.getOriginalParams().height * 0.2f)
-        mouseCoinView!!.displayCount()
+        mouseCoinView!!.updateCount(0)
     }
 
     private fun setupLivesMeters() {

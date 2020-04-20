@@ -77,8 +77,7 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
         }
 
         private fun getSingleGameScore() {
-            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(
-                MainActivity.staticSelf!!.getString(R.string.single_leader_id),
+            leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(MainActivity.staticSelf!!.getString(R.string.single_leader_id),
                 LeaderboardVariant.TIME_SPAN_ALL_TIME,
                 LeaderboardVariant.COLLECTION_PUBLIC).addOnSuccessListener {
                 if (it != null) {
