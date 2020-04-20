@@ -80,8 +80,13 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
     private fun setupSelector() {
         this.leaderBoardButton!!.setOnClickListener {
             if (MainActivity.isGooglePlayGameServicesAvailable) {
-                MainActivity.staticSelf!!.startActivityForResult(Games.Leaderboards.
-                getAllLeaderboardsIntent(MainActivity.googleApiClient!!), 2)
+                try{
+                    MainActivity.staticSelf!!.startActivityForResult(Games.Leaderboards.
+                    getAllLeaderboardsIntent(MainActivity.googleApiClient!!), 2)
+                } catch (e: Exception) {
+                    MainActivity.isGooglePlayGameServicesAvailable = false
+                    MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
+                }
             } else {
                 MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
             }
