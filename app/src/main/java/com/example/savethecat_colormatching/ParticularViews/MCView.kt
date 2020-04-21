@@ -12,6 +12,7 @@ import android.widget.TextView
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
+import kotlin.math.abs
 
 class MCView(textView: TextView, parentLayout: AbsoluteLayout,
              params: LayoutParams) {
@@ -92,7 +93,7 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
     fun submitMouseCoinCount() {
         MainActivity.gameSPEditor!!.putInt("mouseCoins", mouseCoinCount)
         if (!MainActivity.gameSPEditor!!.commit()) {
-
+            MainActivity.gameNotification!!.displayFirebaseTrouble()
         }
     }
 
@@ -100,6 +101,12 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
         if (mouseCoinCount + difference < 0) {
             return
         }
+        if (abs(difference) == 1) {
+            mouseCoinCount += difference
+            setText(mouseCoinCount.toString())
+            return
+        }
+
         if (mouseCoinValueAnimator != null) {
             mouseCoinValueAnimator!!.cancel()
         }

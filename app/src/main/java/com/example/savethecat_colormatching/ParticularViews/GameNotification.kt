@@ -162,7 +162,7 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         addToNotificationQueue(Notification.NEED_MOUSE_COINS)
     }
 
-    fun displayFireBaseConnectionTrouble() {
+    fun displayFirebaseTrouble() {
         addToNotificationQueue(Notification.FIREBASE_TROUBLE)
     }
 

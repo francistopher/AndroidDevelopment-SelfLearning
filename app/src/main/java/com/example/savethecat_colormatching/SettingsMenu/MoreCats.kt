@@ -123,7 +123,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         if (data != null) {
              getMyCatsDictFromData(data)
         } else {
-           MainActivity.gameNotification!!.displayFireBaseConnectionTrouble()
+           MainActivity.gameNotification!!.displayFirebaseTrouble()
         }
     }
 
