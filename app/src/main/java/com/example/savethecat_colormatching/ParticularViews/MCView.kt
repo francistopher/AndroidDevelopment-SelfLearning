@@ -90,14 +90,14 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
     }
 
     fun submitMouseCoinCount() {
-        if (!MainActivity.isInternetReachable) {
-            MainActivity.gameNotification!!.displayNoInternet()
-            MainActivity.gameNotification!!.displayFirebaseTrouble()
-        } else {
+        if (MainActivity.isInternetReachable) {
             MainActivity.gameSPEditor!!.putInt("mouseCoins", mouseCoinCount)
             if (!MainActivity.gameSPEditor!!.commit()) {
                 MainActivity.gameNotification!!.displayFirebaseTrouble()
             }
+        } else {
+            MainActivity.gameNotification!!.displayNoInternet()
+            MainActivity.gameNotification!!.displayFirebaseTrouble()
         }
     }
 

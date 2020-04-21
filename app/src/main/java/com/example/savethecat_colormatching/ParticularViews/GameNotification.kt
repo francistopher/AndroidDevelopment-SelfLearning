@@ -166,10 +166,14 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         addToNotificationQueue(Notification.FIREBASE_TROUBLE)
     }
 
+    fun displayFirebaseConnected() {
+        addToNotificationQueue(Notification.FIREBASE_CONNECTED)
+    }
+
     var spannableString = SpannableString("")
     private fun setNotificationDisplayed() {
         if (notificationQueue[0] == Notification.YES_GOOGLE_PLAY_GAME) {
-            spannableString = SpannableString("Google Play\nGame Services\n" +
+            spannableString = SpannableString("Google Play Game\n Services " +
                     "are available!")
             imageButton!!.setBackgroundResource(R.drawable.yesgoogleplaygame)
         } else if (notificationQueue[0] == Notification.YES_INTERNET) {
@@ -208,6 +212,10 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
             imageButton!!.setBackgroundResource(R.drawable.mousecoin)
         } else if (notificationQueue[0] == Notification.FIREBASE_TROUBLE) {
             spannableString = SpannableString("Unable to connect\nto Firebase to " +
+                    "save\nGame Data!!!")
+            imageButton!!.setBackgroundResource(R.drawable.nofirebase)
+        } else if (notificationQueue[0] == Notification.FIREBASE_CONNECTED) {
+            spannableString = SpannableString("Able to connect\nto Firebase to " +
                     "save\nGame Data!!!")
             imageButton!!.setBackgroundResource(R.drawable.firebase)
         }

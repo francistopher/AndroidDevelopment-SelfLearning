@@ -438,7 +438,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     }
 
     private fun setShrunkParams() {
-        shrunkParams = LayoutParams(1, 1,originalParams!!.x / 2, originalParams!!.y / 2)
+        shrunkParams = LayoutParams(1, 0,originalParams!!.x / 2, originalParams!!.y / 2)
     }
 
     private fun lightDominant() {

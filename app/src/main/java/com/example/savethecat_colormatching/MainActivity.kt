@@ -21,6 +21,7 @@ import com.example.savethecat_colormatching.Characters.Enemies
 import com.example.savethecat_colormatching.Controllers.ARType
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
+import com.example.savethecat_colormatching.Controllers.MultiplayerController
 import com.example.savethecat_colormatching.ParticularViews.*
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 import com.google.android.gms.ads.*
@@ -32,6 +33,7 @@ import com.google.android.gms.drive.Drive
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.Player
 import com.google.android.gms.games.PlayersClient
+import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 
 
@@ -80,6 +82,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
         private var gameSPData:SharedPreferences? = null
         var gameSPEditor:SharedPreferences.Editor? = null
+
+        // Multi Player handler
+        var multiPlayerController: MultiplayerController? = null
+        var database:FirebaseDatabase? = null
 
     }
 
@@ -207,7 +213,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                 mouseCoinView!!.startMouseCoinCount(gameSPData!!.getInt("mouseCoins", 0))
                 SettingsMenu.moreCatsButton!!.loadMyCatsData(
                     gameSPData!!.getString("myCats", "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"))
+                gameNotification!!.displayFirebaseConnected()
             }
+            setupMultiPlayerController()
         } else {
             if (settingsButton != null && settingsButton!!.getThis().alpha > 0f) {
                 adView!!.alpha = 0f
@@ -220,6 +228,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                 mouseCoinView!!.startMouseCoinCount(0)
                 SettingsMenu.moreCatsButton!!.loadMyCatsData(
                     gameSPData!!.getString("myCats", null))
+                gameNotification!!.displayFirebaseTrouble()
             }
         }
     }
@@ -266,8 +275,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private var signInOptions:GoogleSignInOptions? = null
     private fun setupGamePlayAuthentication(){
         signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                .requestScopes(Drive.SCOPE_APPFOLDER)
-                .build()
+            .requestIdToken(getString(R.string.web_client_id))
+            .requestScopes(Drive.SCOPE_APPFOLDER)
+            .requestEmail()
+            .build()
         val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(this, signInOptions!!)
         val intent: Intent = googleSignInClient.signInIntent
         startActivityForResult(intent, RC_SIGN_IN)
@@ -282,9 +293,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                 val signInAccount:GoogleSignInAccount? = result.signInAccount
                 val playersClient:PlayersClient = Games.getPlayersClient(this, signInAccount!!)
                 val player = playersClient.currentPlayer
-                player.addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        localPlayer = it.result!!
+                player.addOnCompleteListener {task ->
+                    if (task.isSuccessful) {
+                        localPlayer = task.result!!
                         signedInAccount = signInAccount
                         connectionToGooglePlayGamerServicesSucceeded()
                     } else {
@@ -306,6 +317,18 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         LeaderBoard.setupLeaderBoard()
         SettingsMenu.moreCatsButton!!.setupAchievementsClient()
         setupSharedPreferences()
+        if (multiPlayerController != null) {
+            multiPlayerController!!.setPlayerID(localPlayer!!.playerId)
+        }
+    }
+
+    private fun setupMultiPlayerController() {
+        if (multiPlayerController == null) {
+            multiPlayerController = MultiplayerController()
+            if (localPlayer != null) {
+                multiPlayerController!!.setPlayerID(localPlayer!!.playerId)
+            }
+        }
     }
 
     private fun setupSharedPreferences() {
@@ -321,6 +344,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                 gameSPData!!.getString("myCats", null))
         }
     }
+
+
 
     private fun connectionToGooglePlayGamerServicesFailed() {
         isCatDismissed = true

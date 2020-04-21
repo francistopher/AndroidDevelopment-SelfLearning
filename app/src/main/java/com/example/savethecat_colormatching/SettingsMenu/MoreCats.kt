@@ -20,7 +20,6 @@ import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Characters.Cat
 import com.example.savethecat_colormatching.Characters.PCatButton
-import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
@@ -176,6 +175,33 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             }
         }
         return tempCatType
+    }
+
+    private fun saveMyCatsData() {
+        tempMyCats = ""
+        sectionMyCats = ""
+        for ((cats, state) in myCatsDict) {
+            sectionMyCats = cats.toString()
+            tempMyCats += sectionMyCats[0].toLowerCase()
+            tempMyCats += sectionMyCats[(sectionMyCats.length) / 2].toLowerCase()
+            tempMyCats += sectionMyCats[sectionMyCats.length - 1].toLowerCase()
+            if (state > 0) {
+                tempMyCats += "+$state"
+            } else if (state < 0) {
+                tempMyCats += state.toString()
+            } else {
+                tempMyCats += "00"
+            }
+        }
+        if (!MainActivity.isInternetReachable) {
+            MainActivity.gameSPEditor!!.putString("myCats", tempMyCats)
+            if (!MainActivity.gameSPEditor!!.commit()) {
+                MainActivity.gameNotification!!.displayFirebaseTrouble()
+            }
+        } else {
+            MainActivity.gameNotification!!.displayNoInternet()
+            MainActivity.gameNotification!!.displayFirebaseTrouble()
+        }
     }
 
     fun setupAchievementsClient() {
@@ -523,6 +549,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         purchaseDialog!!.hide()
         setControlButtonAppearance()
         unlockAchievement()
+        saveMyCatsData()
     }
 
     private fun getAchievement():String {
@@ -562,18 +589,27 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private fun controlButtonSelector() {
         if (controlButton!!.getText()!!.contains("Get for")) {
-            if (MCView.mouseCoinCount < catPrices[displayedCatIndex]) {
-                MCView.neededMouseCoinCount = catPrices[displayedCatIndex] - MCView.mouseCoinCount
-                MainActivity.gameNotification!!.displayNeedMoreMouseCoins()
+            if (MainActivity.isInternetReachable) {
+                if (MCView.mouseCoinCount < catPrices[displayedCatIndex]) {
+                    MCView.neededMouseCoinCount =
+                        catPrices[displayedCatIndex] - MCView.mouseCoinCount
+                    MainActivity.gameNotification!!.displayNeedMoreMouseCoins()
+                } else {
+                    val spannableString = SpannableString(
+                        "Do you want to buy " +
+                                "${catNames[displayedCatIndex]}\n for " +
+                                "${catPrices[displayedCatIndex]} Mouse Coins"
+                    )
+                    spannableString.setSpan(
+                        AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+                        0, spannableString.length, 0
+                    )
+                    purchaseDialog!!.setMessage(spannableString)
+                    purchaseDialog!!.show()
+                }
             } else {
-                val spannableString = SpannableString("Do you want to buy " +
-                        "${catNames[displayedCatIndex]}\n for " +
-                        "${catPrices[displayedCatIndex]} Mouse Coins")
-                spannableString.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
-                    0, spannableString.length, 0)
-                purchaseDialog!!.setMessage(spannableString)
-                AudioController.coinEarned()
-                purchaseDialog!!.show()
+                MainActivity.gameNotification!!.displayNoInternet()
+                MainActivity.gameNotification!!.displayFirebaseTrouble()
             }
         } else if (controlButton!!.getText().toString() == "Select") {
             for ((cat, state) in myCatsDict) {
@@ -585,6 +621,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             }
             setControlButtonAppearance()
             MainActivity.boardGame!!.getCatButtons().updateCatType(presentationCat!!.cat)
+            saveMyCatsData()
         }
     }
 
@@ -739,6 +776,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             if (MainActivity.isGooglePlayGameServicesAvailable) {
                 translate(true, 0.5f)
             }
+            saveMyCatsData()
         }
     }
 

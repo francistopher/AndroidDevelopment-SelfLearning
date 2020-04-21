@@ -8,5 +8,6 @@ enum class Notification {
     NEW_HIGH_SCORE,
     HIGH_SCORE,
     NEED_MOUSE_COINS,
-    FIREBASE_TROUBLE
+    FIREBASE_TROUBLE,
+    FIREBASE_CONNECTED
 }
