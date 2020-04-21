@@ -33,7 +33,6 @@ import com.google.android.gms.drive.Drive
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.Player
 import com.google.android.gms.games.PlayersClient
-import com.google.firebase.database.FirebaseDatabase
 import java.util.*
 
 
@@ -85,7 +84,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
         // Multi Player handler
         var multiPlayerController: MultiplayerController? = null
-        var database:FirebaseDatabase? = null
 
     }
 
@@ -344,8 +342,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                 gameSPData!!.getString("myCats", null))
         }
     }
-
-
 
     private fun connectionToGooglePlayGamerServicesFailed() {
         isCatDismissed = true
