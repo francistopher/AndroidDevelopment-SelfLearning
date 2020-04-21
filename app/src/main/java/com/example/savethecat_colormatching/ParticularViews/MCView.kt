@@ -86,35 +86,38 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
     private var mouseCoinValueAnimator:ValueAnimator? = null
 
     fun startMouseCoinCount(startingCount:Int) {
-        mouseCoinCount = 0
         updateCount(startingCount)
     }
 
     fun submitMouseCoinCount() {
-        MainActivity.gameSPEditor!!.putInt("mouseCoins", mouseCoinCount)
-        if (!MainActivity.gameSPEditor!!.commit()) {
+        if (!MainActivity.isInternetReachable) {
+            MainActivity.gameNotification!!.displayNoInternet()
             MainActivity.gameNotification!!.displayFirebaseTrouble()
+        } else {
+            MainActivity.gameSPEditor!!.putInt("mouseCoins", mouseCoinCount)
+            if (!MainActivity.gameSPEditor!!.commit()) {
+                MainActivity.gameNotification!!.displayFirebaseTrouble()
+            }
         }
     }
 
-    fun updateCount(difference:Int) {
-        if (mouseCoinCount + difference < 0) {
+    fun updateCount(newMouseCoinCount:Int) {
+        if (abs(newMouseCoinCount - mouseCoinCount) == 1) {
+            setText(newMouseCoinCount.toString())
             return
         }
-        if (abs(difference) == 1) {
-            mouseCoinCount += difference
-            setText(mouseCoinCount.toString())
-            return
-        }
-
         if (mouseCoinValueAnimator != null) {
             mouseCoinValueAnimator!!.cancel()
         }
-        mouseCoinValueAnimator = ValueAnimator.ofInt(mouseCoinCount, mouseCoinCount + difference)
-        mouseCoinValueAnimator!!.addUpdateListener {
-            setText((it.animatedValue as Int).toString())
+        if (newMouseCoinCount < 0) {
+            mouseCoinValueAnimator = ValueAnimator.ofInt(mouseCoinCount, 0)
+        } else {
+            mouseCoinValueAnimator = ValueAnimator.ofInt(mouseCoinCount, newMouseCoinCount)
         }
-        mouseCoinCount += difference
+        mouseCoinValueAnimator!!.addUpdateListener {
+            mouseCoinCount = (it.animatedValue as Int)
+            setText(mouseCoinCount.toString())
+        }
         mouseCoinValueAnimator!!.duration = 1000
         mouseCoinValueAnimator!!.start()
     }

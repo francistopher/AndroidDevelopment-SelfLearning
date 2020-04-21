@@ -202,6 +202,12 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             }
             isInternetReachable = true
             gameNotification!!.displayYesInternet()
+            // Load game data
+            if (gameSPData != null) {
+                mouseCoinView!!.startMouseCoinCount(gameSPData!!.getInt("mouseCoins", 0))
+                SettingsMenu.moreCatsButton!!.loadMyCatsData(
+                    gameSPData!!.getString("myCats", "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"))
+            }
         } else {
             if (settingsButton != null && settingsButton!!.getThis().alpha > 0f) {
                 adView!!.alpha = 0f
@@ -209,6 +215,12 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             }
             isInternetReachable = false
             gameNotification!!.displayNoInternet()
+            // Clear game data
+            if (gameSPData != null) {
+                mouseCoinView!!.startMouseCoinCount(0)
+                SettingsMenu.moreCatsButton!!.loadMyCatsData(
+                    gameSPData!!.getString("myCats", null))
+            }
         }
     }
 
@@ -300,8 +312,14 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         gameSPData = getSharedPreferences("SVTHCT_SP${localPlayer!!.playerId}", Context.MODE_PRIVATE)
         gameSPEditor = gameSPData!!.edit()
         mouseCoinView!!.startMouseCoinCount(gameSPData!!.getInt("mouseCoins", 0))
-        SettingsMenu.moreCatsButton!!.loadMyCatsData(gameSPData!!.getString("myCats",
-            "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"))
+        if (isInternetReachable) {
+            SettingsMenu.moreCatsButton!!.loadMyCatsData(gameSPData!!.getString("myCats",
+                "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"))
+        } else {
+            mouseCoinView!!.startMouseCoinCount(0)
+            SettingsMenu.moreCatsButton!!.loadMyCatsData(
+                gameSPData!!.getString("myCats", null))
+        }
     }
 
     private fun connectionToGooglePlayGamerServicesFailed() {

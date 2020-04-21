@@ -16,6 +16,7 @@ import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.ParticularViews.MCView
 import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
 import com.example.savethecat_colormatching.R
 import kotlin.math.cos
@@ -717,7 +718,7 @@ class MouseCoin(spawnParams:LayoutParams, targetParams:LayoutParams, isEarned:Bo
         animatorSet!!.doOnEnd {
             MainActivity.rootLayout!!.removeView(mouseCoin!!)
             if (isEarned) {
-                MainActivity.mouseCoinView!!.updateCount(1)
+                MainActivity.mouseCoinView!!.updateCount(MCView.mouseCoinCount + 1)
                 AudioController.coinEarned()
             }
         }
