@@ -162,10 +162,14 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         addToNotificationQueue(Notification.NEED_MOUSE_COINS)
     }
 
+    fun displayFireBaseConnectionTrouble() {
+        addToNotificationQueue(Notification.FIREBASE_TROUBLE)
+    }
+
     var spannableString = SpannableString("")
     private fun setNotificationDisplayed() {
         if (notificationQueue[0] == Notification.YES_GOOGLE_PLAY_GAME) {
-            spannableString = SpannableString("Google Play Game Services\n" +
+            spannableString = SpannableString("Google Play\nGame Services\n" +
                     "are available!")
             imageButton!!.setBackgroundResource(R.drawable.yesgoogleplaygame)
         } else if (notificationQueue[0] == Notification.YES_INTERNET) {
@@ -199,14 +203,13 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
             }
             imageButton!!.setBackgroundResource(R.drawable.heart)
         } else if (notificationQueue[0] == Notification.NEED_MOUSE_COINS) {
-            spannableString = if (LeaderBoard.singleGameScore > 1) {
-                SpannableString("You need ${MCView.neededMouseCoinCount}\n" +
+            spannableString = SpannableString("You need ${MCView.neededMouseCoinCount}\n" +
                         "more Mouse Coins!!!")
-            } else {
-                SpannableString("High Score\n" +
-                        "${LeaderBoard.singleGameScore} Cat Saved")
-            }
             imageButton!!.setBackgroundResource(R.drawable.mousecoin)
+        } else if (notificationQueue[0] == Notification.FIREBASE_TROUBLE) {
+            spannableString = SpannableString("Unable to connect\nto Firebase to " +
+                    "save\nGame Data!!!")
+            imageButton!!.setBackgroundResource(R.drawable.firebase)
         }
 
         spannableString.setSpan(

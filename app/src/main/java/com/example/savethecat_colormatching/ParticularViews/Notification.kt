@@ -7,5 +7,6 @@ enum class Notification {
     YES_GOOGLE_PLAY_GAME,
     NEW_HIGH_SCORE,
     HIGH_SCORE,
-    NEED_MOUSE_COINS
+    NEED_MOUSE_COINS,
+    FIREBASE_TROUBLE
 }

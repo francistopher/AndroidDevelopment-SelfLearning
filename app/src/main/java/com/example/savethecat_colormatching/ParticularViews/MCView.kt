@@ -14,7 +14,7 @@ import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 
 class MCView(textView: TextView, parentLayout: AbsoluteLayout,
-             params: AbsoluteLayout.LayoutParams) {
+             params: LayoutParams) {
 
     private var originalParams:LayoutParams? = null
     private var mouseCoinView:TextView? = null
@@ -83,6 +83,18 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
     }
 
     private var mouseCoinValueAnimator:ValueAnimator? = null
+
+    fun startMouseCoinCount(startingCount:Int) {
+        mouseCoinCount = 0
+        updateCount(startingCount)
+    }
+
+    fun submitMouseCoinCount() {
+        MainActivity.gameSPEditor!!.putInt("mouseCoins", mouseCoinCount)
+        if (!MainActivity.gameSPEditor!!.commit()) {
+
+        }
+    }
 
     fun updateCount(difference:Int) {
         if (mouseCoinCount + difference < 0) {

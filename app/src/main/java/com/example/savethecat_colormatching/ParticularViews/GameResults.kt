@@ -221,8 +221,12 @@ class GameResults(resultsView: View,
         watchAdButton!!.setText("Watch Short Ad to Win ····· s!", false)
         watchAdButton!!.setTextSize(watchAdButton!!.getOriginalParams().height * 0.2f)
         watchAdButton!!.getThis().setOnClickListener {
-            if (mInterstitialAd!!.isLoaded) {
-                mInterstitialAd!!.show()
+            if (MainActivity.isInternetReachable) {
+                if (mInterstitialAd!!.isLoaded) {
+                    mInterstitialAd!!.show()
+                }
+            } else {
+                MainActivity.gameNotification!!.displayNoInternet()
             }
         }
         watchAdButton!!.getThis().isEnabled = false

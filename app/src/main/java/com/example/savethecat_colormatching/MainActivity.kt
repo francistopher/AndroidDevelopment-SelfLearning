@@ -1,8 +1,10 @@
 package com.example.savethecat_colormatching
 
 import Reachability
+import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -75,6 +77,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var localPlayer:Player? = null
         var signedInAccount:GoogleSignInAccount? = null
         var googleApiClient:GoogleApiClient? = null
+
+        private var gameSPData:SharedPreferences? = null
+        var gameSPEditor:SharedPreferences.Editor? = null
+
     }
 
     var introAnimation:IntroView? = null
@@ -261,7 +267,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             val result: GoogleSignInResult? = Auth.GoogleSignInApi.getSignInResultFromIntent(data)
             if (result!!.isSuccess) {
                 // The signed in account is stored in the result.
-                val signInAccount: GoogleSignInAccount? = result.signInAccount
+                val signInAccount:GoogleSignInAccount? = result.signInAccount
                 val playersClient:PlayersClient = Games.getPlayersClient(this, signInAccount!!)
                 val player = playersClient.currentPlayer
                 player.addOnCompleteListener {
@@ -287,6 +293,15 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions!!).addApi(Games.API).build()
         LeaderBoard.setupLeaderBoard()
         SettingsMenu.moreCatsButton!!.setupAchievementsClient()
+        setupSharedPreferences()
+    }
+
+    private fun setupSharedPreferences() {
+        gameSPData = getSharedPreferences("SVTHCT_SP${localPlayer!!.playerId}", Context.MODE_PRIVATE)
+        gameSPEditor = gameSPData!!.edit()
+        mouseCoinView!!.startMouseCoinCount(gameSPData!!.getInt("mouseCoins", 0))
+        SettingsMenu.moreCatsButton!!.loadMyCatsData(gameSPData!!.getString("myCats",
+            "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"))
     }
 
     private fun connectionToGooglePlayGamerServicesFailed() {

@@ -119,6 +119,65 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         translate(false, 0f)
     }
 
+    fun loadMyCatsData(data:String?) {
+        if (data != null) {
+             getMyCatsDictFromData(data)
+        } else {
+           MainActivity.gameNotification!!.displayFireBaseConnectionTrouble()
+        }
+    }
+
+    private var tempMyCatsDict:MutableMap<Cat, Int>? = null
+    private var tempMyCats:String = ""
+    private var sectionMyCats:String = ""
+    private fun getMyCatsDictFromData(data:String) {
+        tempMyCatsDict = mutableMapOf()
+        tempMyCats = data + ""
+        while (tempMyCats.count() > 0) {
+            sectionMyCats = tempMyCats.substring(0, 5)
+            updateCatValue(getCatType(sectionMyCats.substring(0, 3)), sectionMyCats.substring(3, 5))
+            tempMyCats = tempMyCats.substring(5, tempMyCats.count())
+        }
+    }
+
+    private fun updateCatValue(cat:Cat, stringValue:String) {
+        myCatsDict[cat] = stringValue.toInt()
+    }
+
+    private var tempCatType:Cat = Cat.STANDARD
+    private fun getCatType(catType:String):Cat {
+        when (catType) {
+            "sdd" -> {
+                tempCatType = Cat.STANDARD
+            }
+            "bdg" -> {
+                tempCatType =  Cat.BREADING
+            }
+            "tco" -> {
+                tempCatType =  Cat.TACO
+            }
+            "etn" -> {
+                tempCatType =  Cat.EGYPTIAN
+            }
+            "spR" -> {
+                tempCatType =  Cat.SUPER
+            }
+            "ccn" -> {
+                tempCatType =  Cat.CHICKEN
+            }
+            "col" -> {
+                tempCatType =  Cat.COOL
+            }
+            "nna" -> {
+                tempCatType =  Cat.NINJA
+            }
+            "fat" -> {
+                tempCatType =  Cat.FAT
+            }
+        }
+        return tempCatType
+    }
+
     fun setupAchievementsClient() {
         achievementsClient = Games.getAchievementsClient(MainActivity.staticSelf!!,
             MainActivity.signedInAccount!!)

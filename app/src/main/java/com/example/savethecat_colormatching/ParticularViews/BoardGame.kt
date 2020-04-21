@@ -263,6 +263,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         buildGame()
         catButtons!!.getCurrentCatButtons()[0].fade(false, true,
             0f, 0f)
+        // Submit mouse coin count
+        MainActivity.mouseCoinView!!.submitMouseCoinCount()
     }
 
     private fun unveilHeaven() {
