@@ -360,6 +360,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                         boardGame!!.setupSinglePlayerButton()
                         boardGame!!.setupTwoPlayerButton()
                         boardGame!!.buildGame()
+                        boardGame!!.getCatButtons().updateCatType(SettingsMenu.moreCatsButton!!.getSelectedCat())
                         mouseCoinView!!.fadeIn()
                         myLivesMeter!!.fadeIn()
                         opponentLivesMeter!!.fadeIn()

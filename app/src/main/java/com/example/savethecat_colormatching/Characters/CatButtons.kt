@@ -1,6 +1,7 @@
 package com.example.savethecat_colormatching.Characters
 
 import android.graphics.Color
+import android.util.Log
 import android.widget.AbsoluteLayout
 import android.widget.ImageButton
 
@@ -130,6 +131,7 @@ class CatButtons {
 
     fun updateCatType(cat: Cat) {
         for (catButton in currentCatButtons!!) {
+            Log.i("GATO", cat.toString())
             catButton.cat = cat
             catButton.setStyle()
         }

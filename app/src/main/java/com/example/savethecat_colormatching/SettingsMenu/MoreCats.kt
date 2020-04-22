@@ -63,7 +63,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             Cat.TACO to 0, Cat.EGYPTIAN to 0, Cat.SUPER to 0, Cat.CHICKEN to 0, Cat.COOL to 0,
             Cat.NINJA to 0, Cat.FAT to 0)
         var displayedCatIndex:Int = -1
-        private var catPrices:MutableList<Int> = mutableListOf(0, 1, 420, 420, 420,
+        private var catPrices:MutableList<Int> = mutableListOf(0, 420, 420, 420, 420,
             420, 420, 420, 420)
         private var catNames:MutableList<String> = mutableListOf("Standard Cat", "Cat Breading",
             "Taco Cat", "Egyptian Cat", "Super Cat", "Chicken Cat", "Cool Cat", "Ninja Cat", "Fat Cat")
@@ -122,27 +122,47 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     fun loadMyCatsData(myCatsString:String?) {
         if (myCatsString != null) {
             MoreCats.myCatsString = myCatsString
+            updateMyCatsDict(myCatsString)
         } else {
             MoreCats.myCatsString = "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"
             MainActivity.gameNotification!!.displayFirebaseTrouble()
         }
+
     }
 
     private var tempMyCatsDict:MutableMap<Cat, Int>? = null
     private var tempMyCats:String = ""
     private var sectionMyCats:String = ""
-    private fun getMyCatsDictFromData(data:String) {
+    private var updateIndex:Int = 0
+    private var next:Boolean = true
+    private fun updateMyCatsDict(data:String) {
+        updateIndex = 0
+        next = true
         tempMyCatsDict = mutableMapOf()
         tempMyCats = data + ""
         while (tempMyCats.count() > 0) {
             sectionMyCats = tempMyCats.substring(0, 5)
             updateCatValue(getCatType(sectionMyCats.substring(0, 3)), sectionMyCats.substring(3, 5))
+            updateIndex += 1
             tempMyCats = tempMyCats.substring(5, tempMyCats.count())
         }
     }
 
     private fun updateCatValue(cat:Cat, stringValue:String) {
         myCatsDict[cat] = stringValue.toInt()
+        if (stringValue.toInt() > 0) {
+            if (next) {
+                next = false
+                displayedCatIndex = updateIndex
+                setCat()
+                setControlButtonAppearance()
+
+            }
+        }
+    }
+
+    fun getSelectedCat():Cat {
+        return presentationCat!!.cat
     }
 
     private var tempCatType:Cat = Cat.STANDARD
