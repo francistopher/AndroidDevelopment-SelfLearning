@@ -97,13 +97,13 @@ class SearchMG(button: Button,
     private var originalParams:LayoutParams? = null
     private var parentLayout:AbsoluteLayout? = null
     private var targetParams:MutableMap<MGPosition, LayoutParams>? = mutableMapOf()
-
+    private var nextTarget:MGPosition? = null
+    private var previousTarget:MGPosition? = null
     init {
         setupMGButton(button)
         setupOriginalParams(params)
         setupParentLayout(parentLayout)
         setupTargetParams(topLeftCorner, bottomRightCorner)
-
     }
 
     private fun setupTargetParams(topLeft:Pair<Int, Int>, bottomRight:Pair<Int, Int>) {
@@ -134,9 +134,24 @@ class SearchMG(button: Button,
         layout.addView(buttonMG!!)
     }
 
+    private fun setNextTarget() {
+        var targets:MutableList<MGPosition> = mutableListOf(MGPosition.TOPLEFT, MGPosition.TOPRIGHT,
+        MGPosition.BOTTOMLEFT, MGPosition.BOTTOMRIGHT, MGPosition.CENTER)
+        var index:Int = -1
+        if (nextTarget != null) {
+            index = targets.indexOf(nextTarget!!)
+            targets.removeAt(index)
+            if (previousTarget != null) {
+                index = targets.indexOf(previousTarget!!)
+                targets.removeAt(index)
+            }
+            previousTarget = nextTarget!!
+        }
+        nextTarget = targets.random()
+    }
+
 
 }
-
 
 //class UISearchMagnifyGlass:UICButton {
 //
@@ -156,8 +171,6 @@ class SearchMG(button: Button,
 //        setThisStyle();
 //    }
 //
-
-//
 //    func setupLabel() {
 //        let height:CGFloat = frame.height * 0.25;
 //        label = UICLabel(parentView: self, x: 0.0, y: frame.height * 0.9, width: frame.width, height: height * 2.0)
@@ -166,21 +179,6 @@ class SearchMG(button: Button,
 //        label!.lineBreakMode = NSLineBreakMode.byWordWrapping;
 //        label!.text = "Searching for\nOpponent";
 //        label!.font = UIFont.boldSystemFont(ofSize: height * 0.65);
-//    }
-//
-//    func setNextTarget() {
-//        var targets:[Target] = [.topLeft, .topRight, .bottomLeft, .bottomRight, .center];
-//        var index:Int = -1;
-//        if (nextTarget != nil) {
-//            index = targets.firstIndex(of: nextTarget!)!;
-//            targets.remove(at: index);
-//            if (previousTarget != nil) {
-//                index = targets.firstIndex(of: previousTarget!)!;
-//                targets.remove(at: index);
-//            }
-//            previousTarget = nextTarget!;
-//        }
-//        nextTarget = targets.randomElement()!;
 //    }
 //
 //    func setupTransitionAnimation() {
