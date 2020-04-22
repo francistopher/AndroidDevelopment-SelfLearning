@@ -90,7 +90,7 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
     }
 
     fun submitMouseCoinCount() {
-        MainActivity.fireBaseController!!.setDocumentData()
+        MainActivity.fbController!!.setDocumentData()
     }
 
     fun updateCount(newMouseCoinCount:Int) {

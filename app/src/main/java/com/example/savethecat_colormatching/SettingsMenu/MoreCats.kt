@@ -57,7 +57,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private var purchaseDialog:AlertDialog? = null
 
-
     companion object {
         var myCatsDict:MutableMap<Cat, Int> = mutableMapOf(Cat.STANDARD to 1, Cat.BREADING to 0,
             Cat.TACO to 0, Cat.EGYPTIAN to 0, Cat.SUPER to 0, Cat.CHICKEN to 0, Cat.COOL to 0,
@@ -219,7 +218,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
         if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
             MoreCats.myCatsString = tempMyCats
-            MainActivity.fireBaseController!!.setDocumentData()
+            MainActivity.fbController!!.setDocumentData()
         } else {
             displayFailureReason()
         }

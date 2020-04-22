@@ -36,7 +36,6 @@ class FireBaseController {
     fun setDocumentData() {
         if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
             val userData = hashMapOf(
-                "displayName" to MainActivity.localPlayer!!.displayName,
                 "mouseCoins" to MCView.mouseCoinCount,
                 "myCats" to MoreCats.myCatsString
             )

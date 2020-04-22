@@ -16,10 +16,7 @@ import android.widget.*
 import android.widget.AbsoluteLayout.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
 import com.example.savethecat_colormatching.Characters.Enemies
-import com.example.savethecat_colormatching.Controllers.ARType
-import com.example.savethecat_colormatching.Controllers.AudioController
-import com.example.savethecat_colormatching.Controllers.CenterController
-import com.example.savethecat_colormatching.Controllers.FireBaseController
+import com.example.savethecat_colormatching.Controllers.*
 import com.example.savethecat_colormatching.ParticularViews.*
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 import com.google.android.gms.ads.*
@@ -77,7 +74,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var googleApiClient:GoogleApiClient? = null
 
         // Multi Player Controller
-        var fireBaseController:FireBaseController? = null
+        var fbController:FireBaseController? = null
+        var mpController:MultiPlayerController? = null
 
     }
 
@@ -201,7 +199,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             isInternetReachable = true
             gameNotification!!.displayYesInternet()
             // Load game data
-            setupSessionController()
+            setupFBController()
+            setupMPController()
         } else {
             if (settingsButton != null && settingsButton!!.getThis().alpha > 0f) {
                 adView!!.alpha = 0f
@@ -215,15 +214,25 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
     }
 
-    private fun setupSessionController() {
-        if (fireBaseController == null) {
-            fireBaseController = FireBaseController()
+    private fun setupFBController() {
+        if (fbController == null) {
+            fbController = FireBaseController()
         }
-        if (signedInAccount != null && fireBaseController != null &&
-            !fireBaseController!!.didGetPlayerID()) {
-            fireBaseController!!.setPlayerID(localPlayer!!.playerId)
+        if (signedInAccount != null && fbController != null &&
+            !fbController!!.didGetPlayerID()) {
+            fbController!!.setPlayerID(localPlayer!!.playerId)
         } else {
-            fireBaseController!!.getDocumentData()
+            fbController!!.getDocumentData()
+        }
+    }
+
+    private fun setupMPController() {
+        if (mpController == null) {
+            mpController = MultiPlayerController()
+        }
+        if (signedInAccount != null && mpController != null &&
+                !mpController!!.didGetPlayerID()) {
+            mpController!!.connectToClient(localPlayer!!.playerId)
         }
     }
 
@@ -310,7 +319,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions!!).addApi(Games.API).build()
         LeaderBoard.setupLeaderBoard()
         SettingsMenu.moreCatsButton!!.setupAchievementsClient()
-        setupSessionController()
+        setupFBController()
+        setupMPController()
     }
 
     private fun connectionToGooglePlayGamerServicesFailed() {
