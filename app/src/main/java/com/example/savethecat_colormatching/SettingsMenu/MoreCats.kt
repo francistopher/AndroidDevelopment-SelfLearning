@@ -156,8 +156,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 displayedCatIndex = updateIndex
                 setCat()
                 setControlButtonAppearance()
-
             }
+        }
+        if (abs(stringValue.toInt()) > 0) {
+            unlockAchievement(cat)
         }
     }
 
@@ -578,16 +580,16 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             myCatsDict[presentationCat!!.cat] = -1
             purchaseDialog!!.hide()
             setControlButtonAppearance()
-            unlockAchievement()
+            unlockAchievement(presentationCat!!.cat)
             saveMyCatsData()
         } else {
             displayFailureReason()
         }
     }
 
-    private fun getAchievement():String {
+    private fun getAchievement(cat:Cat):String {
         var selectedAchievement = ""
-        when (presentationCat!!.cat) {
+        when (cat) {
             Cat.BREADING -> {
                 selectedAchievement = MainActivity.staticSelf!!.getString(R.string.breading_id)
             }
@@ -616,8 +618,12 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         return selectedAchievement
     }
 
-    private fun unlockAchievement() {
-        achievementsClient!!.unlock(getAchievement())
+    private fun unlockAchievement(cat:Cat) {
+        if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
+            achievementsClient!!.unlock(getAchievement(cat))
+        } else {
+            displayFailureReason()
+        }
     }
 
     private fun controlButtonSelector() {
