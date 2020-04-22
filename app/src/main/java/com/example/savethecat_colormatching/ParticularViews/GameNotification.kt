@@ -216,7 +216,7 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
             imageButton!!.setBackgroundResource(R.drawable.nofirebase)
         } else if (notificationQueue[0] == Notification.FIREBASE_CONNECTED) {
             spannableString = SpannableString("Able to connect\nto Firebase to " +
-                    "save\nGame Data!!!")
+                    "operate\nGame Data!!!")
             imageButton!!.setBackgroundResource(R.drawable.firebase)
         }
 
@@ -232,7 +232,13 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
             var index = 0
             var remove = false
             while (index < notificationQueue.size) {
-                remove = (notification == notificationQueue[index])
+                remove = (notification == notificationQueue[index]) ||
+                        ((notification == Notification.FIREBASE_CONNECTED) &&
+                        (notificationQueue[index] == Notification.FIREBASE_TROUBLE)) ||
+                        ((notification == Notification.YES_GOOGLE_PLAY_GAME) &&
+                        (notificationQueue[index] == Notification.NO_GOOGLE_PLAY_GAME)) ||
+                        ((notification == Notification.YES_INTERNET) &&
+                        (notificationQueue[index] == Notification.NO_INTERNET))
                 if (remove) {
                     notificationQueue.removeAt(index)
                     remove = false

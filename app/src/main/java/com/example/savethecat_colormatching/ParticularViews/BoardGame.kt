@@ -15,6 +15,7 @@ import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
+import com.google.android.gms.games.multiplayer.realtime.RoomConfig
 import java.util.*
 
 class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -521,6 +522,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         multiPlayerButton!!.shrunk()
         multiPlayerButton!!.grow(1f, 0.125f)
         multiPlayerButton!!.fade(true, false, 0.5f, 0.125f)
+        multiPlayerButton!!.getThis().setOnClickListener {
+        }
     }
 
     private var nonZeroCount:Int = 0

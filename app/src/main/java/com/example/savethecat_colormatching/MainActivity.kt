@@ -1,10 +1,8 @@
 package com.example.savethecat_colormatching
 
 import Reachability
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
@@ -21,7 +19,7 @@ import com.example.savethecat_colormatching.Characters.Enemies
 import com.example.savethecat_colormatching.Controllers.ARType
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
-import com.example.savethecat_colormatching.Controllers.MultiplayerController
+import com.example.savethecat_colormatching.Controllers.MultiPlayerController
 import com.example.savethecat_colormatching.ParticularViews.*
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 import com.google.android.gms.ads.*
@@ -34,7 +32,6 @@ import com.google.android.gms.games.Games
 import com.google.android.gms.games.Player
 import com.google.android.gms.games.PlayersClient
 import java.util.*
-
 
 class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListener,
     GoogleApiClient.OnConnectionFailedListener, GoogleApiClient.ConnectionCallbacks  {
@@ -79,11 +76,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var signedInAccount:GoogleSignInAccount? = null
         var googleApiClient:GoogleApiClient? = null
 
-        private var gameSPData:SharedPreferences? = null
-        var gameSPEditor:SharedPreferences.Editor? = null
-
-        // Multi Player handler
-        var multiPlayerController: MultiplayerController? = null
+        // Multi Player Controller
+        var multiPlayerController:MultiPlayerController? = null
 
     }
 
@@ -207,13 +201,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             isInternetReachable = true
             gameNotification!!.displayYesInternet()
             // Load game data
-            if (gameSPData != null) {
-                mouseCoinView!!.startMouseCoinCount(gameSPData!!.getInt("mouseCoins", 0))
-                SettingsMenu.moreCatsButton!!.loadMyCatsData(
-                    gameSPData!!.getString("myCats", "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"))
-                gameNotification!!.displayFirebaseConnected()
-            }
-            setupMultiPlayerController()
+            setupSessionController()
         } else {
             if (settingsButton != null && settingsButton!!.getThis().alpha > 0f) {
                 adView!!.alpha = 0f
@@ -222,12 +210,20 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             isInternetReachable = false
             gameNotification!!.displayNoInternet()
             // Clear game data
-            if (gameSPData != null) {
-                mouseCoinView!!.startMouseCoinCount(0)
-                SettingsMenu.moreCatsButton!!.loadMyCatsData(
-                    gameSPData!!.getString("myCats", null))
-                gameNotification!!.displayFirebaseTrouble()
-            }
+            mouseCoinView!!.startMouseCoinCount(startingCount = 0)
+            SettingsMenu.moreCatsButton!!.loadMyCatsData(myCatsString = null)
+        }
+    }
+
+    private fun setupSessionController() {
+        if (multiPlayerController == null) {
+            multiPlayerController = MultiPlayerController()
+        }
+        if (signedInAccount != null && multiPlayerController != null &&
+            !multiPlayerController!!.didGetPlayerID()) {
+            multiPlayerController!!.setPlayerID(localPlayer!!.playerId)
+        } else {
+            multiPlayerController!!.getDocumentData()
         }
     }
 
@@ -238,8 +234,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun hideSystemBars(): Int {
         return View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
+                View.SYSTEM_UI_FLAG_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
                 View.SYSTEM_UI_FLAG_IMMERSIVE
     }
 
@@ -273,9 +271,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private var signInOptions:GoogleSignInOptions? = null
     private fun setupGamePlayAuthentication(){
         signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-            .requestIdToken(getString(R.string.web_client_id))
             .requestScopes(Drive.SCOPE_APPFOLDER)
-            .requestEmail()
             .build()
         val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(this, signInOptions!!)
         val intent: Intent = googleSignInClient.signInIntent
@@ -291,9 +287,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                 val signInAccount:GoogleSignInAccount? = result.signInAccount
                 val playersClient:PlayersClient = Games.getPlayersClient(this, signInAccount!!)
                 val player = playersClient.currentPlayer
-                player.addOnCompleteListener {task ->
-                    if (task.isSuccessful) {
-                        localPlayer = task.result!!
+                player.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        localPlayer = it.result!!
                         signedInAccount = signInAccount
                         connectionToGooglePlayGamerServicesSucceeded()
                     } else {
@@ -314,33 +310,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions!!).addApi(Games.API).build()
         LeaderBoard.setupLeaderBoard()
         SettingsMenu.moreCatsButton!!.setupAchievementsClient()
-        setupSharedPreferences()
-        if (multiPlayerController != null) {
-            multiPlayerController!!.setPlayerID(localPlayer!!.playerId)
-        }
-    }
-
-    private fun setupMultiPlayerController() {
-        if (multiPlayerController == null) {
-            multiPlayerController = MultiplayerController()
-            if (localPlayer != null) {
-                multiPlayerController!!.setPlayerID(localPlayer!!.playerId)
-            }
-        }
-    }
-
-    private fun setupSharedPreferences() {
-        gameSPData = getSharedPreferences("SVTHCT_SP${localPlayer!!.playerId}", Context.MODE_PRIVATE)
-        gameSPEditor = gameSPData!!.edit()
-        mouseCoinView!!.startMouseCoinCount(gameSPData!!.getInt("mouseCoins", 0))
-        if (isInternetReachable) {
-            SettingsMenu.moreCatsButton!!.loadMyCatsData(gameSPData!!.getString("myCats",
-                "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"))
-        } else {
-            mouseCoinView!!.startMouseCoinCount(0)
-            SettingsMenu.moreCatsButton!!.loadMyCatsData(
-                gameSPData!!.getString("myCats", null))
-        }
+        setupSessionController()
     }
 
     private fun connectionToGooglePlayGamerServicesFailed() {

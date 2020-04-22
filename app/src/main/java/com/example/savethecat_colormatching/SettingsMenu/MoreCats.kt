@@ -58,6 +58,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private var purchaseDialog:AlertDialog? = null
 
+
     companion object {
         var myCatsDict:MutableMap<Cat, Int> = mutableMapOf(Cat.STANDARD to 1, Cat.BREADING to 0,
             Cat.TACO to 0, Cat.EGYPTIAN to 0, Cat.SUPER to 0, Cat.CHICKEN to 0, Cat.COOL to 0,
@@ -67,6 +68,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             420, 420, 420, 420)
         private var catNames:MutableList<String> = mutableListOf("Standard Cat", "Cat Breading",
             "Taco Cat", "Egyptian Cat", "Super Cat", "Chicken Cat", "Cool Cat", "Ninja Cat", "Fat Cat")
+        var myCatsString:String = "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"
     }
 
     private var translateAnimatorSet:AnimatorSet? = null
@@ -118,11 +120,12 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         translate(false, 0f)
     }
 
-    fun loadMyCatsData(data:String?) {
-        if (data != null) {
-             getMyCatsDictFromData(data)
+    fun loadMyCatsData(myCatsString:String?) {
+        if (myCatsString != null) {
+            MoreCats.myCatsString = myCatsString
         } else {
-           MainActivity.gameNotification!!.displayFirebaseTrouble()
+            MoreCats.myCatsString = "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"
+            MainActivity.gameNotification!!.displayFirebaseTrouble()
         }
     }
 
@@ -193,15 +196,22 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 tempMyCats += "00"
             }
         }
-        if (!MainActivity.isInternetReachable) {
-            MainActivity.gameSPEditor!!.putString("myCats", tempMyCats)
-            if (!MainActivity.gameSPEditor!!.commit()) {
-                MainActivity.gameNotification!!.displayFirebaseTrouble()
-            }
+        if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
+            MoreCats.myCatsString = tempMyCats
+            MainActivity.multiPlayerController!!.setDocumentData()
         } else {
-            MainActivity.gameNotification!!.displayNoInternet()
-            MainActivity.gameNotification!!.displayFirebaseTrouble()
+            displayFailureReason()
         }
+    }
+
+    private fun displayFailureReason() {
+        if (!MainActivity.isGooglePlayGameServicesAvailable) {
+            MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
+        }
+        if (!MainActivity.isInternetReachable) {
+            MainActivity.gameNotification!!.displayNoInternet()
+        }
+        MainActivity.gameNotification!!.displayFirebaseTrouble()
     }
 
     fun setupAchievementsClient() {
@@ -545,11 +555,15 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     }
 
     private fun purchaseCatButton() {
-        myCatsDict[presentationCat!!.cat] = -1
-        purchaseDialog!!.hide()
-        setControlButtonAppearance()
-        unlockAchievement()
-        saveMyCatsData()
+        if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
+            myCatsDict[presentationCat!!.cat] = -1
+            purchaseDialog!!.hide()
+            setControlButtonAppearance()
+            unlockAchievement()
+            saveMyCatsData()
+        } else {
+            displayFailureReason()
+        }
     }
 
     private fun getAchievement():String {
@@ -589,7 +603,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private fun controlButtonSelector() {
         if (controlButton!!.getText()!!.contains("Get for")) {
-            if (MainActivity.isInternetReachable) {
+            if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
                 if (MCView.mouseCoinCount < catPrices[displayedCatIndex]) {
                     MCView.neededMouseCoinCount =
                         catPrices[displayedCatIndex] - MCView.mouseCoinCount
@@ -608,8 +622,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                     purchaseDialog!!.show()
                 }
             } else {
-                MainActivity.gameNotification!!.displayNoInternet()
-                MainActivity.gameNotification!!.displayFirebaseTrouble()
+                displayFailureReason()
             }
         } else if (controlButton!!.getText().toString() == "Select") {
             for ((cat, state) in myCatsDict) {
