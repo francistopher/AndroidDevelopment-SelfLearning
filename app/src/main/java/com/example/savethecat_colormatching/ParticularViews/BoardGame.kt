@@ -523,6 +523,11 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         multiPlayerButton!!.grow(1f, 0.125f)
         multiPlayerButton!!.fade(true, false, 0.5f, 0.125f)
         multiPlayerButton!!.getThis().setOnClickListener {
+            if (MainActivity.mpController != null) {
+                MainActivity.mpController!!.connect()
+            } else {
+                MainActivity.mpController!!.displayFailureReason()
+            }
         }
     }
 
