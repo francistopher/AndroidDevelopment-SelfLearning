@@ -9,7 +9,6 @@ import android.graphics.drawable.GradientDrawable
 import android.text.Layout
 import android.text.SpannableString
 import android.text.style.AlignmentSpan
-import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
@@ -51,7 +50,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var popupContainerView: Button? = null
 
     private var presentationCat:PCatButton? = null
-    private var catViewHandler: View? = null
+    private var catViewHandler: Button? = null
     private var catTitleLabel:CLabel? = null
     private var controlButton:CButton? = null
     private var mouseCoin:Button? = null
@@ -198,7 +197,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
         if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
             MoreCats.myCatsString = tempMyCats
-            MainActivity.multiPlayerController!!.setDocumentData()
+            MainActivity.fireBaseController!!.setDocumentData()
         } else {
             displayFailureReason()
         }
@@ -649,12 +648,13 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         val height:Int = sideLength + (infoButton!!.getOriginalParams().height * 1.75).toInt()
         val x:Int = contentViewParams!!.x + ((contentViewParams!!.width - width) * 0.5).toInt()
         val y:Int = contentViewParams!!.y + ((contentViewParams!!.height - height) * 0.5).toInt()
-        catViewHandler = View(MainActivity.rootView!!.context)
+        catViewHandler = Button(MainActivity.rootView!!.context)
         catViewHandler!!.layoutParams = LayoutParams(width, height, x, y)
         catViewHandler!!.setBackgroundColor(color)
         setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 2.5).toInt(),
             (MainActivity.dUnitWidth / 3).toInt(), 6)
         MainActivity.rootLayout!!.addView(catViewHandler!!)
+        catViewHandler!!.isEnabled = false
         catHandlerShownY = y
         catHandlerHiddenY = catHandlerShownY + (MainActivity.dHeight).toInt()
     }
@@ -707,6 +707,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         closeButton!!.getThis().alpha = 1f
         closeButton!!.getThis().setOnClickListener {
             translate(false, 0.5f)
+            if (MainActivity.gameResults!!.getThis().alpha > 0f) {
+                MainActivity.glovePointer!!.getThis().alpha = 1f
+                MainActivity.gameResults!!.getWatchAdButton().getThis().alpha = 1f
+            }
         }
     }
 
@@ -786,10 +790,11 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private fun setupSelector() {
         moreCatsButton!!.setOnClickListener {
-            if (MainActivity.isGooglePlayGameServicesAvailable) {
-                translate(true, 0.5f)
+            translate(true, 0.5f)
+            if (MainActivity.gameResults!!.getThis().alpha > 0f) {
+                MainActivity.glovePointer!!.getThis().alpha = 0f
+                MainActivity.gameResults!!.getWatchAdButton().getThis().alpha = 0f
             }
-            saveMyCatsData()
         }
     }
 

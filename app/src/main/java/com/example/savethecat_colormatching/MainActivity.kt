@@ -19,7 +19,7 @@ import com.example.savethecat_colormatching.Characters.Enemies
 import com.example.savethecat_colormatching.Controllers.ARType
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.CenterController
-import com.example.savethecat_colormatching.Controllers.MultiPlayerController
+import com.example.savethecat_colormatching.Controllers.FireBaseController
 import com.example.savethecat_colormatching.ParticularViews.*
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 import com.google.android.gms.ads.*
@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var googleApiClient:GoogleApiClient? = null
 
         // Multi Player Controller
-        var multiPlayerController:MultiPlayerController? = null
+        var fireBaseController:FireBaseController? = null
 
     }
 
@@ -216,14 +216,14 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     private fun setupSessionController() {
-        if (multiPlayerController == null) {
-            multiPlayerController = MultiPlayerController()
+        if (fireBaseController == null) {
+            fireBaseController = FireBaseController()
         }
-        if (signedInAccount != null && multiPlayerController != null &&
-            !multiPlayerController!!.didGetPlayerID()) {
-            multiPlayerController!!.setPlayerID(localPlayer!!.playerId)
+        if (signedInAccount != null && fireBaseController != null &&
+            !fireBaseController!!.didGetPlayerID()) {
+            fireBaseController!!.setPlayerID(localPlayer!!.playerId)
         } else {
-            multiPlayerController!!.getDocumentData()
+            fireBaseController!!.getDocumentData()
         }
     }
 

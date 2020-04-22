@@ -90,12 +90,13 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
     }
 
     fun submitMouseCoinCount() {
-        MainActivity.multiPlayerController!!.setDocumentData()
+        MainActivity.fireBaseController!!.setDocumentData()
     }
 
     fun updateCount(newMouseCoinCount:Int) {
         if (abs(newMouseCoinCount - mouseCoinCount) == 1) {
             setText(newMouseCoinCount.toString())
+            mouseCoinCount = newMouseCoinCount
             return
         }
         if (mouseCoinValueAnimator != null) {

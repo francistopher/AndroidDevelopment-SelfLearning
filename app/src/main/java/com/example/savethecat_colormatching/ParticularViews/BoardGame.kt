@@ -15,7 +15,6 @@ import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
-import com.google.android.gms.games.multiplayer.realtime.RoomConfig
 import java.util.*
 
 class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -266,6 +265,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             0f, 0f)
         // Submit mouse coin count
         MainActivity.mouseCoinView!!.submitMouseCoinCount()
+
     }
 
     private fun unveilHeaven() {
