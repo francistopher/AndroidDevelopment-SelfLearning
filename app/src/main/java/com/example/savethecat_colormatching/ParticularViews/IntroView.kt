@@ -13,8 +13,8 @@ class IntroView(imageView: ImageButton, parentLayout:AbsoluteLayout, params: Lay
 
     init {
         textImageView = CImageView(imageView= imageView, parentLayout = parentLayout, params = params)
-        val catImageViewParams = LayoutParams(params.width, params.height, params.x, (params.y - params.height * 0.0015).toInt())
-        catImageView = CImageView(imageView= ImageView(textImageView!!.getContext()), parentLayout = parentLayout, params = catImageViewParams)
+        catImageView = CImageView(imageView= ImageView(textImageView!!.getContext()), parentLayout = parentLayout, params = params)
+        catImageView!!.getThis().scaleType = ImageView.ScaleType.CENTER_INSIDE
         catImageView!!.isCatImage = true
         textImageView!!.getThis().alpha = 0.0f
         catImageView!!.getThis().alpha = 0.0f
@@ -56,10 +56,4 @@ class IntroView(imageView: ImageButton, parentLayout:AbsoluteLayout, params: Lay
         textImageView!!.setStyle()
         catImageView!!.setStyle()
     }
-
-    fun hide() {
-        textImageView!!.getThis().alpha = 0.0f
-        catImageView!!.getThis().alpha = 0.0f
-    }
-
 }

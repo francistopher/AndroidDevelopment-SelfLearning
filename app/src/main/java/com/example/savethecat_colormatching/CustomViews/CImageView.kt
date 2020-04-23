@@ -61,7 +61,6 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
         shrunkParams = AbsoluteLayout.LayoutParams(originalParams!!.x / 2, originalParams!!.y / 2, 1, 1)
     }
 
-    var startRotation:Boolean = true
     var rotationAnimator:ValueAnimator? = null
     var rotation:Float = 0f
 
@@ -70,14 +69,14 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
             rotationAnimator!!.cancel()
             rotationAnimator = null
         }
-        rotationAnimator = ValueAnimator.ofFloat(rotation, rotation + 120)
+        rotationAnimator = ValueAnimator.ofFloat(rotation, rotation + 90)
         rotationAnimator!!.addUpdateListener {
             imageView!!.rotation = (it.animatedValue as Float)
         }
         rotationAnimator!!.interpolator = LinearInterpolator()
         rotationAnimator!!.duration = 1000
         rotationAnimator!!.doOnEnd {
-            rotation += 120
+            rotation += 90
             rotateText()
         }
         rotationAnimator!!.start()

@@ -99,6 +99,7 @@ class SearchMG(button: Button,
                bottomRightCorner:Pair<Int, Int>) {
 
     private var buttonMG: Button? = null
+    private var textButton:Button? = null
     private var searchContext: Context? = null
     private var originalParams: LayoutParams? = null
     private var parentLayout: AbsoluteLayout? = null
@@ -110,7 +111,9 @@ class SearchMG(button: Button,
         setupMGButton(button)
         setupOriginalParams(params)
         setupParentLayout(parentLayout)
+        setupTextButton()
         setupTargetParams(topLeftCorner, bottomRightCorner)
+        setupRotationAnimation()
         setupTransitionAnimation()
         setStyle()
     }
@@ -139,6 +142,13 @@ class SearchMG(button: Button,
         button.alpha = 0f
         buttonMG = button
         searchContext = button.context
+    }
+
+    private fun setupTextButton() {
+        textButton = Button(searchContext)
+        textButton!!.alpha = 0f
+        textButton!!.layoutParams = originalParams!!
+        parentLayout!!.addView(textButton!!)
     }
 
     private fun setupOriginalParams(params: LayoutParams) {
@@ -177,17 +187,21 @@ class SearchMG(button: Button,
         setNextTarget()
         transitionXAnimator = ValueAnimator.ofInt(getThisParams().x, getNextTargetParams().x)
         transitionXAnimator!!.addUpdateListener {
-            buttonMG!!.layoutParams = LayoutParams(
+            val lp = LayoutParams(
                 getThisParams().width, getThisParams().height,
                 (it.animatedValue as Int), getThisParams().y
             )
+            buttonMG!!.layoutParams = lp
+            textButton!!.layoutParams = lp
         }
         transitionYAnimator = ValueAnimator.ofInt(getThisParams().y, getNextTargetParams().y)
         transitionYAnimator!!.addUpdateListener {
-            buttonMG!!.layoutParams = LayoutParams(
+            val lp = LayoutParams(
                 getThisParams().width, getThisParams().height,
                 getThisParams().x, (it.animatedValue as Int)
             )
+            buttonMG!!.layoutParams = lp
+            textButton!!.layoutParams = lp
             buttonMG!!.bringToFront()
         }
         transitionAnimatorSet = AnimatorSet()
@@ -200,11 +214,26 @@ class SearchMG(button: Button,
         }
     }
 
+    private var rotationAnimation:ValueAnimator? = null
+    private fun setupRotationAnimation() {
+        if (rotationAnimation != null) {
+            rotationAnimation!!.cancel()
+        }
+        rotationAnimation = ValueAnimator.ofFloat(textButton!!.rotation, textButton!!.rotation + 90f)
+        rotationAnimation!!.addUpdateListener {
+            textButton!!.rotation = (it.animatedValue as Float)
+        }
+        rotationAnimation!!.interpolator = EasingInterpolator(Ease.LINEAR)
+        rotationAnimation!!.startDelay = 0
+        rotationAnimation!!.duration = 1000
+        rotationAnimation!!.doOnEnd {
+            setupRotationAnimation()
+            rotationAnimation!!.start()
+        }
+    }
+
     private var fadeAnimator:ValueAnimator? = null
     private fun fade(out:Boolean) {
-        if (fadeAnimator != null) {
-            fadeAnimator!!.cancel()
-        }
         fadeAnimator = if (out) {
             ValueAnimator.ofFloat(buttonMG!!.alpha, 0f)
         } else {
@@ -212,6 +241,7 @@ class SearchMG(button: Button,
         }
         fadeAnimator!!.addUpdateListener {
             buttonMG!!.alpha = (it.animatedValue as Float)
+            textButton!!.alpha = (it.animatedValue as Float)
         }
         fadeAnimator!!.duration = 1000
         fadeAnimator!!.start()
@@ -220,6 +250,7 @@ class SearchMG(button: Button,
     fun startSearchingAnimation() {
         fade(false)
         transitionAnimatorSet!!.start()
+        rotationAnimation!!.start()
     }
 
     private fun getNextTargetParams(): LayoutParams {
@@ -233,11 +264,13 @@ class SearchMG(button: Button,
     fun setStyle() {
 
         fun lightDominant() {
-            buttonMG!!.setBackgroundResource(R.drawable.lightmagnifying)
+            buttonMG!!.setBackgroundResource(R.drawable.lightmagnify)
+            textButton!!.setBackgroundResource(R.drawable.darksearchingtext)
         }
 
         fun darkDominant() {
-            buttonMG!!.setBackgroundResource(R.drawable.darkmagnifying)
+            buttonMG!!.setBackgroundResource(R.drawable.darkmagnify)
+            textButton!!.setBackgroundResource(R.drawable.lightsearchingtext)
         }
 
         if (MainActivity.isThemeDark) {
