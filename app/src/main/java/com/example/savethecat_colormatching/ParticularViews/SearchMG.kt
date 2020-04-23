@@ -1,109 +1,29 @@
-package com.example.savethecat_colormatching.Controllers
+package com.example.savethecat_colormatching.ParticularViews
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
-import android.util.Log
 import android.widget.AbsoluteLayout
-import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
-import com.shephertz.app42.gaming.multiplayer.client.WarpClient
-import com.shephertz.app42.gaming.multiplayer.client.events.ConnectEvent
-import com.shephertz.app42.gaming.multiplayer.client.listener.ConnectionRequestListener
 
-class MultiPlayerController {
-
-    private val apiKey:String = "0d060465b202e38b86e0a96ac5ad2063e1cb6c4634bd7e89e26c8afb3aea24bc"
-    private val secretKey:String = "0d060465b202e38b86e0a96ac5ad2063e1cb6c4634bd7e89e26c8afb3aea24bc"
-    private var playerID:String = ""
-    private var myGame:WarpClient? = null
-
-
-    companion object {
-        var connected:Boolean = false
-        var calledDisconnect:Boolean = false
-    }
-
-    fun connectToClient(playerID:String) {
-        this.playerID = playerID
-        WarpClient.initialize(apiKey, secretKey)
-        myGame = WarpClient.getInstance()
-        myGame!!.addConnectionRequestListener(ConnectionListener())
-    }
-
-    fun didGetPlayerID():Boolean {
-        return (playerID != "")
-    }
-
-    fun connect() {
-        if (MainActivity.isGooglePlayGameServicesAvailable && MainActivity.isInternetReachable) {
-            myGame!!.connectWithUserName(MainActivity.localPlayer!!.displayName)
-//            myGame!!.joinRoomInRange(2, 2, true)
-        } else {
-            displayFailureReason()
-        }
-    }
-
-    fun disconnect() {
-        if (MainActivity.isGooglePlayGameServicesAvailable && MainActivity.isInternetReachable) {
-            calledDisconnect = true
-            myGame!!.disconnect()
-        } else {
-            displayFailureReason()
-        }
-    }
-
-    fun displayFailureReason() {
-        if (!MainActivity.isInternetReachable) {
-            MainActivity.gameNotification!!.displayNoInternet()
-        }
-        if (!MainActivity.isGooglePlayGameServicesAvailable) {
-            MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
-        }
-    }
-}
-
-class ConnectionListener:ConnectionRequestListener {
-    override fun onDisconnectDone(p0: ConnectEvent?) {
-        MultiPlayerController.calledDisconnect = true
-        Log.i("CONNECTION STATE", "DISCONNECT")
-    }
-
-    override fun onConnectDone(p0: ConnectEvent?) {
-        MultiPlayerController.connected = true
-        Log.i("CONNECTION STATE", "CONNECT")
-    }
-
-    override fun onInitUDPDone(p0: Byte) {
-        Log.i("CONNECTION STATE", "UDP")
-    }
-}
-
-enum class  MGPosition {
-    TOPLEFT,
-    TOPRIGHT,
-    BOTTOMLEFT,
-    BOTTOMRIGHT,
-    CENTER
-}
 
 class SearchMG(button: Button,
-               parentLayout:AbsoluteLayout,
-               params:LayoutParams,
+               parentLayout: AbsoluteLayout,
+               params: AbsoluteLayout.LayoutParams,
                topLeftCorner:Pair<Int, Int>,
                bottomRightCorner:Pair<Int, Int>) {
 
     private var buttonMG: Button? = null
-    private var textButton:Button? = null
+    private var textButton: Button? = null
     private var searchContext: Context? = null
-    private var originalParams: LayoutParams? = null
+    private var originalParams: AbsoluteLayout.LayoutParams? = null
     private var parentLayout: AbsoluteLayout? = null
-    private var targetParams: MutableMap<MGPosition, LayoutParams>? = mutableMapOf()
+    private var targetParams: MutableMap<MGPosition, AbsoluteLayout.LayoutParams>? = mutableMapOf()
     private var nextTarget: MGPosition? = null
     private var previousTarget: MGPosition? = null
 
@@ -119,22 +39,22 @@ class SearchMG(button: Button,
     }
 
     private fun setupTargetParams(topLeft: Pair<Int, Int>, bottomRight: Pair<Int, Int>) {
-        targetParams!![MGPosition.TOPLEFT] = LayoutParams(
+        targetParams!![MGPosition.TOPLEFT] = AbsoluteLayout.LayoutParams(
             originalParams!!.width, originalParams!!.height,
             topLeft.first + (originalParams!!.width * 0.15).toInt(),
             topLeft.second + (originalParams!!.height * 0.15).toInt()
         )
-        targetParams!![MGPosition.TOPRIGHT] = LayoutParams(
+        targetParams!![MGPosition.TOPRIGHT] = AbsoluteLayout.LayoutParams(
             originalParams!!.width, originalParams!!.height,
             bottomRight.first - (originalParams!!.width * 1.15).toInt(),
             topLeft.second + (originalParams!!.height * 0.15).toInt()
         )
-        targetParams!![MGPosition.BOTTOMLEFT] = LayoutParams(
+        targetParams!![MGPosition.BOTTOMLEFT] = AbsoluteLayout.LayoutParams(
             originalParams!!.width, originalParams!!.height,
             topLeft.first + (originalParams!!.width * 0.15).toInt(),
             bottomRight.second - (originalParams!!.height * 1.15).toInt()
         )
-        targetParams!![MGPosition.BOTTOMRIGHT] = LayoutParams(
+        targetParams!![MGPosition.BOTTOMRIGHT] = AbsoluteLayout.LayoutParams(
             originalParams!!.width, originalParams!!.height,
             bottomRight.first - (originalParams!!.width * 1.15).toInt(),
             bottomRight.second - (originalParams!!.height * 1.15).toInt()
@@ -154,7 +74,7 @@ class SearchMG(button: Button,
         parentLayout!!.addView(textButton!!)
     }
 
-    private fun setupOriginalParams(params: LayoutParams) {
+    private fun setupOriginalParams(params: AbsoluteLayout.LayoutParams) {
         originalParams = params
         buttonMG!!.layoutParams = params
         targetParams!![MGPosition.CENTER] = params
@@ -190,7 +110,7 @@ class SearchMG(button: Button,
         setNextTarget()
         transitionXAnimator = ValueAnimator.ofInt(getThisParams().x, getNextTargetParams().x)
         transitionXAnimator!!.addUpdateListener {
-            val lp = LayoutParams(
+            val lp = AbsoluteLayout.LayoutParams(
                 getThisParams().width, getThisParams().height,
                 (it.animatedValue as Int), getThisParams().y
             )
@@ -199,7 +119,7 @@ class SearchMG(button: Button,
         }
         transitionYAnimator = ValueAnimator.ofInt(getThisParams().y, getNextTargetParams().y)
         transitionYAnimator!!.addUpdateListener {
-            val lp = LayoutParams(
+            val lp = AbsoluteLayout.LayoutParams(
                 getThisParams().width, getThisParams().height,
                 getThisParams().x, (it.animatedValue as Int)
             )
@@ -212,12 +132,24 @@ class SearchMG(button: Button,
         transitionAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         transitionAnimatorSet!!.duration = 1500
         transitionAnimatorSet!!.doOnEnd {
-            setupTransitionAnimation()
-            transitionAnimatorSet!!.start()
+            if (!stoppingAnimation) {
+                setupTransitionAnimation()
+                transitionAnimatorSet!!.start()
+            } else {
+                buttonMG!!.layoutParams = originalParams!!
+                textButton!!.layoutParams = originalParams!!
+                stoppingAnimation = false
+            }
         }
     }
 
-    private var rotationAnimation:ValueAnimator? = null
+    private var stoppingAnimation:Boolean = false
+    fun stopAnimation() {
+        stoppingAnimation = true
+        fade(true)
+    }
+
+    private var rotationAnimation: ValueAnimator? = null
     private fun setupRotationAnimation() {
         if (rotationAnimation != null) {
             rotationAnimation!!.cancel()
@@ -235,8 +167,11 @@ class SearchMG(button: Button,
         }
     }
 
-    private var fadeAnimator:ValueAnimator? = null
+    private var fadeAnimator: ValueAnimator? = null
     private fun fade(out:Boolean) {
+        if (fadeAnimator != null) {
+            fadeAnimator!!.cancel()
+        }
         fadeAnimator = if (out) {
             ValueAnimator.ofFloat(buttonMG!!.alpha, 0f)
         } else {
@@ -248,39 +183,58 @@ class SearchMG(button: Button,
         }
         fadeAnimator!!.duration = 1000
         fadeAnimator!!.start()
+        fadeAnimator!!.doOnEnd {
+            if (stoppingAnimation && out) {
+                if (transitionAnimatorSet != null) {
+                    transitionAnimatorSet!!.cancel()
+                }
+            }
+        }
     }
 
     fun startSearchingAnimation() {
-        fade(false)
-        transitionAnimatorSet!!.start()
-        rotationAnimation!!.start()
+        if (MainActivity.isGooglePlayGameServicesAvailable && MainActivity.isInternetReachable) {
+            if (transitionAnimatorSet!!.isRunning) {
+                return
+            }
+            fade(false)
+            transitionAnimatorSet!!.start()
+            rotationAnimation!!.start()
+        } else {
+            displayFailureReason()
+        }
     }
 
-    private fun getNextTargetParams(): LayoutParams {
+    private fun displayFailureReason() {
+        if (!MainActivity.isInternetReachable) {
+            MainActivity.gameNotification!!.displayNoInternet()
+        }
+        if (!MainActivity.isGooglePlayGameServicesAvailable) {
+            MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
+        }
+    }
+
+    private fun getNextTargetParams(): AbsoluteLayout.LayoutParams {
         return targetParams!![nextTarget!!]!!
     }
 
-    private fun getThisParams(): LayoutParams {
-        return (buttonMG!!.layoutParams as LayoutParams)
+    private fun getThisParams(): AbsoluteLayout.LayoutParams {
+        return (buttonMG!!.layoutParams as AbsoluteLayout.LayoutParams)
     }
 
     fun setStyle() {
-
         fun lightDominant() {
             buttonMG!!.setBackgroundResource(R.drawable.lightmagnify)
             textButton!!.setBackgroundResource(R.drawable.darksearchingtext)
         }
-
         fun darkDominant() {
             buttonMG!!.setBackgroundResource(R.drawable.darkmagnify)
             textButton!!.setBackgroundResource(R.drawable.lightsearchingtext)
         }
-
         if (MainActivity.isThemeDark) {
             darkDominant()
         } else {
             lightDominant()
         }
-
     }
 }

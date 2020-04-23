@@ -63,12 +63,19 @@ class FireBaseController {
             documentReference!!.get().addOnSuccessListener { document ->
                 MainActivity.gameNotification!!.displayFirebaseConnected()
                 if (document != null) {
-                    MainActivity.mouseCoinView!!.startMouseCoinCount(
-                        document.get("mouseCoins").toString().toInt()
-                    )
-                    SettingsMenu.moreCatsButton!!.loadMyCatsData(
-                        document.get("myCats")!!.toString()
-                    )
+                    try {
+                        MainActivity.mouseCoinView!!.startMouseCoinCount(
+                            document.get("mouseCoins").toString().toInt()
+                        )
+                        SettingsMenu.moreCatsButton!!.loadMyCatsData(
+                            document.get("myCats")!!.toString()
+                        )
+                    } catch (e:Exception) {
+                        MainActivity.mouseCoinView!!.startMouseCoinCount(0)
+                        SettingsMenu.moreCatsButton!!.loadMyCatsData(
+                            "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"
+                        )
+                    }
                 } else {
                     MainActivity.mouseCoinView!!.startMouseCoinCount(0)
                     SettingsMenu.moreCatsButton!!.loadMyCatsData(

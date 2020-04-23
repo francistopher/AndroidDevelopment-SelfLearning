@@ -10,11 +10,16 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
 import android.widget.AbsoluteLayout.LayoutParams
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.savethecat_colormatching.Characters.Enemies
 import com.example.savethecat_colormatching.Controllers.*
 import com.example.savethecat_colormatching.ParticularViews.*
@@ -75,7 +80,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
         // Multi Player Controller
         var fbController:FireBaseController? = null
-        var mpController:MultiPlayerController? = null
+        var mpController:MPController? = null
 
     }
 
@@ -228,11 +233,11 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupMPController() {
         if (mpController == null) {
-            mpController = MultiPlayerController()
+            mpController = MPController()
         }
         if (signedInAccount != null && mpController != null &&
                 !mpController!!.didGetPlayerID()) {
-            mpController!!.connectToClient(localPlayer!!.playerId)
+            mpController!!.connectToClient(localPlayer!!.playerId, localPlayer!!.displayName)
         }
     }
 
@@ -257,8 +262,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
     }
 
+    private var appObserver:ForegroundBackgroundListener? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        ProcessLifecycleOwner.get().lifecycle.addObserver(ForegroundBackgroundListener().
+        also {
+            appObserver = it
+        })
         setContentView(R.layout.activity_main)
         setupAspectRatio()
         setupDecorView()
@@ -628,5 +638,19 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     override fun onConnectionSuspended(p0: Int) {
         TODO("Not yet implemented")
+    }
+}
+
+class ForegroundBackgroundListener : LifecycleObserver {
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    fun startSomething() {
+        Log.v("ProcessLog", "APP IS ON FOREGROUND")
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    fun stopSomething() {
+        MainActivity.mpController?.disconnect()
+        Log.v("ProcessLog", "APP IS IN BACKGROUND")
     }
 }

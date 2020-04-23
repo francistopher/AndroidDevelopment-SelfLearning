@@ -2,7 +2,6 @@ package com.example.savethecat_colormatching.ParticularViews
 
 import android.content.Context
 import android.graphics.Color
-import android.util.Log
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
@@ -11,7 +10,7 @@ import android.widget.ImageButton
 import com.example.savethecat_colormatching.Characters.CatButton
 import com.example.savethecat_colormatching.Characters.CatButtons
 import com.example.savethecat_colormatching.Controllers.AudioController
-import com.example.savethecat_colormatching.Controllers.SearchMG
+import com.example.savethecat_colormatching.Controllers.MPController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.MainActivity
@@ -283,7 +282,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             0f, 0f)
         // Submit mouse coin count
         MainActivity.mouseCoinView!!.submitMouseCoinCount()
-
     }
 
     private fun unveilHeaven() {
@@ -471,6 +469,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
+            // Disconnect
+            MainActivity.mpController!!.disconnect()
             // Contract settings menu if opened
             MainActivity.settingsButton!!.forceSettingsMenuContraction()
             // Reset attack meter attack duration
@@ -534,14 +534,12 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         multiPlayerButton!!.shrinkType = ShrinkType.right
         multiPlayerButton!!.setText("Multi Player", false)
-        multiPlayerButton!!.getThis().setOnClickListener {
-            Log.i("Click", "Multi Player Button")
-        }
         multiPlayerButton!!.shrunk()
         multiPlayerButton!!.grow(1f, 0.125f)
         multiPlayerButton!!.fade(true, false, 0.5f, 0.125f)
         multiPlayerButton!!.getThis().setOnClickListener {
             if (MainActivity.mpController != null) {
+                MPController.calledDisconnect = false
                 MainActivity.mpController!!.connect()
                 searchMG!!.startSearchingAnimation()
             } else {
