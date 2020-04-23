@@ -11,6 +11,7 @@ import android.widget.ImageButton
 import com.example.savethecat_colormatching.Characters.CatButton
 import com.example.savethecat_colormatching.Characters.CatButtons
 import com.example.savethecat_colormatching.Controllers.AudioController
+import com.example.savethecat_colormatching.Controllers.SearchMG
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.MainActivity
@@ -34,6 +35,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         var boardGameLayout:AbsoluteLayout? = null
         var singlePlayerButton:CButton? = null
         var multiPlayerButton:CButton? = null
+        var searchMG:SearchMG? = null
     }
 
     init {
@@ -60,6 +62,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         return originalParams!!
     }
 
+
+    var searchMGSideTemplateParams:LayoutParams? = null
     fun buildGame() {
         rowsAndColumns = getRowsAndColumns(currentStage = currentStage)
         ColorOptions.setSelectionColors()
@@ -68,6 +72,20 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         buildGridButtons()
         catButtons!!.loadPreviousCats()
         recordGridColorsUsed()
+        if (searchMG == null) {
+            searchMGSideTemplateParams = catButtons!!.getCurrentCatButtons()[0].getOriginalParams()
+            searchMG = SearchMG(button = Button(MainActivity.rootView!!.context),
+                parentLayout = MainActivity.rootLayout!!,
+                params = LayoutParams((searchMGSideTemplateParams!!.width / 3.0).toInt(),
+                                        (searchMGSideTemplateParams!!.height / 3.0).toInt(),
+                (searchMGSideTemplateParams!!.x + ((searchMGSideTemplateParams!!.width -
+                    (searchMGSideTemplateParams!!.width / 3.0)) * 0.5).toInt()),
+                (searchMGSideTemplateParams!!.y + ((searchMGSideTemplateParams!!.height -
+                    (searchMGSideTemplateParams!!.height / 3.0)) * 0.5).toInt())),
+                topLeftCorner = Pair(searchMGSideTemplateParams!!.x, searchMGSideTemplateParams!!.y),
+                bottomRightCorner = Pair(searchMGSideTemplateParams!!.x + searchMGSideTemplateParams!!.width,
+                searchMGSideTemplateParams!!.y + searchMGSideTemplateParams!!.height))
+        }
     }
 
     fun getGridColorsCount(): MutableMap<Int, Int> {

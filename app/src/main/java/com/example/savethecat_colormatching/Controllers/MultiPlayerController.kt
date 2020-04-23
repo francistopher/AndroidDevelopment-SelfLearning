@@ -1,11 +1,17 @@
 package com.example.savethecat_colormatching.Controllers
 
+import android.animation.AnimatorSet
+import android.animation.ValueAnimator
 import android.content.Context
 import android.util.Log
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
+import androidx.core.animation.doOnEnd
+import com.daasuu.ei.Ease
+import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.R
 import com.shephertz.app42.gaming.multiplayer.client.WarpClient
 import com.shephertz.app42.gaming.multiplayer.client.events.ConnectEvent
 import com.shephertz.app42.gaming.multiplayer.client.listener.ConnectionRequestListener
@@ -92,33 +98,45 @@ class SearchMG(button: Button,
                topLeftCorner:Pair<Int, Int>,
                bottomRightCorner:Pair<Int, Int>) {
 
-    private var buttonMG:Button? = null
+    private var buttonMG: Button? = null
     private var searchContext: Context? = null
-    private var originalParams:LayoutParams? = null
-    private var parentLayout:AbsoluteLayout? = null
-    private var targetParams:MutableMap<MGPosition, LayoutParams>? = mutableMapOf()
-    private var nextTarget:MGPosition? = null
-    private var previousTarget:MGPosition? = null
+    private var originalParams: LayoutParams? = null
+    private var parentLayout: AbsoluteLayout? = null
+    private var targetParams: MutableMap<MGPosition, LayoutParams>? = mutableMapOf()
+    private var nextTarget: MGPosition? = null
+    private var previousTarget: MGPosition? = null
+
     init {
         setupMGButton(button)
         setupOriginalParams(params)
         setupParentLayout(parentLayout)
         setupTargetParams(topLeftCorner, bottomRightCorner)
+        setupTransitionAnimation()
+        setStyle()
     }
 
-    private fun setupTargetParams(topLeft:Pair<Int, Int>, bottomRight:Pair<Int, Int>) {
-        targetParams!![MGPosition.TOPLEFT] = LayoutParams(originalParams!!.width,
-            originalParams!!.height, topLeft.first, topLeft.second)
-        targetParams!![MGPosition.TOPRIGHT] = LayoutParams(originalParams!!.width,
-            originalParams!!.height, bottomRight.first - originalParams!!.width, topLeft.second)
-        targetParams!![MGPosition.BOTTOMLEFT] = LayoutParams(originalParams!!.width,
-            originalParams!!.height, topLeft.first, bottomRight.second - originalParams!!.height)
-        targetParams!![MGPosition.BOTTOMRIGHT] = LayoutParams(originalParams!!.width,
+    private fun setupTargetParams(topLeft: Pair<Int, Int>, bottomRight: Pair<Int, Int>) {
+        targetParams!![MGPosition.TOPLEFT] = LayoutParams(
+            originalParams!!.width,
+            originalParams!!.height, topLeft.first, topLeft.second
+        )
+        targetParams!![MGPosition.TOPRIGHT] = LayoutParams(
+            originalParams!!.width,
+            originalParams!!.height, bottomRight.first - originalParams!!.width, topLeft.second
+        )
+        targetParams!![MGPosition.BOTTOMLEFT] = LayoutParams(
+            originalParams!!.width,
+            originalParams!!.height, topLeft.first, bottomRight.second - originalParams!!.height
+        )
+        targetParams!![MGPosition.BOTTOMRIGHT] = LayoutParams(
+            originalParams!!.width,
             originalParams!!.height, bottomRight.first - originalParams!!.width,
-            bottomRight.second - originalParams!!.height)
+            bottomRight.second - originalParams!!.height
+        )
     }
 
-    private  fun setupMGButton(button:Button) {
+    private fun setupMGButton(button: Button) {
+        button.alpha = 0f
         buttonMG = button
         searchContext = button.context
     }
@@ -129,15 +147,17 @@ class SearchMG(button: Button,
         targetParams!![MGPosition.CENTER] = params
     }
 
-    private fun setupParentLayout(layout:AbsoluteLayout) {
+    private fun setupParentLayout(layout: AbsoluteLayout) {
         parentLayout = layout
         layout.addView(buttonMG!!)
     }
 
     private fun setNextTarget() {
-        var targets:MutableList<MGPosition> = mutableListOf(MGPosition.TOPLEFT, MGPosition.TOPRIGHT,
-        MGPosition.BOTTOMLEFT, MGPosition.BOTTOMRIGHT, MGPosition.CENTER)
-        var index:Int = -1
+        var targets: MutableList<MGPosition> = mutableListOf(
+            MGPosition.TOPLEFT, MGPosition.TOPRIGHT,
+            MGPosition.BOTTOMLEFT, MGPosition.BOTTOMRIGHT, MGPosition.CENTER
+        )
+        var index: Int = -1
         if (nextTarget != null) {
             index = targets.indexOf(nextTarget!!)
             targets.removeAt(index)
@@ -150,66 +170,63 @@ class SearchMG(button: Button,
         nextTarget = targets.random()
     }
 
+    private var transitionAnimatorSet: AnimatorSet? = null
+    private var transitionXAnimator: ValueAnimator? = null
+    private var transitionYAnimator: ValueAnimator? = null
+    private fun setupTransitionAnimation() {
+        setNextTarget()
 
+        transitionXAnimator = ValueAnimator.ofInt(getThisParams().x, getNextTargetParams().x)
+        transitionXAnimator!!.addUpdateListener {
+            buttonMG!!.layoutParams = LayoutParams(
+                getThisParams().width, getThisParams().height,
+                (it.animatedValue as Int), getThisParams().y
+            )
+        }
+        transitionYAnimator = ValueAnimator.ofInt(getThisParams().y, getNextTargetParams().y)
+        transitionYAnimator!!.addUpdateListener {
+            buttonMG!!.layoutParams = LayoutParams(
+                getThisParams().width, getThisParams().height,
+                getThisParams().x, (it.animatedValue as Int)
+            )
+            buttonMG!!.bringToFront()
+        }
+        transitionAnimatorSet = AnimatorSet()
+        transitionAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
+        transitionAnimatorSet!!.duration = 1500
+        transitionAnimatorSet!!.doOnEnd {
+            setupTransitionAnimation()
+            transitionAnimatorSet!!.start()
+        }
+    }
+
+    private fun startSearchingAnimation() {
+        transitionAnimatorSet!!.start()
+    }
+
+    private fun getNextTargetParams(): LayoutParams {
+        return targetParams!![nextTarget!!]!!
+    }
+
+    private fun getThisParams(): LayoutParams {
+        return (buttonMG!!.layoutParams as LayoutParams)
+    }
+
+    fun setStyle() {
+
+        fun lightDominant() {
+            buttonMG!!.setBackgroundResource(R.drawable.lightmagnifying)
+        }
+
+        fun darkDominant() {
+            buttonMG!!.setBackgroundResource(R.drawable.darkmagnifying)
+        }
+
+        if (MainActivity.isThemeDark) {
+            darkDominant()
+        } else {
+            lightDominant()
+        }
+
+    }
 }
-
-//class UISearchMagnifyGlass:UICButton {
-//
-//    var label:UICLabel?
-//    var targetFrames:[Target:CGRect] = [:];
-//    var previousTarget:Target?
-//    var nextTarget:Target?
-//    var transitionAnimation:UIViewPropertyAnimator?
-//
-//    init(parentView:UIView, frame:CGRect) {
-//        super.init(parentView: parentView, frame: frame, backgroundColor: UIColor.clear);
-//        self.layer.borderWidth = 0.0;
-//        self.alpha = 0.0;
-//        setupLabel();
-//        setupTargetFrames(parentView);
-//        setupTransitionAnimation();
-//        setThisStyle();
-//    }
-//
-//    func setupLabel() {
-//        let height:CGFloat = frame.height * 0.25;
-//        label = UICLabel(parentView: self, x: 0.0, y: frame.height * 0.9, width: frame.width, height: height * 2.0)
-//        label!.backgroundColor = UIColor.clear;
-//        label!.numberOfLines = 2;
-//        label!.lineBreakMode = NSLineBreakMode.byWordWrapping;
-//        label!.text = "Searching for\nOpponent";
-//        label!.font = UIFont.boldSystemFont(ofSize: height * 0.65);
-//    }
-//
-//    func setupTransitionAnimation() {
-//        setNextTarget();
-//        transitionAnimation = UIViewPropertyAnimator(duration: 1.5, curve: .easeInOut, animations: {
-//            self.frame = self.targetFrames[self.nextTarget!]!;
-//        })
-//        transitionAnimation!.addCompletion({ _ in
-//                self.setupTransitionAnimation();
-//            self.transitionAnimation!.startAnimation();
-//        })
-//    }
-//
-//    func startAnimation() {
-//        self.superview!.bringSubviewToFront(self);
-//        self.transitionAnimation!.startAnimation();
-//        self.alpha = 1.0;
-//    }
-//
-//    func setThisStyle() {
-//        if (UIScreen.main.traitCollection.userInterfaceStyle.rawValue == 1) {
-//            self.setImage(UIImage(named: "lightMagnifyGlass.png"), for: .normal);
-//            label!.textColor = UIColor.black;
-//        } else {
-//            self.setImage(UIImage(named: "darkMagnifyGlass.png"), for: .normal);
-//            label!.textColor = UIColor.white;
-//        }
-//        self.imageView!.contentMode = UIView.ContentMode.scaleAspectFit;
-//    }
-//
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
-//}
