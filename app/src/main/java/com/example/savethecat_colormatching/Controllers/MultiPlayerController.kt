@@ -157,7 +157,7 @@ class SearchMG(button: Button,
             MGPosition.TOPLEFT, MGPosition.TOPRIGHT,
             MGPosition.BOTTOMLEFT, MGPosition.BOTTOMRIGHT, MGPosition.CENTER
         )
-        var index: Int = -1
+        var index: Int
         if (nextTarget != null) {
             index = targets.indexOf(nextTarget!!)
             targets.removeAt(index)
@@ -175,7 +175,6 @@ class SearchMG(button: Button,
     private var transitionYAnimator: ValueAnimator? = null
     private fun setupTransitionAnimation() {
         setNextTarget()
-
         transitionXAnimator = ValueAnimator.ofInt(getThisParams().x, getNextTargetParams().x)
         transitionXAnimator!!.addUpdateListener {
             buttonMG!!.layoutParams = LayoutParams(
@@ -192,6 +191,7 @@ class SearchMG(button: Button,
             buttonMG!!.bringToFront()
         }
         transitionAnimatorSet = AnimatorSet()
+        transitionAnimatorSet!!.play(transitionXAnimator!!).with(transitionYAnimator!!)
         transitionAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         transitionAnimatorSet!!.duration = 1500
         transitionAnimatorSet!!.doOnEnd {
@@ -200,7 +200,25 @@ class SearchMG(button: Button,
         }
     }
 
-    private fun startSearchingAnimation() {
+    private var fadeAnimator:ValueAnimator? = null
+    private fun fade(out:Boolean) {
+        if (fadeAnimator != null) {
+            fadeAnimator!!.cancel()
+        }
+        fadeAnimator = if (out) {
+            ValueAnimator.ofFloat(buttonMG!!.alpha, 0f)
+        } else {
+            ValueAnimator.ofFloat(buttonMG!!.alpha, 1f)
+        }
+        fadeAnimator!!.addUpdateListener {
+            buttonMG!!.alpha = (it.animatedValue as Float)
+        }
+        fadeAnimator!!.duration = 1000
+        fadeAnimator!!.start()
+    }
+
+    fun startSearchingAnimation() {
+        fade(false)
         transitionAnimatorSet!!.start()
     }
 

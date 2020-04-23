@@ -543,6 +543,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         multiPlayerButton!!.getThis().setOnClickListener {
             if (MainActivity.mpController != null) {
                 MainActivity.mpController!!.connect()
+                searchMG!!.startSearchingAnimation()
             } else {
                 MainActivity.mpController!!.displayFailureReason()
             }
