@@ -120,21 +120,24 @@ class SearchMG(button: Button,
 
     private fun setupTargetParams(topLeft: Pair<Int, Int>, bottomRight: Pair<Int, Int>) {
         targetParams!![MGPosition.TOPLEFT] = LayoutParams(
-            originalParams!!.width,
-            originalParams!!.height, topLeft.first, topLeft.second
+            originalParams!!.width, originalParams!!.height,
+            topLeft.first + (originalParams!!.width * 0.15).toInt(),
+            topLeft.second + (originalParams!!.height * 0.15).toInt()
         )
         targetParams!![MGPosition.TOPRIGHT] = LayoutParams(
-            originalParams!!.width,
-            originalParams!!.height, bottomRight.first - originalParams!!.width, topLeft.second
+            originalParams!!.width, originalParams!!.height,
+            bottomRight.first - (originalParams!!.width * 1.15).toInt(),
+            topLeft.second + (originalParams!!.height * 0.15).toInt()
         )
         targetParams!![MGPosition.BOTTOMLEFT] = LayoutParams(
-            originalParams!!.width,
-            originalParams!!.height, topLeft.first, bottomRight.second - originalParams!!.height
+            originalParams!!.width, originalParams!!.height,
+            topLeft.first + (originalParams!!.width * 0.15).toInt(),
+            bottomRight.second - (originalParams!!.height * 1.15).toInt()
         )
         targetParams!![MGPosition.BOTTOMRIGHT] = LayoutParams(
-            originalParams!!.width,
-            originalParams!!.height, bottomRight.first - originalParams!!.width,
-            bottomRight.second - originalParams!!.height
+            originalParams!!.width, originalParams!!.height,
+            bottomRight.first - (originalParams!!.width * 1.15).toInt(),
+            bottomRight.second - (originalParams!!.height * 1.15).toInt()
         )
     }
 
