@@ -39,19 +39,38 @@ class MPController {
             }
 
             override fun onDataChange(ds: DataSnapshot) {
+                if (roomReference == null) {
+                   removeOldUsers(ds)
+                }
                 roomsCount = ds.children.count()
-                val children: List<DataSnapshot> = ds.children.filter { dataSnapshot ->
-                    dataSnapshot.key!! == MainActivity.playerID()
-                }
-                if (children.count() != 0) {
-                    database!!.getReference(
-                        "rooms/${MainActivity.playerID()}/"
-                    ).removeValue()
-                }
             }
         }
         roomsReference = database!!.getReference("rooms/")
         roomsReference!!.addValueEventListener(RoomsValueListener())
+    }
+
+    private fun removeOldUsers(ds:DataSnapshot) {
+        // Remove your previous self
+        var children: List<DataSnapshot> = ds.children.filter { dataSnapshot ->
+            dataSnapshot.key!! == MainActivity.playerID()
+        }
+        if (children.count() != 0) {
+            database!!.getReference("rooms/${MainActivity.playerID()}/player1").removeValue()
+            database!!.getReference("rooms/${MainActivity.playerID()}/player2").removeValue()
+            database!!.getReference("rooms/${MainActivity.playerID()}/whenCreated").removeValue()
+        }
+        // Remove others
+        children = ds.children.filter {
+                dataSnapshot -> (
+                (dataSnapshot.child("whenCreated").value as Long) < System.currentTimeMillis() - 30000 )
+        }
+        if (children.count() > 0) {
+            for (child in children) {
+                database!!.getReference("rooms/${child.key!!}/player1").removeValue()
+                database!!.getReference("rooms/${child.key!!}/player2").removeValue()
+                database!!.getReference("rooms/${child.key!!}/whenCreated").removeValue()
+            }
+        }
     }
 
     fun didGetPlayerID(): Boolean {
@@ -59,26 +78,34 @@ class MPController {
     }
 
     fun connect() {
-        buildRoom(roomsCount > 1)
+        setupRoom(roomsCount > 1)
         startValueAnimatorTimer()
     }
 
     fun disconnect() {
         BoardGame.searchMG!!.stopAnimation()
-        roomReference?.removeValue()
+        removeValues(MainActivity.playerID())
         Log.i("MPCONTROLLER", "DISCONNECT")
+    }
+
+    private fun removeValues(playerID:String) {
+        if (roomReference != null) {
+            database!!.getReference("rooms/$playerID/player1").removeValue()
+            database!!.getReference("rooms/$playerID/player2").removeValue()
+            database!!.getReference("rooms/$playerID/whenCreated").removeValue()
+        }
     }
 
     private fun startValueAnimatorTimer() {
         valueAnimatorTimer = ValueAnimator.ofFloat(0f, 1f)
-        valueAnimatorTimer!!.duration = 60000
+        valueAnimatorTimer!!.duration = 30000
         valueAnimatorTimer!!.start()
         valueAnimatorTimer!!.doOnEnd {
             disconnect()
         }
     }
 
-    private fun buildRoom(toJoin:Boolean) {
+    private fun setupRoom(toJoin:Boolean) {
         class RoomValueListener:ValueEventListener {
             override fun onCancelled(de: DatabaseError) {
                 Log.i("MPCONTROLLER", "CANCELED ROOM")
@@ -89,15 +116,35 @@ class MPController {
                 Log.i("MPCONTROLLER", "MY ROOM CREATED")
             }
         }
-        roomReference = if (toJoin) {
-            database!!.getReference(
-                "rooms/" + getRoomNameToJoin() + "/player2")
+        if (toJoin) {
+           joinRoom()
         } else {
-            database!!.getReference(
-                "rooms/" + MainActivity.playerID() + "/player1")
+            createRoom()
         }
+        addTimeStamp()
         roomReference!!.addValueEventListener(RoomValueListener())
-        roomReference!!.setValue(MainActivity.displayName())
+    }
+
+    private fun addTimeStamp() {
+        database!!.getReference(
+            "rooms/" + MainActivity.playerID() + "/whenCreated"
+        ).setValue(System.currentTimeMillis())
+    }
+
+    private fun createRoom() {
+        roomReference = database!!.getReference(
+            "rooms/" + MainActivity.playerID() + "/"
+        )
+        database!!.getReference(
+            "rooms/" + MainActivity.playerID() + "/player1"
+        ).setValue(MainActivity.displayName())
+    }
+
+    private fun joinRoom() {
+        roomReference = database!!.getReference("rooms/" + getRoomNameToJoin() + "/")
+        database!!.getReference(
+            "rooms/" + MainActivity.playerID() + "/player2"
+        ).setValue(MainActivity.displayName())
     }
 
     private fun getRoomNameToJoin():String {
