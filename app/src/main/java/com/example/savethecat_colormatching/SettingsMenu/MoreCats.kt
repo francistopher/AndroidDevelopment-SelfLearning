@@ -217,8 +217,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             }
         }
         if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
-            MoreCats.myCatsString = tempMyCats
-            MainActivity.fbController!!.setDocumentData()
+            myCatsString = tempMyCats
+            MainActivity.gdController!!.uploadMyCatsData()
         } else {
             displayFailureReason()
         }

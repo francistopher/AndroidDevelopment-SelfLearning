@@ -75,12 +75,19 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var isGooglePlayGameServicesAvailable:Boolean = false
         private var isCatDismissed:Boolean = false
         var localPlayer:Player? = null
+        fun playerID():String {
+            return localPlayer!!.playerId
+        }
+        fun displayName():String {
+            return localPlayer!!.displayName
+        }
         var signedInAccount:GoogleSignInAccount? = null
         var googleApiClient:GoogleApiClient? = null
 
         // Multi Player Controller
-        var fbController:FireBaseController? = null
+        var gdController:GameDataController? = null
         var mpController:MPController? = null
+
 
     }
 
@@ -204,7 +211,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             isInternetReachable = true
             gameNotification!!.displayYesInternet()
             // Load game data
-            setupFBController()
+            setupGDController()
             setupMPController()
         } else {
             if (settingsButton != null && settingsButton!!.getThis().alpha > 0f) {
@@ -219,15 +226,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
     }
 
-    private fun setupFBController() {
-        if (fbController == null) {
-            fbController = FireBaseController()
+    private fun setupGDController() {
+        if (gdController == null) {
+            gdController = GameDataController()
         }
-        if (signedInAccount != null && fbController != null &&
-            !fbController!!.didGetPlayerID()) {
-            fbController!!.setPlayerID(localPlayer!!.playerId)
-        } else {
-            fbController!!.getDocumentData()
+        if (signedInAccount != null && gdController != null &&
+            !gdController!!.didSetupAlready()) {
+            gdController!!.setup()
         }
     }
 
@@ -235,9 +240,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         if (mpController == null) {
             mpController = MPController()
         }
-        if (signedInAccount != null && mpController != null &&
-                !mpController!!.didGetPlayerID()) {
-            mpController!!.connectToClient(localPlayer!!.playerId, localPlayer!!.displayName)
+        if (signedInAccount != null && mpController != null && !mpController!!.didGetPlayerID()) {
+            mpController!!.setup()
         }
     }
 
@@ -291,6 +295,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private fun setupGamePlayAuthentication(){
         signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
             .requestScopes(Drive.SCOPE_APPFOLDER)
+            .requestIdToken(getString(R.string.web_client_id))
             .build()
         val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(this, signInOptions!!)
         val intent: Intent = googleSignInClient.signInIntent
@@ -322,15 +327,19 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     private fun connectionToGooglePlayGamerServicesSucceeded() {
+        connectToGooglePLayServices()
+        LeaderBoard.setupLeaderBoard()
+        SettingsMenu.moreCatsButton!!.setupAchievementsClient()
+        setupGDController()
+        setupMPController()
         isCatDismissed = true
+    }
+
+    private fun connectToGooglePLayServices() {
         isGooglePlayGameServicesAvailable = true
         gameNotification!!.displayYesGooglePlayGameServices()
         googleApiClient = GoogleApiClient.Builder(this).enableAutoManage(this, this).
         addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions!!).addApi(Games.API).build()
-        LeaderBoard.setupLeaderBoard()
-        SettingsMenu.moreCatsButton!!.setupAchievementsClient()
-        setupFBController()
-        setupMPController()
     }
 
     private fun connectionToGooglePlayGamerServicesFailed() {

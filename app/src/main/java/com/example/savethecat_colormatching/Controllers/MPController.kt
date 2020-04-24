@@ -1,64 +1,102 @@
 package com.example.savethecat_colormatching.Controllers
 
-import android.os.Handler
-import android.os.Looper
+import android.animation.ValueAnimator
+import android.util.Log
+import androidx.core.animation.doOnEnd
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.BoardGame
-
+import com.google.firebase.database.*
 
 class MPController {
 
-    private val apiKey:String = "0d060465b202e38b86e0a96ac5ad2063e1cb6c4634bd7e89e26c8afb3aea24bc"
-    private val secretKey:String = "0d060465b202e38b86e0a96ac5ad2063e1cb6c4634bd7e89e26c8afb3aea24bc"
-
     companion object {
-        var connected:Boolean = false
-        var calledDisconnect:Boolean = false
-        var roomID:String = ""
-        var displayName:String = ""
-        var playerID:String = ""
+        var roomsCount:Int = -1
+        fun displayFailureReason() {
+            if (!MainActivity.isInternetReachable) {
+                MainActivity.gameNotification!!.displayNoInternet()
+            }
+            if (!MainActivity.isGooglePlayGameServicesAvailable) {
+                MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
+            }
+        }
     }
 
-    fun connectToClient(playerID:String, displayName:String) {
-        MPController.playerID = playerID
-        MPController.displayName = displayName
+    private var database: FirebaseDatabase? = null
+    private var roomsReference: DatabaseReference? = null
+    private var roomReference:DatabaseReference? = null
+    private var valueAnimatorTimer:ValueAnimator? = null
+
+    fun setup() {
+        database = FirebaseDatabase.getInstance()
+        setupRoomsReference()
     }
 
-    fun didGetPlayerID():Boolean {
-        return (playerID != "")
+    private fun setupRoomsReference() {
+        class RoomsValueListener:ValueEventListener {
+            override fun onCancelled(de: DatabaseError) {
+                Log.i("MPCONTROLLER", "CANCELED ROOMS")
+                displayFailureReason()
+            }
+            override fun onDataChange(ds: DataSnapshot) {
+                roomsCount = ds.children.count()
+                if (ds.child(MainActivity.playerID()).exists()) {
+                    Log.i("MPCONTROLLER", "I DON'T EXIST")
+                } else {
+                    Log.i("MPCONTROLLER", "I DO EXIST")
+                }
+                Log.i("MPCONTROLLER", "COUNT ROOMS $roomsCount")
+            }
+        }
+        roomsReference = database!!.getReference("rooms/")
+        roomsReference!!.addValueEventListener(RoomsValueListener())
     }
 
-    fun connectionDone() {
-        connected = true
-
+    fun didGetPlayerID(): Boolean {
+        return (database != null)
     }
 
     fun connect() {
-        if (MainActivity.isGooglePlayGameServicesAvailable && MainActivity.isInternetReachable) {
-            // connecting function
-        } else {
-            displayFailureReason()
-        }
+        buildRoom(roomsCount > 1)
+        startValueAnimatorTimer()
     }
 
     fun disconnect() {
-        if (MainActivity.isGooglePlayGameServicesAvailable && MainActivity.isInternetReachable) {
-            calledDisconnect = true
-            // disconnecting function
-            Handler(Looper.getMainLooper()).post {
-                BoardGame.searchMG?.stopAnimation()
-            }
-        } else {
-            displayFailureReason()
+        BoardGame.searchMG!!.stopAnimation()
+    }
+
+    private fun startValueAnimatorTimer() {
+        valueAnimatorTimer = ValueAnimator.ofFloat(0f, 1f)
+        valueAnimatorTimer!!.duration = 60000
+        valueAnimatorTimer!!.start()
+        valueAnimatorTimer!!.doOnEnd {
+            roomReference!!.removeValue()
+            disconnect()
         }
     }
 
-    fun displayFailureReason() {
-        if (!MainActivity.isInternetReachable) {
-            MainActivity.gameNotification!!.displayNoInternet()
+    private fun buildRoom(toJoin:Boolean) {
+        class RoomValueListener:ValueEventListener {
+            override fun onCancelled(de: DatabaseError) {
+                Log.i("MPCONTROLLER", "CANCELED ROOM")
+                BoardGame.searchMG!!.stopAnimation()
+                displayFailureReason()
+            }
+            override fun onDataChange(ds: DataSnapshot) {
+                Log.i("MPCONTROLLER", "MY ROOM CREATED")
+            }
         }
-        if (!MainActivity.isGooglePlayGameServicesAvailable) {
-            MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
+        roomReference = if (toJoin) {
+            database!!.getReference(
+                "rooms/" + getRoomNameToJoin() + "/player2")
+        } else {
+            database!!.getReference(
+                "rooms/" + MainActivity.playerID() + "/player1")
         }
+        roomReference!!.addValueEventListener(RoomValueListener())
+        roomReference!!.setValue(MainActivity.displayName())
+    }
+
+    private fun getRoomNameToJoin():String {
+        return "room"
     }
 }

@@ -469,8 +469,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
-            // Disconnect
-            MainActivity.mpController!!.disconnect()
             // Contract settings menu if opened
             MainActivity.settingsButton!!.forceSettingsMenuContraction()
             // Reset attack meter attack duration
@@ -539,11 +537,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         multiPlayerButton!!.fade(true, false, 0.5f, 0.125f)
         multiPlayerButton!!.getThis().setOnClickListener {
             if (MainActivity.mpController != null) {
-                MPController.calledDisconnect = false
-                MainActivity.mpController!!.connect()
                 searchMG!!.startSearchingAnimation()
+                MainActivity.mpController!!.connect()
             } else {
-                MainActivity.mpController!!.displayFailureReason()
+                MPController.displayFailureReason()
             }
         }
     }
