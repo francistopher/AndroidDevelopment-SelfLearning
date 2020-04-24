@@ -20,6 +20,8 @@ class MPController {
         }
     }
 
+    private var isPlaying:Boolean = false
+    private var isPlayerA:Boolean = false
     private var database: FirebaseDatabase? = null
     private var roomsReference: DatabaseReference? = null
     private var roomReference:DatabaseReference? = null
@@ -88,6 +90,7 @@ class MPController {
     }
 
     fun startPlaying() {
+        isPlaying = true
         BoardGame.searchMG!!.stopAnimation()
         Log.i("MPCONTROLLER", "START PLAYING")
     }
@@ -107,7 +110,6 @@ class MPController {
         }
     }
 
-    private var isPlaying:Boolean = false
     private fun startValueAnimatorTimer() {
         valueAnimatorTimer = ValueAnimator.ofFloat(0f, 1f)
         valueAnimatorTimer!!.duration = 30000
@@ -128,7 +130,6 @@ class MPController {
             }
             override fun onDataChange(ds: DataSnapshot) {
                 if (ds.children.count() == 3) {
-                    isPlaying = true
                     startPlaying()
                 }
             }
@@ -151,11 +152,13 @@ class MPController {
             database!!.getReference(
                 "rooms/" + getRoomNameToJoin() + "/whenCreated"
             ).setValue((-1).toLong())
+            isPlayerA = false
             "playerB"
         } else {
             database!!.getReference(
                 "rooms/" + getRoomNameToJoin() + "/whenCreated"
             ).setValue(System.currentTimeMillis())
+            isPlayerA = true
             "playerA"
         }
     }

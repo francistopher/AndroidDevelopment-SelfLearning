@@ -118,7 +118,7 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
                 }
                 if (isShowing) {
                     timerCount += 0.125
-                    if (timerCount > 4.0) {
+                    if (timerCount > 3.25) {
                         timerCount = 0.0
                         notificationQueue.removeAt(0)
                         if (notificationQueue.size == 0) {
@@ -306,6 +306,9 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         imageButtonSpawnY = y - difference
         imageButton!!.layoutParams = LayoutParams(width, height, x, y)
         parentLayout!!.addView(imageButton!!)
+        imageButton!!.setOnClickListener {
+            timerCount = 3.5
+        }
     }
 
     private fun setupMessageLabel() {
@@ -319,6 +322,9 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         messageLabel!!.textSize = height * 0.15f
         messageLabel!!.gravity = Gravity.CENTER
         messageLabel!!.setTextColor(Color.WHITE)
+        messageLabel!!.setOnClickListener {
+            timerCount = 3.5
+        }
     }
 
 }

@@ -210,6 +210,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             }
             isInternetReachable = true
             gameNotification!!.displayYesInternet()
+            gameNotification!!.displayFirebaseConnected()
             // Load game data
             setupGDController()
             setupMPController()
