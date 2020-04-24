@@ -21,6 +21,8 @@ class MPController {
         var opponent:String = ""
     }
 
+    private var searchTimeInMilli:Long = 30000
+    private var pairedTimeInMilli:Long = 1800000
     private var isPlaying:Boolean = false
     private var isPlayerA:Boolean = false
     private var database: FirebaseDatabase? = null
@@ -59,21 +61,32 @@ class MPController {
         var children: List<DataSnapshot> = ds.children.filter { dataSnapshot ->
             dataSnapshot.key!! == MainActivity.playerID()
         }
+        fun removeValues() {
+            if (children.count() > 0) {
+                for (child in children) {
+                    forcedRemoveValues(child.key!!)
+                }
+            }
+        }
         if (children.count() != 0) {
             forcedRemoveValues(MainActivity.playerID())
         }
-        // Remove others
+        // Remove others unpaired
         children = ds.children.filter {
                 dataSnapshot -> (
-                (dataSnapshot.child("whenCreated").value as Long) < System.currentTimeMillis() - 30000
-                        && (dataSnapshot.child("whenCreated").value as Long) != (-1).toLong()
-                )
+                (dataSnapshot.child("whenCreated").value as Long)
+                        < System.currentTimeMillis() - searchTimeInMilli
+                        && (dataSnapshot.children.count() == 2))
         }
-        if (children.count() > 0) {
-            for (child in children) {
-                forcedRemoveValues(child.key!!)
-            }
+        removeValues()
+        // Remove paired
+        children = ds.children.filter {
+                dataSnapshot -> (
+                (dataSnapshot.child("whenCreated").value as Long)
+                        < System.currentTimeMillis() - pairedTimeInMilli
+                        && (dataSnapshot.children.count() > 2))
         }
+        removeValues()
     }
 
 
