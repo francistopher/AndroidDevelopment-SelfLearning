@@ -15,6 +15,7 @@ import android.widget.Button
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
+import com.example.savethecat_colormatching.Controllers.MPController
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
@@ -170,6 +171,10 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         addToNotificationQueue(Notification.FIREBASE_CONNECTED)
     }
 
+    fun displayGameOpponent() {
+        addToNotificationQueue(Notification.PLAYING_AGAINST)
+    }
+
     var spannableString = SpannableString("")
     private fun setNotificationDisplayed() {
         if (notificationQueue[0] == Notification.YES_GOOGLE_PLAY_GAME) {
@@ -217,6 +222,10 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         } else if (notificationQueue[0] == Notification.FIREBASE_CONNECTED) {
             spannableString = SpannableString("Able to connect\nto Firebase to " +
                     "operate\nGame Data!!!")
+            imageButton!!.setBackgroundResource(R.drawable.firebase)
+        } else if (notificationQueue[0] == Notification.PLAYING_AGAINST) {
+            spannableString = SpannableString("Playing against,\n" +
+                    MPController.opponent)
             imageButton!!.setBackgroundResource(R.drawable.firebase)
         }
 

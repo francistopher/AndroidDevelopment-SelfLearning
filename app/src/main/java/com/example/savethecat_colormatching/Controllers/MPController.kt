@@ -18,6 +18,7 @@ class MPController {
                 MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
             }
         }
+        var opponent:String = ""
     }
 
     private var isPlaying:Boolean = false
@@ -47,7 +48,6 @@ class MPController {
                 roomsReadyToJoin = ds.children.filter {
                         dataSnapshot -> !dataSnapshot.hasChild("player2")
                 }
-                Log.i("MPController", "Rooms Count" + roomsReadyToJoin!!.count().toString())
             }
         }
         roomsReference = database!!.getReference("rooms/")
@@ -60,9 +60,7 @@ class MPController {
             dataSnapshot.key!! == MainActivity.playerID()
         }
         if (children.count() != 0) {
-            database!!.getReference("rooms/${MainActivity.playerID()}/player1").removeValue()
-            database!!.getReference("rooms/${MainActivity.playerID()}/player2").removeValue()
-            database!!.getReference("rooms/${MainActivity.playerID()}/whenCreated").removeValue()
+            forcedRemoveValues(MainActivity.playerID())
         }
         // Remove others
         children = ds.children.filter {
@@ -73,12 +71,12 @@ class MPController {
         }
         if (children.count() > 0) {
             for (child in children) {
-                database!!.getReference("rooms/${child.key!!}/player1").removeValue()
-                database!!.getReference("rooms/${child.key!!}/player2").removeValue()
-                database!!.getReference("rooms/${child.key!!}/whenCreated").removeValue()
+                forcedRemoveValues(child.key!!)
             }
         }
     }
+
+
 
     fun didGetPlayerID(): Boolean {
         return (database != null)
@@ -92,6 +90,7 @@ class MPController {
     fun startPlaying() {
         isPlaying = true
         BoardGame.searchMG!!.stopAnimation()
+        MainActivity.gameNotification!!.displayGameOpponent()
         Log.i("MPCONTROLLER", "START PLAYING")
     }
 
@@ -100,6 +99,12 @@ class MPController {
             BoardGame.searchMG!!.stopAnimation()
             removeValues(MainActivity.playerID())
         }
+    }
+
+    private fun forcedRemoveValues(playerID: String) {
+        database!!.getReference("rooms/$playerID/playerA").removeValue()
+        database!!.getReference("rooms/$playerID/playerB").removeValue()
+        database!!.getReference("rooms/$playerID/whenCreated").removeValue()
     }
 
     private fun removeValues(playerID:String) {
@@ -130,6 +135,11 @@ class MPController {
             }
             override fun onDataChange(ds: DataSnapshot) {
                 if (ds.children.count() == 3) {
+                    if (isPlayerA) {
+                        opponent = ds.child("playerB").value as String
+                    } else {
+                        opponent = ds.child("playerA").value as String
+                    }
                     startPlaying()
                 }
             }
@@ -139,12 +149,15 @@ class MPController {
     }
 
     private fun createOrJoinRoom() {
+        if (roomsReadyToJoin!!.count() <= 0) {
+            forcedRemoveValues(MainActivity.playerID())
+        }
         roomReference = database!!.getReference(
             "rooms/" + getRoomNameToJoin() + "/"
         )
         database!!.getReference(
             "rooms/" + getRoomNameToJoin() + "/${getPlayer()}"
-        ).setValue(getRoomNameToJoin())
+        ).setValue(MainActivity.displayName())
     }
 
     private fun getPlayer():String {
