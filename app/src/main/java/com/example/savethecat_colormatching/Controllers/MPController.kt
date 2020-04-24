@@ -37,14 +37,17 @@ class MPController {
                 Log.i("MPCONTROLLER", "CANCELED ROOMS")
                 displayFailureReason()
             }
+
             override fun onDataChange(ds: DataSnapshot) {
                 roomsCount = ds.children.count()
-                if (ds.child(MainActivity.playerID()).exists()) {
-                    Log.i("MPCONTROLLER", "I DON'T EXIST")
-                } else {
-                    Log.i("MPCONTROLLER", "I DO EXIST")
+                val children: List<DataSnapshot> = ds.children.filter { dataSnapshot ->
+                    dataSnapshot.key!! == MainActivity.playerID()
                 }
-                Log.i("MPCONTROLLER", "COUNT ROOMS $roomsCount")
+                if (children.count() != 0) {
+                    database!!.getReference(
+                        "rooms/${MainActivity.playerID()}/"
+                    ).removeValue()
+                }
             }
         }
         roomsReference = database!!.getReference("rooms/")
@@ -62,6 +65,8 @@ class MPController {
 
     fun disconnect() {
         BoardGame.searchMG!!.stopAnimation()
+        roomReference?.removeValue()
+        Log.i("MPCONTROLLER", "DISCONNECT")
     }
 
     private fun startValueAnimatorTimer() {
@@ -69,7 +74,6 @@ class MPController {
         valueAnimatorTimer!!.duration = 60000
         valueAnimatorTimer!!.start()
         valueAnimatorTimer!!.doOnEnd {
-            roomReference!!.removeValue()
             disconnect()
         }
     }
