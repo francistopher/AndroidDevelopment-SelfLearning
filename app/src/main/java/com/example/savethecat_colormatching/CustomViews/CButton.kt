@@ -14,6 +14,7 @@ import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.ParticularViews.BoardGame
 
 
 class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -34,6 +35,8 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
 
     private var parentLayout:AbsoluteLayout? = null
     var isBorderGold:Boolean = false
+
+    var isTwoPlayerButton:Boolean = false
 
     private var lightImageR: Int = 0
     private var darkImageR: Int = 0
@@ -113,6 +116,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
     private var growWidthAndChangeColor: AnimatorSet? = null
     private var growWidthAnimator: ValueAnimator? = null
     private var transitionColorAnimator: ValueAnimator? = null
+    private var transitionXAnimator: ValueAnimator? = null
     private var fadeOutAnimator:ValueAnimator? = null
     var growWidthAndChangeColorIsRunning: Boolean = false
     fun growWidth(width: Float) {
@@ -123,15 +127,30 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
                 growWidthAndChangeColor = null
             }
         }
+        // Displace x transition
+        if (isTwoPlayerButton) {
+            transitionXAnimator = ValueAnimator.ofInt(getOriginalParams().x,
+                BoardGame.singlePlayerButton!!.getOriginalParams().x)
+            transitionXAnimator!!.addUpdateListener {
+                button!!.layoutParams = LayoutParams(
+                    (button!!.layoutParams as LayoutParams).width,
+                    getOriginalParams().height,
+                    (it.animatedValue as Int),
+                    getOriginalParams().y
+                )
+            }
+        }
+        // Grow width transition
         growWidthAnimator = ValueAnimator.ofFloat(originalParams!!.width.toFloat(), width)
         growWidthAnimator!!.addUpdateListener {
             button!!.layoutParams = LayoutParams(
                 (it.animatedValue as Float).toInt(),
                 getOriginalParams().height,
-                getOriginalParams().x,
+                (button!!.layoutParams as LayoutParams).x,
                 getOriginalParams().y
             )
         }
+        // Color animator transition
         transitionColorAnimator = ValueAnimator.ofArgb(getBackgroundColor(), targetBackgroundColor!!)
         transitionColorAnimator!!.addUpdateListener {
             button!!.setBackgroundColor(it.animatedValue as Int)
@@ -140,12 +159,17 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         }
         growWidthAndChangeColor = AnimatorSet()
         growWidthAndChangeColor!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
-        growWidthAndChangeColor!!.play(growWidthAnimator!!).with(transitionColorAnimator!!)
+        if (isTwoPlayerButton) {
+            growWidthAndChangeColor!!.play(growWidthAnimator!!).
+            with(transitionColorAnimator!!).with(transitionXAnimator!!)
+        } else {
+            growWidthAndChangeColor!!.play(growWidthAnimator!!).
+            with(transitionColorAnimator!!)
+        }
         growWidthAndChangeColor!!.duration = 1000
         growWidthAndChangeColor!!.startDelay = 125
         growWidthAndChangeColorIsRunning = true
         growWidthAndChangeColor!!.start()
-
         growWidthAndChangeColor!!.doOnEnd {
             growWidthAndChangeColorIsRunning = false
             fadeOutAnimator = ValueAnimator.ofFloat(1f, 0f)

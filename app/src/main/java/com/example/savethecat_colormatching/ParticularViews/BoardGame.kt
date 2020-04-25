@@ -545,6 +545,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         getOriginalParams().width * 0.01) * 10.0) * 0.65).toInt())
         twoPlayerButton!!.setTextSize((twoPlayerButton!!.getOriginalParams().height * 0.175).
         toFloat())
+        twoPlayerButton!!.isTwoPlayerButton = true
         twoPlayerButton!!.shrinkType = ShrinkType.right
         twoPlayerButton!!.setText("Multi Player", false)
         twoPlayerButton!!.shrunk()
