@@ -20,16 +20,17 @@ class MPController {
         }
         var opponent:String = ""
         var isPlaying:Boolean = false
+        var isPlayerA:Boolean = false
     }
 
     private var searchTimeInMilli:Long = 30000
     private var pairedTimeInMilli:Long = 1800000
-    private var isPlayerA:Boolean = false
     private var database: FirebaseDatabase? = null
     private var roomsReference: DatabaseReference? = null
     private var roomReference:DatabaseReference? = null
     private var valueAnimatorTimer:ValueAnimator? = null
     private var roomsReadyToJoin:List<DataSnapshot>? = null
+    private var roomValueListener:RoomValueListener? = null
 
     fun setup() {
         database = FirebaseDatabase.getInstance()
@@ -89,8 +90,6 @@ class MPController {
         removeValues()
     }
 
-
-
     fun didGetPlayerID(): Boolean {
         return (database != null)
     }
@@ -110,6 +109,7 @@ class MPController {
 
     fun disconnect() {
         if (!isPlaying) {
+            roomReference!!.removeEventListener(roomValueListener!!)
             BoardGame.searchMG!!.stopAnimation()
             removeValues(MainActivity.playerID())
         }
@@ -140,26 +140,28 @@ class MPController {
         }
     }
 
-    private fun setupRoom() {
-        class RoomValueListener:ValueEventListener {
-            override fun onCancelled(de: DatabaseError) {
-                Log.i("MPCONTROLLER", "CANCELED ROOM")
-                BoardGame.searchMG!!.stopAnimation()
-                displayFailureReason()
-            }
-            override fun onDataChange(ds: DataSnapshot) {
-                if (ds.children.count() == 3) {
-                    if (isPlayerA) {
-                        opponent = ds.child("playerB").value as String
-                    } else {
-                        opponent = ds.child("playerA").value as String
-                    }
-                    startPlaying()
+    class RoomValueListener:ValueEventListener {
+        override fun onCancelled(de: DatabaseError) {
+            Log.i("MPCONTROLLER", "CANCELED ROOM")
+            BoardGame.searchMG!!.stopAnimation()
+            displayFailureReason()
+        }
+        override fun onDataChange(ds: DataSnapshot) {
+            if (ds.children.count() == 3) {
+                if (isPlayerA) {
+                    opponent = ds.child("playerB").value as String
+                } else {
+                    opponent = ds.child("playerA").value as String
                 }
+                MainActivity.mpController!!.startPlaying()
             }
         }
+    }
+
+    private fun setupRoom() {
         createOrJoinRoom()
-        roomReference!!.addValueEventListener(RoomValueListener())
+        roomValueListener = RoomValueListener()
+        roomReference!!.addValueEventListener(roomValueListener!!)
     }
 
     private fun createOrJoinRoom() {
