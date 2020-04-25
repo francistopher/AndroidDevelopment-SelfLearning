@@ -19,11 +19,11 @@ class MPController {
             }
         }
         var opponent:String = ""
+        var isPlaying:Boolean = false
     }
 
     private var searchTimeInMilli:Long = 30000
     private var pairedTimeInMilli:Long = 1800000
-    private var isPlaying:Boolean = false
     private var isPlayerA:Boolean = false
     private var database: FirebaseDatabase? = null
     private var roomsReference: DatabaseReference? = null

@@ -233,6 +233,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     private fun gameOver() {
+        MPController.isPlaying = false
+        MainActivity.mpController!!.disconnect()
         MainActivity.opponentLivesMeter!!.translate(false)
         // Examine the score
         LeaderBoard.examineScore(GameResults.savedCatButtonsCount.toLong())
