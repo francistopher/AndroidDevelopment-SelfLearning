@@ -101,22 +101,24 @@ class MPController {
 
     fun startPlaying() {
         isPlaying = true
+        setLivesLeft(1)
         BoardGame.searchMG!!.stopAnimation()
-        replaceNameWithLives("1")
         MainActivity.gameNotification!!.displayGameOpponent()
         MainActivity.boardGame!!.startTwoPlayerMatch()
         Log.i("MPCONTROLLER", "START PLAYING")
     }
 
-    private fun replaceNameWithLives(livesLeft:String) {
-        if (isPlayerA!!) {
-            database!!.getReference(
-                "rooms/${getRoomNameToJoin()}/playerALives"
-            ).setValue(livesLeft)
-        } else {
-            database!!.getReference(
-                "rooms/${getRoomNameToJoin()}/playerBLives"
-            ).setValue(livesLeft)
+    fun setLivesLeft(livesLeft:Long) {
+        if (isPlaying) {
+            if (isPlayerA!!) {
+                database!!.getReference(
+                    "rooms/${getRoomNameToJoin()}/playerALives"
+                ).setValue(livesLeft)
+            } else {
+                database!!.getReference(
+                    "rooms/${getRoomNameToJoin()}/playerBLives"
+                ).setValue(livesLeft)
+            }
         }
     }
 
@@ -124,6 +126,11 @@ class MPController {
         if (!isPlaying) {
             roomReference?.removeEventListener(roomValueListener!!)
             BoardGame.searchMG!!.stopAnimation()
+        }
+    }
+
+    fun closeRoom() {
+        if (!isPlaying) {
             removeValues(MainActivity.playerID())
         }
     }
@@ -165,12 +172,22 @@ class MPController {
         }
         override fun onDataChange(ds: DataSnapshot) {
             if (ds.children.count() == 3) {
-                if (isPlayerA!!) {
-                    opponent = ds.child("playerB").value as String
+                opponent = if (isPlayerA!!) {
+                    ds.child("playerB").value as String
                 } else {
-                    opponent = ds.child("playerA").value as String
+                    ds.child("playerA").value as String
                 }
                 MainActivity.mpController!!.startPlaying()
+            } else if (ds.children.count() == 5) {
+                if (isPlayerA!!) {
+                    if ((ds.child("playerBLives").value as Long) < 1) {
+                        MainActivity.boardGame!!.wonMultiPlayer()
+                    }
+                } else {
+                    if ((ds.child("playerALives").value as Long) < 1) {
+                        MainActivity.boardGame!!.wonMultiPlayer()
+                    }
+                }
             }
         }
     }
