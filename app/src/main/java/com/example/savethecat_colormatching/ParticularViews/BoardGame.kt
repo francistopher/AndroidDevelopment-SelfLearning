@@ -577,7 +577,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         MainActivity.successGradientView!!.alpha = 0f
                         MainActivity.glovePointer!!.fadeIn()
                         MainActivity.gameResults!!.fadeOut()
-//                        startGame()
+                        startGame()
                     }
                 }
             }, 1250)

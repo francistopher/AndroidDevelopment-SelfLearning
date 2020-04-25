@@ -33,21 +33,25 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         var moreCatsButton: MoreCats? = null
 
         fun looseMouseCoin() {
-            val mcButton:LayoutParams = mouseCoinButton!!.
-            getThis().layoutParams as LayoutParams
-           val x:Int = if ((0..1).random() == 0) {
-                (0..(MainActivity.dWidth * 0.5).toInt()).random()
-            } else {
-                ((MainActivity.dWidth * 0.5).toInt()..(MainActivity.dWidth.toInt() -
-                        mcButton.width)).random()
+            if (MCView.mouseCoinCount > 0) {
+                val mcButton: LayoutParams =
+                    mouseCoinButton!!.getThis().layoutParams as LayoutParams
+                val x: Int = if ((0..1).random() == 0) {
+                    (0..(MainActivity.dWidth * 0.5).toInt()).random()
+                } else {
+                    ((MainActivity.dWidth * 0.5).toInt()..(MainActivity.dWidth.toInt() -
+                            mcButton.width)).random()
+                }
+                MainActivity.mouseCoinView!!.updateCount(MCView.mouseCoinCount - 1)
+                com.example.savethecat_colormatching.Characters.MouseCoin(
+                    spawnParams = mcButton,
+                    targetParams = LayoutParams(
+                        mcButton.width, mcButton.height,
+                        x, MainActivity.dHeight.toInt()
+                    ),
+                    isEarned = false
+                )
             }
-            MainActivity.mouseCoinView!!.updateCount(MCView.mouseCoinCount - 1)
-            com.example.savethecat_colormatching.Characters.MouseCoin(
-                spawnParams = mcButton,
-                targetParams = LayoutParams(mcButton.width, mcButton.height,
-                    x, MainActivity.dHeight.toInt()),
-                isEarned = false
-            )
         }
     }
 
