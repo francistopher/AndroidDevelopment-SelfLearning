@@ -20,7 +20,7 @@ class MPController {
         }
         var opponent:String = ""
         var isPlaying:Boolean = false
-        var isPlayerA:Boolean = false
+        var isPlayerA:Boolean? = null
     }
 
     private var searchTimeInMilli:Long = 30000
@@ -31,6 +31,7 @@ class MPController {
     private var valueAnimatorTimer:ValueAnimator? = null
     private var roomsReadyToJoin:List<DataSnapshot>? = null
     private var roomValueListener:RoomValueListener? = null
+    private var roomName:String? = null
 
     fun setup() {
         database = FirebaseDatabase.getInstance()
@@ -43,7 +44,6 @@ class MPController {
                 Log.i("MPCONTROLLER", "CANCELED ROOMS")
                 displayFailureReason()
             }
-
             override fun onDataChange(ds: DataSnapshot) {
                 if (roomReference == null) {
                    removeOldUsers(ds)
@@ -102,14 +102,27 @@ class MPController {
     fun startPlaying() {
         isPlaying = true
         BoardGame.searchMG!!.stopAnimation()
+        replaceNameWithLives("1")
         MainActivity.gameNotification!!.displayGameOpponent()
         MainActivity.boardGame!!.startTwoPlayerMatch()
         Log.i("MPCONTROLLER", "START PLAYING")
     }
 
+    private fun replaceNameWithLives(livesLeft:String) {
+        if (isPlayerA!!) {
+            database!!.getReference(
+                "rooms/${getRoomNameToJoin()}/playerALives"
+            ).setValue(livesLeft)
+        } else {
+            database!!.getReference(
+                "rooms/${getRoomNameToJoin()}/playerBLives"
+            ).setValue(livesLeft)
+        }
+    }
+
     fun disconnect() {
         if (!isPlaying) {
-            roomReference!!.removeEventListener(roomValueListener!!)
+            roomReference?.removeEventListener(roomValueListener!!)
             BoardGame.searchMG!!.stopAnimation()
             removeValues(MainActivity.playerID())
         }
@@ -118,6 +131,8 @@ class MPController {
     private fun forcedRemoveValues(playerID: String) {
         database!!.getReference("rooms/$playerID/playerA").removeValue()
         database!!.getReference("rooms/$playerID/playerB").removeValue()
+        database!!.getReference("rooms/$playerID/playerALives").removeValue()
+        database!!.getReference("rooms/$playerID/playerBLives").removeValue()
         database!!.getReference("rooms/$playerID/whenCreated").removeValue()
     }
 
@@ -125,6 +140,8 @@ class MPController {
         if (roomReference != null) {
             database!!.getReference("rooms/$playerID/playerA").removeValue()
             database!!.getReference("rooms/$playerID/playerB").removeValue()
+            database!!.getReference("rooms/$playerID/playerALives").removeValue()
+            database!!.getReference("rooms/$playerID/playerBLives").removeValue()
             database!!.getReference("rooms/$playerID/whenCreated").removeValue()
         }
     }
@@ -148,7 +165,7 @@ class MPController {
         }
         override fun onDataChange(ds: DataSnapshot) {
             if (ds.children.count() == 3) {
-                if (isPlayerA) {
+                if (isPlayerA!!) {
                     opponent = ds.child("playerB").value as String
                 } else {
                     opponent = ds.child("playerA").value as String
@@ -177,26 +194,34 @@ class MPController {
     }
 
     private fun getPlayer():String {
-        return if (roomsReadyToJoin!!.count() > 0) {
-            database!!.getReference(
-                "rooms/" + getRoomNameToJoin() + "/whenCreated"
-            ).setValue(System.currentTimeMillis())
-            isPlayerA = false
-            "playerB"
-        } else {
-            database!!.getReference(
-                "rooms/" + getRoomNameToJoin() + "/whenCreated"
-            ).setValue(System.currentTimeMillis())
-            isPlayerA = true
+        return if (isPlayerA!!) {
+            setTimeCreated()
             "playerA"
+        } else {
+            setTimeCreated()
+            "playerB"
         }
     }
 
+    private fun setTimeCreated() {
+        database!!.getReference(
+            "rooms/" + getRoomNameToJoin() + "/whenCreated"
+        ).setValue(System.currentTimeMillis())
+    }
+
     private fun getRoomNameToJoin():String {
-        if (roomsReadyToJoin!!.count() > 0) {
-            return roomsReadyToJoin!!.random().key!!
+        return if (isPlayerA == null) {
+            if (roomsReadyToJoin!!.count() > 0) {
+                isPlayerA = false
+                roomName = roomsReadyToJoin!!.random().key!!
+                roomName!!
+            } else {
+                isPlayerA = true
+                roomName = MainActivity.playerID()
+                roomName!!
+            }
         } else {
-            return MainActivity.playerID()
+            roomName!!
         }
     }
 }
