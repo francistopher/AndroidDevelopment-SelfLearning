@@ -233,6 +233,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     private fun gameOver() {
+        MainActivity.opponentLivesMeter!!.translate(false)
         // Examine the score
         LeaderBoard.examineScore(GameResults.savedCatButtonsCount.toLong())
         // Glove pointer on watch ad button
@@ -243,6 +244,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         MainActivity.glovePointer!!.fadeIn()
         // Hide my lives meter heart button
         MainActivity.myLivesMeter!!.hideCurrentHeartButton()
+        MainActivity.opponentLivesMeter!!.hideCurrentHeartButton()
         // Show single and multi player button
         singlePlayerButton!!.backgroundColor = null
         singlePlayerButton!!.targetBackgroundColor = null
@@ -570,7 +572,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             decreaseMouseCoinsGiven()
             resetGlovePointer()
             playStartingAudio()
-            MainActivity.opponentLivesMeter!!.transform(true)
+            MainActivity.opponentLivesMeter!!.translate(true)
             twoPlayerButton!!.targetBackgroundColor = gridColors!![0][0]
             twoPlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
             singlePlayerButton!!.shrink()

@@ -205,18 +205,24 @@ class LivesMeter(meterView: View,
     }
 
     private var transformYAnimator:ValueAnimator? = null
-    fun transform(show:Boolean) {
+    fun translate(show:Boolean) {
         if (transformYAnimator != null) {
             transformYAnimator!!.cancel()
         }
         if (show) {
             if (MainActivity.dAspectRatio > 2.08) {
-                transformYAnimator = ValueAnimator.ofInt(y, x - originalParams!!.height)
+                transformYAnimator = ValueAnimator.ofInt(
+                    (meterView!!.layoutParams as LayoutParams).x, x - originalParams!!.height)
             } else {
                 transformYAnimator = ValueAnimator.ofInt(y, y + originalParams!!.height)
             }
         } else {
-            transformYAnimator = ValueAnimator.ofInt(y + originalParams!!.height, y)
+            if (MainActivity.dAspectRatio > 2.08) {
+                transformYAnimator = ValueAnimator.ofInt((
+                        meterView!!.layoutParams as LayoutParams).x, x)
+            } else {
+                transformYAnimator = ValueAnimator.ofInt(y + originalParams!!.height, y)
+            }
         }
         transformYAnimator!!.addUpdateListener {
             var params:LayoutParams?
