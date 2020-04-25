@@ -33,7 +33,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         var boardGameContext:Context? = null
         var boardGameLayout:AbsoluteLayout? = null
         var singlePlayerButton:CButton? = null
-        var multiPlayerButton:CButton? = null
+        var twoPlayerButton:CButton? = null
         var searchMG:SearchMG? = null
     }
 
@@ -250,16 +250,16 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         singlePlayerButton!!.shrunk()
         singlePlayerButton!!.grow(1f, 0.125f)
         singlePlayerButton!!.fadeIn()
-        multiPlayerButton!!.shrunk()
-        multiPlayerButton!!.grow(1f, 0.125f)
-        multiPlayerButton!!.fadeIn()
+        twoPlayerButton!!.shrunk()
+        twoPlayerButton!!.grow(1f, 0.125f)
+        twoPlayerButton!!.fadeIn()
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 MainActivity.staticSelf!!.runOnUiThread {
                     singlePlayerButton!!.getParentLayout().addView(singlePlayerButton!!.getThis())
-                    singlePlayerButton!!.getParentLayout().addView(multiPlayerButton!!.getThis())
+                    singlePlayerButton!!.getParentLayout().addView(twoPlayerButton!!.getThis())
                     singlePlayerButton!!.getThis().bringToFront()
-                    multiPlayerButton!!.getThis().bringToFront()
+                    twoPlayerButton!!.getThis().bringToFront()
                 }
             }
         }, 250)
@@ -469,33 +469,14 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
-            // Contract settings menu if opened
-            MainActivity.settingsButton!!.forceSettingsMenuContraction()
-            // Reset attack meter attack duration
-            MainActivity.attackMeter!!.resetDisplacementDuration()
-            // Decrease mouse coins given
-            if (GameResults.watchAdButtonWasSelected) {
-                GameResults.watchAdButtonWasSelected = false
-            }
-            if (GameResults.mouseCoinsEarned > 5 && !GameResults.watchAdButtonWasSelected) {
-                GameResults.mouseCoinsEarned -= 1
-            }
-            // Translate the glove pointer back to start
-            val x:Int = MainActivity.colorOptions!!.getOriginalParams().x -
-                    (MainActivity.dUnitHeight * 0.15).toInt()
-            val y:Int = MainActivity.colorOptions!!.getOriginalParams().y +
-                    (MainActivity.dUnitHeight * 0.175).toInt()
-            MainActivity.glovePointer!!.translate(x, y)
-            MainActivity.myLivesMeter!!.resetLivesLeftCount()
             if (!singlePlayerButton!!.growWidthAndChangeColorIsRunning) {
-                MainActivity.myLivesMeter!!.showCurrentHeartButton()
-                if (!AudioController.isMozartSonataPlaying()) {
-                    AudioController.mozartSonata(play = true, startOver = true)
-                    AudioController.chopinPrelude(play = false, startOver = false)
-                }
+                resetTopViews()
+                decreaseMouseCoinsGiven()
+                resetGlovePointer()
+                playStartingAudio()
                 singlePlayerButton!!.targetBackgroundColor = gridColors!![0][0]
                 singlePlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
-                multiPlayerButton!!.shrink()
+                twoPlayerButton!!.shrink()
                 Timer().schedule(object : TimerTask() {
                     override fun run() {
                         MainActivity.staticSelf!!.runOnUiThread {
@@ -513,6 +494,40 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         singlePlayerButton!!.fadeIn()
     }
 
+    private fun playStartingAudio() {
+        if (!AudioController.isMozartSonataPlaying()) {
+            AudioController.mozartSonata(play = true, startOver = true)
+            AudioController.chopinPrelude(play = false, startOver = false)
+        }
+    }
+
+    private fun resetGlovePointer() {
+        val x:Int = MainActivity.colorOptions!!.getOriginalParams().x -
+                (MainActivity.dUnitHeight * 0.15).toInt()
+        val y:Int = MainActivity.colorOptions!!.getOriginalParams().y +
+                (MainActivity.dUnitHeight * 0.175).toInt()
+        MainActivity.glovePointer!!.translate(x, y)
+    }
+
+    private fun decreaseMouseCoinsGiven() {
+        // Decrease mouse coins given
+        if (GameResults.watchAdButtonWasSelected) {
+            GameResults.watchAdButtonWasSelected = false
+        }
+        if (GameResults.mouseCoinsEarned > 5 && !GameResults.watchAdButtonWasSelected) {
+            GameResults.mouseCoinsEarned -= 1
+        }
+    }
+
+    private fun resetTopViews() {
+        MainActivity.settingsButton!!.forceSettingsMenuContraction()
+        MainActivity.attackMeter!!.resetDisplacementDuration()
+        MainActivity.myLivesMeter!!.resetLivesLeftCount()
+        MainActivity.myLivesMeter!!.showCurrentHeartButton()
+        MainActivity.opponentLivesMeter!!.resetLivesLeftCount()
+        MainActivity.opponentLivesMeter!!.showCurrentHeartButton()
+    }
+
     fun startGame() {
         catButtons!!.getCurrentCatButtons()[0].fade(true, false, 1f, 0.125f)
         MainActivity.colorOptions!!.buildColorOptionButtons(setup = true)
@@ -520,28 +535,51 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     fun setupTwoPlayerButton() {
-        multiPlayerButton = CButton(button = Button(boardGameContext), parentLayout = boardGameLayout!!,
+        twoPlayerButton = CButton(button = Button(boardGameContext), parentLayout = boardGameLayout!!,
             params = LayoutParams((originalParams!!.width * 0.425).toInt(), (MainActivity.dUnitHeight
                     * 1.5 * 0.8).toInt(), (originalParams!!.x + (originalParams!!.width * 0.525)).
             toInt(), (originalParams!!.y + (-MainActivity.dUnitHeight * 1.5 * 0.475) + originalParams!!.
             height + (originalParams!!.height * 0.1)).toInt()))
-        multiPlayerButton!!.setCornerRadiusAndBorderWidth((multiPlayerButton!!.
-        getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(multiPlayerButton!!.
+        twoPlayerButton!!.setCornerRadiusAndBorderWidth((twoPlayerButton!!.
+        getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(twoPlayerButton!!.
         getOriginalParams().width * 0.01) * 10.0) * 0.65).toInt())
-        multiPlayerButton!!.setTextSize((multiPlayerButton!!.getOriginalParams().height * 0.175).
+        twoPlayerButton!!.setTextSize((twoPlayerButton!!.getOriginalParams().height * 0.175).
         toFloat())
-        multiPlayerButton!!.shrinkType = ShrinkType.right
-        multiPlayerButton!!.setText("Multi Player", false)
-        multiPlayerButton!!.shrunk()
-        multiPlayerButton!!.grow(1f, 0.125f)
-        multiPlayerButton!!.fade(true, false, 0.5f, 0.125f)
-        multiPlayerButton!!.getThis().setOnClickListener {
+        twoPlayerButton!!.shrinkType = ShrinkType.right
+        twoPlayerButton!!.setText("Multi Player", false)
+        twoPlayerButton!!.shrunk()
+        twoPlayerButton!!.grow(1f, 0.125f)
+        twoPlayerButton!!.fade(true, false, 0.5f, 0.125f)
+        twoPlayerButton!!.getThis().setOnClickListener {
             if (MainActivity.mpController != null) {
                 searchMG!!.startSearchingAnimation()
                 MainActivity.mpController!!.startSearching()
             } else {
                 MPController.displayFailureReason()
             }
+        }
+    }
+
+    fun startTwoPlayerMatch() {
+        if (!twoPlayerButton!!.growWidthAndChangeColorIsRunning) {
+            resetTopViews()
+            decreaseMouseCoinsGiven()
+            resetGlovePointer()
+            playStartingAudio()
+            MainActivity.opponentLivesMeter!!.transform(true)
+            twoPlayerButton!!.targetBackgroundColor = gridColors!![0][0]
+            twoPlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
+            singlePlayerButton!!.shrink()
+            Timer().schedule(object : TimerTask() {
+                override fun run() {
+                    MainActivity.staticSelf!!.runOnUiThread {
+                        MainActivity.successGradientView!!.alpha = 0f
+                        MainActivity.glovePointer!!.fadeIn()
+                        MainActivity.gameResults!!.fadeOut()
+//                        startGame()
+                    }
+                }
+            }, 1250)
         }
     }
 

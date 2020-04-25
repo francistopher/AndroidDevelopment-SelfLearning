@@ -96,7 +96,7 @@ class MPController {
     }
 
     fun startSearching() {
-        setupRoom(roomsReadyToJoin!!.count() > 0)
+        setupRoom()
         startValueAnimatorTimer()
     }
 
@@ -104,6 +104,7 @@ class MPController {
         isPlaying = true
         BoardGame.searchMG!!.stopAnimation()
         MainActivity.gameNotification!!.displayGameOpponent()
+        MainActivity.boardGame!!.startTwoPlayerMatch()
         Log.i("MPCONTROLLER", "START PLAYING")
     }
 
@@ -139,7 +140,7 @@ class MPController {
         }
     }
 
-    private fun setupRoom(toJoin:Boolean) {
+    private fun setupRoom() {
         class RoomValueListener:ValueEventListener {
             override fun onCancelled(de: DatabaseError) {
                 Log.i("MPCONTROLLER", "CANCELED ROOM")
@@ -177,7 +178,7 @@ class MPController {
         return if (roomsReadyToJoin!!.count() > 0) {
             database!!.getReference(
                 "rooms/" + getRoomNameToJoin() + "/whenCreated"
-            ).setValue((-1).toLong())
+            ).setValue(System.currentTimeMillis())
             isPlayerA = false
             "playerB"
         } else {

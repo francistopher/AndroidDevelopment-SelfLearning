@@ -38,7 +38,8 @@ class LivesMeter(meterView: View,
     private var parentLayout:AbsoluteLayout? = null
 
     private var containerView:CView? = null
-
+    private var y:Int = 0
+    private var x:Int = 0
     init {
         if (isOpponent) {
             imageHeart = R.drawable.opponentheart
@@ -203,7 +204,48 @@ class LivesMeter(meterView: View,
         meterView!!.setBackgroundDrawable(shape)
     }
 
+    private var transformYAnimator:ValueAnimator? = null
+    fun transform(show:Boolean) {
+        if (transformYAnimator != null) {
+            transformYAnimator!!.cancel()
+        }
+        if (show) {
+            if (MainActivity.dAspectRatio > 2.08) {
+                transformYAnimator = ValueAnimator.ofInt(y, x - originalParams!!.height)
+            } else {
+                transformYAnimator = ValueAnimator.ofInt(y, y + originalParams!!.height)
+            }
+        } else {
+            transformYAnimator = ValueAnimator.ofInt(y + originalParams!!.height, y)
+        }
+        transformYAnimator!!.addUpdateListener {
+            var params:LayoutParams?
+            if (MainActivity.dAspectRatio > 2.08) {
+                params = LayoutParams(
+                    originalParams!!.width,
+                    originalParams!!.height,
+                    (it.animatedValue as Int),
+                    originalParams!!.y)
+
+            } else {
+                params = LayoutParams(
+                    originalParams!!.width,
+                    originalParams!!.height,
+                    originalParams!!.x,
+                    (it.animatedValue as Int))
+            }
+            meterView!!.layoutParams = params
+            currentHeartButton!!.layoutParams = params
+            livesCountLabel!!.getThis().layoutParams = LayoutParams(params.width,
+                params.height, params.x, params.y + (getOriginalParams().height * 0.05).toInt())
+        }
+        transformYAnimator!!.duration = 1000
+        transformYAnimator!!.start()
+    }
+
     fun setOriginalParams(params: LayoutParams) {
+        x = params.x
+        y = params.y
         originalParams = params
     }
 
@@ -213,6 +255,18 @@ class LivesMeter(meterView: View,
 
     fun getThis():View {
         return this.meterView!!
+    }
+
+    fun getCircularView():View {
+        return meterView!!
+    }
+
+    fun getCountView():TextView {
+        return livesCountLabel!!.getThis()
+    }
+
+    fun getHeartView():ImageButton {
+        return currentHeartButton!!
     }
 
     private fun lightDominant() {

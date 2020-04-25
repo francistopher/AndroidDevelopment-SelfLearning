@@ -87,8 +87,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         // Multi Player Controller
         var gdController:GameDataController? = null
         var mpController:MPController? = null
-
-
     }
 
     var introAnimation:IntroView? = null
@@ -605,6 +603,12 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private fun setupLivesMeters() {
         setupOpponentLivesMeter()
         setupMyLivesMeter()
+        opponentLivesMeter!!.getCircularView().bringToFront()
+        opponentLivesMeter!!.getHeartView().bringToFront()
+        opponentLivesMeter!!.getCountView().bringToFront()
+        myLivesMeter!!.getCircularView().bringToFront()
+        myLivesMeter!!.getHeartView().bringToFront()
+        myLivesMeter!!.getCountView().bringToFront()
     }
 
     private fun setupMyLivesMeter() {
