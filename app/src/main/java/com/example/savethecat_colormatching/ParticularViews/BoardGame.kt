@@ -250,6 +250,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         singlePlayerButton!!.shrunk()
         singlePlayerButton!!.grow(1f, 0.125f)
         singlePlayerButton!!.fadeIn()
+        twoPlayerButton!!.backgroundColor = null
+        twoPlayerButton!!.targetBackgroundColor = null
+        twoPlayerButton!!.setStyle()
         twoPlayerButton!!.shrunk()
         twoPlayerButton!!.grow(1f, 0.125f)
         twoPlayerButton!!.fadeIn()
