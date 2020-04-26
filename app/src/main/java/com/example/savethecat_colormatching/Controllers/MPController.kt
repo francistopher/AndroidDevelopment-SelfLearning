@@ -161,6 +161,7 @@ class MPController {
         valueAnimatorTimer!!.doOnEnd {
             if (!isPlaying) {
                 disconnect()
+                forcedRemoveValues(MainActivity.playerID())
             }
         }
     }
@@ -170,6 +171,17 @@ class MPController {
             MainActivity.mpController!!.disconnect()
             MainActivity.mpController!!.closeRoom()
         }
+
+        private fun updateOpponentLivesMeter(livesLeft: Long) {
+            if (MainActivity.opponentLivesMeter!!.getLivesLeftCount() < livesLeft) {
+                MainActivity.opponentLivesMeter!!.incrementLivesLeftCount()
+            }
+
+            if (MainActivity.opponentLivesMeter!!.getLivesLeftCount() > livesLeft) {
+                MainActivity.opponentLivesMeter!!.dropLivesLeftHeart()
+            }
+        }
+
         override fun onDataChange(ds: DataSnapshot) {
             if (ds.children.count() == 3) {
                 opponent = if (isPlayerA!!) {
@@ -182,10 +194,14 @@ class MPController {
                 if (isPlayerA!!) {
                     if ((ds.child("playerBLives").value as Long) < 1) {
                         MainActivity.boardGame!!.wonMultiPlayer()
+                    } else {
+                        updateOpponentLivesMeter(ds.child("playerBLives").value as Long)
                     }
                 } else {
                     if ((ds.child("playerALives").value as Long) < 1) {
                         MainActivity.boardGame!!.wonMultiPlayer()
+                    } else {
+                        updateOpponentLivesMeter(ds.child("playerALives").value as Long)
                     }
                 }
             }
