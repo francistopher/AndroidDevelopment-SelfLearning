@@ -652,6 +652,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             LayoutParams((dUnitHeight * 7).toInt(),(dUnitHeight * 7.75).toInt(), 0, 0))
         CenterController.centerView(successResults!!.getThis(), successResults!!.getOriginalParams(),
              LayoutParams(dWidth.toInt(), (dHeight).toInt(), 0, 0))
+        successResults!!.setupOriginalParams(successResults!!.getThis().layoutParams as LayoutParams)
+        successResults!!.setupContents()
     }
 
     private fun setupGlovePointer() {

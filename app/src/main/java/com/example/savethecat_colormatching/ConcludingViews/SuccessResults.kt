@@ -6,6 +6,8 @@ import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
+import android.widget.TextView
+import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
 
 class SuccessResults(successView: View,
@@ -20,6 +22,8 @@ class SuccessResults(successView: View,
 
     private var originalParams:LayoutParams? = null
 
+    private var successLabel:CLabel? = null
+
     init {
         setupView(successView)
         setupOriginalParams(params)
@@ -27,6 +31,23 @@ class SuccessResults(successView: View,
         setStyle()
         setCornerRadiusAndBorderWidth(radius = params.height / 5,
             borderWidth = params.height / 60)
+    }
+
+    fun setupContents() {
+        setupTitleView()
+    }
+
+    private fun setupTitleView() {
+        successLabel = CLabel(textView = TextView(context!!), parentLayout = parentLayout!!,
+            params = LayoutParams((getOriginalParams().width * 0.5).toInt(), (unitHeight * 2.0).toInt(),
+                (getOriginalParams().width * 0.25).toInt() + getOriginalParams().x,
+                getOriginalParams().y + (unitHeight * 0.5).toInt()))
+        successLabel!!.setTextSize(successLabel!!.getOriginalParams().height * 0.1875f)
+        successLabel!!.setText("You Won!!!")
+        successLabel!!.isInverted = true
+        successLabel!!.setStyle()
+        successLabel!!.setCornerRadiusAndBorderWidth((getOriginalParams().height / 2.0).toInt(),
+            0)
     }
 
     private var shape: GradientDrawable? = null
@@ -64,7 +85,7 @@ class SuccessResults(successView: View,
         context = view.context
     }
 
-    private fun setupOriginalParams(params: LayoutParams) {
+    fun setupOriginalParams(params: LayoutParams) {
         unitHeight = (params.height / 8.0).toInt()
         successView!!.layoutParams = params
         originalParams = params
