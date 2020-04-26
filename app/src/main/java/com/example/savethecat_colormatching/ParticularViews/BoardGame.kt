@@ -13,6 +13,9 @@ import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.MPController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.ShrinkType
+import com.example.savethecat_colormatching.HeaderViews.AttackMeter
+import com.example.savethecat_colormatching.ConcludingViews.GameResults
+import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 import java.util.*
@@ -252,6 +255,77 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
+    fun wonMultiPlayer() {
+        MPController.isPlaying = false
+        MainActivity.mpController!!.disconnect()
+        // SET OPPOSITION LIVES METER COUNTZ
+        MainActivity.opponentLivesMeter!!.translate(false)
+        MainActivity.attackMeter!!.sendEnemyToStart()
+        AttackMeter.didNotInvokeRelease = true
+        // PROMOTE ALL THE CATS
+        LeaderBoard.examineScore(GameResults.savedCatButtonsCount.toLong())
+        // SHOW GLOVE POINTER
+        val watchAdButtonParams: LayoutParams =
+            MainActivity.gameResults!!.getWatchAdButton().getOriginalParams()
+        MainActivity.glovePointer!!.translate(
+            watchAdButtonParams.x - (watchAdButtonParams.width * 0.1125).toInt(),
+            watchAdButtonParams.y - (watchAdButtonParams.height * 0.05).toInt()
+        )
+        MainActivity.glovePointer!!.fadeIn()
+        // HIDE LIVES METER
+        MainActivity.myLivesMeter!!.hideCurrentHeartButton()
+        MainActivity.opponentLivesMeter!!.hideCurrentHeartButton()
+        // SHOW SINGLE AND TWO PLAYER BUTTON
+        singlePlayerButton!!.backgroundColor = null
+        singlePlayerButton!!.targetBackgroundColor = null
+        singlePlayerButton!!.setStyle()
+        singlePlayerButton!!.shrunk()
+        singlePlayerButton!!.grow(1f, 0.125f)
+        singlePlayerButton!!.fadeIn()
+        twoPlayerButton!!.backgroundColor = null
+        twoPlayerButton!!.targetBackgroundColor = null
+        twoPlayerButton!!.setStyle()
+        twoPlayerButton!!.shrunk()
+        twoPlayerButton!!.grow(1f, 0.125f)
+        twoPlayerButton!!.fadeIn()
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                MainActivity.staticSelf!!.runOnUiThread {
+                    singlePlayerButton!!.getParentLayout().addView(singlePlayerButton!!.getThis())
+                    singlePlayerButton!!.getParentLayout().addView(twoPlayerButton!!.getThis())
+                    singlePlayerButton!!.getThis().bringToFront()
+                    twoPlayerButton!!.getThis().bringToFront()
+                }
+            }
+        }, 250)
+        // SET ALL CAT BUTTONS AS PODDED
+        catButtons!!.saveAllCats()
+        GameResults.savedCatButtonsCount = catButtons!!.aliveCount()
+        // SHOW WINNING VIEW
+
+        // SHRINK COLOR OPTION BUTTONS
+        MainActivity.colorOptions!!.resetSelectedColor()
+        gridColors = null
+        MainActivity.colorOptions!!.shrinkAllColorOptionButtons()
+        MainActivity.colorOptions!!.loadSelectionToSelectedButtons()
+        // Build the game and hide the cat button
+        currentStage = 1
+        buildGame()
+        catButtons!!.getCurrentCatButtons()[0].fade(
+            false, true,
+            0f, 0f
+        )
+        // Submit mouse coin count
+        MainActivity.mouseCoinView!!.submitMouseCoinCount()
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                MainActivity.staticSelf!!.runOnUiThread {
+                    MainActivity.mpController!!.closeRoom()
+                }
+            }
+        }, 500)
+    }
+
     private fun gameOver() {
         MPController.isPlaying = false
         MainActivity.mpController!!.disconnect()
@@ -292,7 +366,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 }
             }
         }, 250)
-        MainActivity.glovePointer!!.hide()
         catButtons!!.setAllCatButtonsDead()
         GameResults.deadCatButtonsCount += catButtons!!.deadCount()
         MainActivity.gameResults!!.fadeIn()
@@ -441,20 +514,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 }
             }
         }, 1250)
-    }
-
-    fun wonMultiPlayer() {
-        MainActivity.attackMeter!!.sendEnemyToStart()
-        AttackMeter.didNotInvokeRelease = true
-        MPController.isPlaying = false
-        MainActivity.mpController!!.disconnect()
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                MainActivity.staticSelf!!.runOnUiThread {
-                    MainActivity.mpController!!.closeRoom()
-                }
-            }
-        }, 500)
     }
 
     private fun promote(catButton: CatButton) {

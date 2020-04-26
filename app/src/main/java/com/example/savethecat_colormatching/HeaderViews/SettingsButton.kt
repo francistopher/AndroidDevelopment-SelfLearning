@@ -1,4 +1,4 @@
-package com.example.savethecat_colormatching.ParticularViews
+package com.example.savethecat_colormatching.HeaderViews
 
 import android.animation.ValueAnimator
 import android.graphics.Color
@@ -23,7 +23,7 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
     private var parentLayout:AbsoluteLayout? = null
 
     companion object {
-        private var settingsMenu:SettingsMenu? = null
+        private var settingsMenu: SettingsMenu? = null
         var borderImageView:ImageButton? = null
     }
 
@@ -107,9 +107,14 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
     }
     private fun setupSettingsMenu() {
         val width:Float = (MainActivity.dWidth - (originalParams!!.x * 2)).toFloat()
-        settingsMenu = SettingsMenu(view = View(settingsButton!!.context), parentLayout =
-        parentLayout!!, params = LayoutParams(width.toInt(), originalParams!!.height,
-            originalParams!!.x, originalParams!!.y))
+        settingsMenu =
+            SettingsMenu(
+                view = View(settingsButton!!.context), parentLayout =
+                parentLayout!!, params = LayoutParams(
+                    width.toInt(), originalParams!!.height,
+                    originalParams!!.x, originalParams!!.y
+                )
+            )
     }
 
     fun getThis():ImageButton {

@@ -8,7 +8,7 @@ import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
-import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
+import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.R
 
 class MouseCoin(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: LayoutParams) {

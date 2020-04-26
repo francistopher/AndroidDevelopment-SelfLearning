@@ -11,7 +11,7 @@ import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.MainActivity
-import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
+import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.R
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.LeaderboardsClient

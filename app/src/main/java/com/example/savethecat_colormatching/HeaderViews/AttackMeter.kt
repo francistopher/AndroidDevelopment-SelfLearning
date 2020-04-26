@@ -1,4 +1,4 @@
-package com.example.savethecat_colormatching.ParticularViews
+package com.example.savethecat_colormatching.HeaderViews
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
@@ -16,6 +16,7 @@ import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Characters.CatButton
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.ParticularViews.EnemyPhase
 import com.example.savethecat_colormatching.R
 import java.util.*
 
@@ -30,7 +31,7 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     private var enemyImage:CImageView? = null
 
     // Unique properties
-    private var enemyPhase:EnemyPhase? = null
+    private var enemyPhase: EnemyPhase? = null
 
     private var rotationCheckpoint:Float = 0f
 
@@ -184,7 +185,8 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         setupRotationAnimation()
         rotationAnimator!!.startDelay = (1000 * delay).toLong()
         rotationAnimator!!.start()
-        enemyPhase = EnemyPhase.ROTATION
+        enemyPhase =
+            EnemyPhase.ROTATION
     }
 
     var remainingPercentage:Float = 0f
@@ -224,7 +226,8 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         setupTranslationToCatAnimation()
         translationToCatAnimator!!.startDelay = (1000 * delay).toLong()
         translationToCatAnimator!!.start()
-        enemyPhase = EnemyPhase.TranslationToCat
+        enemyPhase =
+            EnemyPhase.TranslationToCat
     }
 
     private fun setupTranslationToCatAnimation() {
@@ -264,7 +267,8 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         setupSizeExpansionAnimation()
         sizeExpansionAnimator!!.startDelay = (1000 * delay).toLong()
         sizeExpansionAnimator!!.start()
-        enemyPhase = EnemyPhase.SizeExpansion
+        enemyPhase =
+            EnemyPhase.SizeExpansion
     }
 
     private fun setupSizeExpansionAnimation() {
@@ -303,7 +307,8 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         setupSizeReductionAnimation()
         sizeReductionAnimator!!.startDelay = (1000 * delay).toLong()
         sizeReductionAnimator!!.start()
-        enemyPhase = EnemyPhase.SizeReduction
+        enemyPhase =
+            EnemyPhase.SizeReduction
     }
 
     private fun setupSizeReductionAnimation() {
@@ -351,7 +356,8 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         setupTransitionToStartAnimation()
         transitionToStartAnimator!!.startDelay = (1000 * delay).toLong()
         transitionToStartAnimator!!.start()
-        enemyPhase = EnemyPhase.TranslationToStart
+        enemyPhase =
+            EnemyPhase.TranslationToStart
     }
 
     var transitionToStartX:ValueAnimator? = null
@@ -431,7 +437,8 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
             }, 1000)
             pauseEnemyMovement()
             rotationCheckpoint = 0f
-            enemyPhase = EnemyPhase.TranslationToStart
+            enemyPhase =
+                EnemyPhase.TranslationToStart
             resumeEnemyMovement()
         }
     }
@@ -439,24 +446,29 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
     private fun pauseEnemyMovement() {
         when (enemyPhase!!) {
             EnemyPhase.ROTATION -> {
-                enemyPhase = EnemyPhase.TranslationToStart
+                enemyPhase =
+                    EnemyPhase.TranslationToStart
                 rotationAnimator?.cancel()
                 rotationCheckpoint = enemyImage!!.rotation
             }
             EnemyPhase.TranslationToCat -> {
-                enemyPhase = EnemyPhase.TranslationToStart
+                enemyPhase =
+                    EnemyPhase.TranslationToStart
                 translationToCatAnimator?.cancel()
             }
             EnemyPhase.SizeExpansion -> {
-                enemyPhase = EnemyPhase.TranslationToStart
+                enemyPhase =
+                    EnemyPhase.TranslationToStart
                 sizeExpansionAnimator?.cancel()
             }
             EnemyPhase.SizeReduction -> {
-                enemyPhase = EnemyPhase.TranslationToStart
+                enemyPhase =
+                    EnemyPhase.TranslationToStart
                 sizeReductionAnimator?.cancel()
             }
             EnemyPhase.TranslationToStart -> {
-                enemyPhase = EnemyPhase.TranslationToStart
+                enemyPhase =
+                    EnemyPhase.TranslationToStart
                 transitionToStartAnimator!!.cancel()
             }
         }

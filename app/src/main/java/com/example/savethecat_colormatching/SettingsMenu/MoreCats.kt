@@ -24,7 +24,7 @@ import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.ColorOptions
 import com.example.savethecat_colormatching.ParticularViews.MCView
-import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
+import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.R
 import com.google.android.gms.games.AchievementsClient
 import com.google.android.gms.games.Games

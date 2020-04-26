@@ -129,6 +129,15 @@ class CatButtons {
         }
     }
 
+    fun saveAllCats() {
+        for (catButton in currentCatButtons!!) {
+            if (catButton.isAlive && !catButton.isPodded && catButton.cat != CatState.CHEERING) {
+                catButton.pod()
+                catButton.disperseVertically()
+            }
+        }
+    }
+
     fun updateCatType(cat: Cat) {
         for (catButton in currentCatButtons!!) {
             Log.i("GATO", cat.toString())

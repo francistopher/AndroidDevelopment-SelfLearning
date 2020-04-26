@@ -1,4 +1,4 @@
-package com.example.savethecat_colormatching.ParticularViews
+package com.example.savethecat_colormatching.HeaderViews
 
 import android.animation.ValueAnimator
 import android.graphics.Color
@@ -13,6 +13,7 @@ import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.ParticularViews.MCView
 import com.example.savethecat_colormatching.SettingsMenu.*
 
 class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -258,24 +259,28 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
 
     private fun repositionMenuButtons() {
         // Reposition ad button
-        adsButton!!.setExpandedParams(LayoutParams(adsButton!!.getExpandedParams().height,
+        adsButton!!.setExpandedParams(LayoutParams(
+            adsButton!!.getExpandedParams().height,
         adsButton!!.getExpandedParams().height, ((expandedParams!!.height * 1.25) +
                     (borderWidth) + spaceBetween).toInt(), adsButton!!.getExpandedParams().y))
         adsButton!!.getThis().layoutParams = adsButton!!.getExpandedParams()
         // Reposition leader board button
-        leaderBoardButton!!.setExpandedParams(LayoutParams(leaderBoardButton!!.getExpandedParams().height,
+        leaderBoardButton!!.setExpandedParams(LayoutParams(
+            leaderBoardButton!!.getExpandedParams().height,
             leaderBoardButton!!.getExpandedParams().height, ((adsButton!!.getExpandedParams().x +
                     adsButton!!.getExpandedParams().width) + (-borderWidth * 0.5) +
                     spaceBetween).toInt(), leaderBoardButton!!.getExpandedParams().y))
         leaderBoardButton!!.getThis().layoutParams = leaderBoardButton!!.getExpandedParams()
         // Reposition volume button
-        volumeButton!!.setExpandedParams(LayoutParams(volumeButton!!.getExpandedParams().height,
+        volumeButton!!.setExpandedParams(LayoutParams(
+            volumeButton!!.getExpandedParams().height,
             volumeButton!!.getExpandedParams().height, ((leaderBoardButton!!.getExpandedParams().x +
                     leaderBoardButton!!.getExpandedParams().width) + (-borderWidth * 0.5) +
                     spaceBetween).toInt(), volumeButton!!.getExpandedParams().y))
         volumeButton!!.getThis().layoutParams = volumeButton!!.getExpandedParams()
         // Reposition more cats button
-        moreCatsButton!!.setExpandedParams(LayoutParams(moreCatsButton!!.getExpandedParams().height,
+        moreCatsButton!!.setExpandedParams(LayoutParams(
+            moreCatsButton!!.getExpandedParams().height,
             moreCatsButton!!.getExpandedParams().height, ((volumeButton!!.getExpandedParams().x +
                     volumeButton!!.getExpandedParams().width) + (-borderWidth * 1.25) +
                     spaceBetween).toInt(), moreCatsButton!!.getExpandedParams().y))

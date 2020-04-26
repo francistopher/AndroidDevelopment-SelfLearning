@@ -21,7 +21,13 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.example.savethecat_colormatching.Characters.Enemies
+import com.example.savethecat_colormatching.ConcludingViews.GameResults
+import com.example.savethecat_colormatching.ConcludingViews.SuccessResults
 import com.example.savethecat_colormatching.Controllers.*
+import com.example.savethecat_colormatching.HeaderViews.AttackMeter
+import com.example.savethecat_colormatching.HeaderViews.LivesMeter
+import com.example.savethecat_colormatching.HeaderViews.SettingsButton
+import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.ParticularViews.*
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 import com.google.android.gms.ads.*
@@ -59,15 +65,15 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         // Save the cat essential views
         var boardGame:BoardGame? = null
         var colorOptions:ColorOptions? = null
-        var settingsButton:SettingsButton? = null
-        var attackMeter:AttackMeter? = null
-        var myLivesMeter:LivesMeter? = null
-        var opponentLivesMeter:LivesMeter? = null
-        var gameResults:GameResults? = null
+        var settingsButton: SettingsButton? = null
+        var attackMeter: AttackMeter? = null
+        var myLivesMeter: LivesMeter? = null
+        var opponentLivesMeter: LivesMeter? = null
+        var gameResults: GameResults? = null
+        var successResults:SuccessResults? = null
         var glovePointer: GlovePointer? = null
         var mouseCoinView:MCView? = null
         var mInterstitialAd: InterstitialAd? = null
-
         var dAspectRatio:Double = 0.0
         var params:LayoutParams? = null
         var gameNotification:GameNotification? = null
@@ -83,7 +89,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
         var signedInAccount:GoogleSignInAccount? = null
         var googleApiClient:GoogleApiClient? = null
-
         // Multi Player Controller
         var gdController:GameDataController? = null
         var mpController:MPController? = null
@@ -420,6 +425,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupAttackMeter()
         setupMouseCoinView()
         setupGameResults()
+        setupSuccessResults()
         setupGlovePointer()
         AudioController.mozartSonata(play = true, startOver = false)
     }
@@ -564,9 +570,14 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupSettingsButton() {
         val sideLength:Float = (dHeight * ((1.0/300.0) + 0.085)).toFloat()
-        settingsButton = SettingsButton(imageButton = ImageButton(this), parentLayout = rootLayout!!,
-            params = LayoutParams(sideLength.toInt(), sideLength.toInt(), dUnitWidth.toInt(),
-                dUnitHeight.toInt()))
+        settingsButton =
+            SettingsButton(
+                imageButton = ImageButton(this), parentLayout = rootLayout!!,
+                params = LayoutParams(
+                    sideLength.toInt(), sideLength.toInt(), dUnitWidth.toInt(),
+                    dUnitHeight.toInt()
+                )
+            )
     }
 
     private fun setupAttackMeter() {
@@ -589,8 +600,11 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
         val attackMeterParams = LayoutParams(width.toInt(), height.toInt(),
             x.toInt(), y.toInt())
-        attackMeter = AttackMeter(meterView = View(this), parentLayout = rootLayout!!,
-            params = attackMeterParams)
+        attackMeter =
+            AttackMeter(
+                meterView = View(this), parentLayout = rootLayout!!,
+                params = attackMeterParams
+            )
     }
 
     private fun setupMouseCoinView() {
@@ -625,12 +639,19 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     private fun setupGameResults() {
-        gameResults = GameResults(resultsView = View(rootView!!.context), parentLayout = rootLayout!!,
-            params = LayoutParams((dUnitHeight * 7).toInt(), (dUnitHeight * 7.75).toInt(), 0, 0))
-        CenterController.centerView(gameResults!!.getThis(), childParams = gameResults!!.getOriginalParams(),
-            parentParams = LayoutParams(dWidth.toInt(), (dHeight).toInt(), 0, 0))
+        gameResults = GameResults(View(rootView!!.context), rootLayout!!,
+            LayoutParams((dUnitHeight * 7).toInt(), (dUnitHeight * 7.75).toInt(), 0, 0))
+        CenterController.centerView(gameResults!!.getThis(),gameResults!!.getOriginalParams(),
+            LayoutParams(dWidth.toInt(), (dHeight).toInt(), 0, 0))
         gameResults!!.setupOriginalParams(gameResults!!.getThis().layoutParams as LayoutParams)
         gameResults!!.setupContents()
+    }
+
+    private fun setupSuccessResults() {
+        successResults = SuccessResults(View(rootView!!.context), rootLayout!!,
+            LayoutParams((dUnitHeight * 7).toInt(),(dUnitHeight * 7.75).toInt(), 0, 0))
+        CenterController.centerView(successResults!!.getThis(), successResults!!.getOriginalParams(),
+             LayoutParams(dWidth.toInt(), (dHeight).toInt(), 0, 0))
     }
 
     private fun setupGlovePointer() {

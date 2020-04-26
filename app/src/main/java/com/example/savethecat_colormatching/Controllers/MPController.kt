@@ -125,7 +125,7 @@ class MPController {
     fun disconnect() {
         if (!isPlaying) {
             roomReference?.removeEventListener(roomValueListener!!)
-            BoardGame.searchMG!!.stopAnimation()
+            BoardGame.searchMG?.stopAnimation()
         }
     }
 

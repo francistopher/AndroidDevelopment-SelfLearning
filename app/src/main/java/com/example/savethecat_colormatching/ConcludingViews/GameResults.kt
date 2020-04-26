@@ -1,4 +1,4 @@
-package com.example.savethecat_colormatching.ParticularViews
+package com.example.savethecat_colormatching.ConcludingViews
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -17,6 +17,7 @@ import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.CImageView
 import com.example.savethecat_colormatching.CustomViews.CLabel
+import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.MainActivity.Companion.mInterstitialAd
 import com.example.savethecat_colormatching.R
@@ -63,8 +64,8 @@ class GameResults(resultsView: View,
         this.parentLayout = parentLayout
         parentLayout.addView(resultsView)
         setStyle()
-        setCornerRadiusAndBorderWidth(radius = params.height / 2,
-            borderWidth = params.height / 60)
+        setCornerRadiusAndBorderWidth(params.height / 2,
+           params.height / 60)
     }
 
     private fun hideEverything() {

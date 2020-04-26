@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.MCView.Companion.mouseCoinCount
-import com.example.savethecat_colormatching.ParticularViews.SettingsMenu
+import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.SettingsMenu.MoreCats.Companion.myCatsString
 
 class GameDataController {
