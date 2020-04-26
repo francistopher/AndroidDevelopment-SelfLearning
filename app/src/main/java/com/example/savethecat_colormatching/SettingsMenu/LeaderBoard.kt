@@ -10,8 +10,8 @@ import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
 import com.example.savethecat_colormatching.Controllers.AudioController
-import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
+import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.LeaderboardsClient
@@ -27,7 +27,7 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
     companion object {
         private var leaderBoardsClient: LeaderboardsClient? = null
         var singleGameScore: Long = 0
-        private var allGamesScore: Long = 0
+        var allGamesScore: Long = 0
         private var submitSingleGameScore:Boolean = false
         private var submitAllGamesScore:Boolean = false
 

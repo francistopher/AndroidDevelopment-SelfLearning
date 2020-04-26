@@ -2,15 +2,21 @@ package com.example.savethecat_colormatching.SettingsMenu
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.graphics.Color
+import android.text.Layout
+import android.text.SpannableString
+import android.text.style.AlignmentSpan
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
-import com.example.savethecat_colormatching.MainActivity
+import com.example.savethecat_colormatching.Controllers.MPController
 import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
+import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
 
 class Ads(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: LayoutParams) {
@@ -20,12 +26,54 @@ class Ads(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Layout
 
     private var adsButton:ImageButton? = null
 
+    private var notEnoughAlertDialog:AlertDialog? = null
+
     init {
         this.adsButton = imageButton
         this.adsButton!!.layoutParams = params
         parentLayout.addView(imageButton)
         this.adsButton!!.setBackgroundColor(Color.TRANSPARENT)
+        setupNotEnoughAlertDialog()
+        setupSelector()
         setStyle()
+    }
+
+    private fun setupNotEnoughAlertDialog() {
+        val dialogBuilder = AlertDialog.Builder(MainActivity.staticSelf!!)
+        var spannableString = SpannableString("No Ads")
+        spannableString.setSpan(
+            AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+            0, spannableString.length, 0
+        )
+        dialogBuilder.setTitle(spannableString)
+        spannableString = SpannableString("To hide ads during gameplay,\n" +
+                "you must save over 90000 cats!")
+        spannableString.setSpan(
+            AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+            0, spannableString.length, 0
+        )
+        dialogBuilder.setMessage(spannableString)
+        val dialogClickListener = DialogInterface.OnClickListener{ _, which ->
+            when(which) {
+                DialogInterface.BUTTON_NEUTRAL -> notEnoughAlertDialog!!.hide()
+            }
+        }
+        dialogBuilder.setNegativeButton("Cancel", dialogClickListener)
+        notEnoughAlertDialog = dialogBuilder.create()
+    }
+
+    private fun setupSelector() {
+        adsButton!!.setOnClickListener {
+            if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
+                if (LeaderBoard.allGamesScore < 90000) {
+                    notEnoughAlertDialog!!.show()
+                } else {
+
+                }
+            } else {
+                MPController.displayFailureReason()
+            }
+        }
     }
 
     private var transformingSet: AnimatorSet? = null
