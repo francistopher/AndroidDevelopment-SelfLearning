@@ -254,6 +254,10 @@ class GameResults(resultsView: View,
         return watchAdButton!!
     }
 
+    fun getMouseCoin():Button {
+        return mouseCoin!!
+    }
+
     private var fadeInAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     private fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {

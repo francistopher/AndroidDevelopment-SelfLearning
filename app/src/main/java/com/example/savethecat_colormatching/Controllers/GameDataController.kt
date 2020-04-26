@@ -28,7 +28,7 @@ class GameDataController {
         gameSPEditor = gameSPData!!.edit()
     }
 
-    fun loadGameData() {
+    private fun loadGameData() {
         MainActivity.mouseCoinView!!.startMouseCoinCount(
             gameSPData!!.getInt("mouseCoins",
                 0))

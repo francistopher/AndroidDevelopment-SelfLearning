@@ -131,8 +131,10 @@ class CatButtons {
 
     fun saveAllCats() {
         for (catButton in currentCatButtons!!) {
-            if (catButton.isAlive && !catButton.isPodded && catButton.cat != CatState.CHEERING) {
+            if (catButton.isAlive && !catButton.isPodded) {
                 catButton.pod()
+            }
+            if (catButton.isAlive && catButton.cat != CatState.CHEERING) {
                 catButton.disperseVertically()
             }
         }

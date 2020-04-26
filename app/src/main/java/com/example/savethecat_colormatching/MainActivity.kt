@@ -35,7 +35,6 @@ import com.google.android.gms.auth.api.Auth
 import com.google.android.gms.auth.api.signin.*
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.drive.Drive
 import com.google.android.gms.games.Games
 import com.google.android.gms.games.Player
 import com.google.android.gms.games.PlayersClient
@@ -298,7 +297,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private var signInOptions:GoogleSignInOptions? = null
     private fun setupGamePlayAuthentication(){
         signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-            .requestScopes(Drive.SCOPE_APPFOLDER)
             .requestIdToken(getString(R.string.web_client_id))
             .build()
         val googleSignInClient: GoogleSignInClient = GoogleSignIn.getClient(this, signInOptions!!)

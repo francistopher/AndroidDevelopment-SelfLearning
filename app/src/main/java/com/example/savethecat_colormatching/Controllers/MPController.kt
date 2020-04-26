@@ -126,6 +126,7 @@ class MPController {
         if (!isPlaying) {
             roomReference?.removeEventListener(roomValueListener!!)
             BoardGame.searchMG?.stopAnimation()
+            roomReference = null
         }
     }
 
@@ -193,6 +194,10 @@ class MPController {
     }
 
     private fun setupRoom() {
+        if (roomReference != null) {
+            roomReference?.removeEventListener(roomValueListener!!)
+            forcedRemoveValues(getRoomNameToJoin())
+        }
         createOrJoinRoom()
         roomValueListener = RoomValueListener()
         roomReference!!.addValueEventListener(roomValueListener!!)

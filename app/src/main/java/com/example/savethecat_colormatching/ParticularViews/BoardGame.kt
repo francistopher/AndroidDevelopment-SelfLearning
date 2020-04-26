@@ -9,12 +9,12 @@ import android.widget.Button
 import android.widget.ImageButton
 import com.example.savethecat_colormatching.Characters.CatButton
 import com.example.savethecat_colormatching.Characters.CatButtons
+import com.example.savethecat_colormatching.ConcludingViews.GameResults
 import com.example.savethecat_colormatching.Controllers.AudioController
 import com.example.savethecat_colormatching.Controllers.MPController
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.ShrinkType
 import com.example.savethecat_colormatching.HeaderViews.AttackMeter
-import com.example.savethecat_colormatching.ConcludingViews.GameResults
 import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
@@ -302,7 +302,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         catButtons!!.saveAllCats()
         GameResults.savedCatButtonsCount = catButtons!!.aliveCount()
         // SHOW WINNING VIEW
-
+        MainActivity.successResults!!.fadeIn()
         // SHRINK COLOR OPTION BUTTONS
         MainActivity.colorOptions!!.resetSelectedColor()
         gridColors = null
@@ -615,6 +615,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                             MainActivity.successGradientView!!.alpha = 0f
                             MainActivity.glovePointer!!.fadeIn()
                             MainActivity.gameResults!!.fadeOut()
+                            MainActivity.successResults!!.fadeOut()
                             startGame()
                         }
                     }
@@ -692,7 +693,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         twoPlayerButton!!.grow(1f, 0.125f)
         twoPlayerButton!!.fade(true, false, 0.5f, 0.125f)
         twoPlayerButton!!.getThis().setOnClickListener {
-            if (MainActivity.mpController != null) {
+            if (MainActivity.mpController!!.didGetPlayerID()) {
                 searchMG!!.startSearchingAnimation()
                 MainActivity.mpController!!.startSearching()
             } else {
@@ -717,6 +718,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         MainActivity.successGradientView!!.alpha = 0f
                         MainActivity.glovePointer!!.fadeIn()
                         MainActivity.gameResults!!.fadeOut()
+                        MainActivity.successResults!!.fadeOut()
                         startGame()
                     }
                 }
