@@ -46,7 +46,7 @@ class SuccessResults(successView: View,
         setupOriginalParams(params)
         setupParentLayout(parentLayout)
         setStyle()
-        setCornerRadiusAndBorderWidth(radius = params.height / 5,
+        setCornerRadiusAndBorderWidth(radius = params.height / 6,
             borderWidth = params.height / 60)
     }
 

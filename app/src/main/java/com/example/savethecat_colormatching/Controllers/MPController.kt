@@ -196,7 +196,7 @@ class MPController {
     private fun setupRoom() {
         if (roomReference != null) {
             roomReference?.removeEventListener(roomValueListener!!)
-            forcedRemoveValues(getRoomNameToJoin())
+            forcedRemoveValues(MainActivity.playerID())
         }
         createOrJoinRoom()
         roomValueListener = RoomValueListener()
