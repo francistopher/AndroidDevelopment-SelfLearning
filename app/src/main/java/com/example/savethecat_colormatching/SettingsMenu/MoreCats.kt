@@ -21,10 +21,10 @@ import com.example.savethecat_colormatching.Characters.Cat
 import com.example.savethecat_colormatching.Characters.PCatButton
 import com.example.savethecat_colormatching.CustomViews.CButton
 import com.example.savethecat_colormatching.CustomViews.CLabel
+import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.ColorOptions
 import com.example.savethecat_colormatching.ParticularViews.MCView
-import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.R
 import com.google.android.gms.games.AchievementsClient
 import com.google.android.gms.games.Games
@@ -374,6 +374,13 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             translateAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN)
         } else {
             translateAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_OUT)
+        }
+        translateAnimatorSet!!.doOnEnd {
+            if (!show) {
+                MainActivity.rootLayout!!.removeView(memoriamMessage!!.getThis())
+            } else {
+                MainActivity.rootLayout!!.addView(memoriamMessage!!.getThis())
+            }
         }
         translateAnimatorSet!!.start()
     }

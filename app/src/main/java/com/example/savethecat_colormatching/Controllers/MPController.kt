@@ -167,9 +167,8 @@ class MPController {
 
     class RoomValueListener:ValueEventListener {
         override fun onCancelled(de: DatabaseError) {
-            Log.i("MPCONTROLLER", "CANCELED ROOM")
-            BoardGame.searchMG!!.stopAnimation()
-            displayFailureReason()
+            MainActivity.mpController!!.disconnect()
+            MainActivity.mpController!!.closeRoom()
         }
         override fun onDataChange(ds: DataSnapshot) {
             if (ds.children.count() == 3) {
