@@ -277,7 +277,6 @@ class PCatButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutPar
                }
            }
        }
-
        setCornerRadiusAndBorderWidth(getOriginalParams().height / 5, 0)
     }
 

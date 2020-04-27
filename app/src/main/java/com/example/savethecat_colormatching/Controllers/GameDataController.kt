@@ -45,6 +45,7 @@ class GameDataController {
             gameSPData!!.getString("myCats",
                 "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"))
         SettingsMenu.adsButton!!.setStyle()
+        MainActivity.staticSelf!!.setAllStyles(Ads.themeState)
     }
 
     fun uploadMouseCoinCount() {

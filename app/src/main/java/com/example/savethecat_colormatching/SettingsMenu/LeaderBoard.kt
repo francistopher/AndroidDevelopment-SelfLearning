@@ -3,7 +3,6 @@ package com.example.savethecat_colormatching.SettingsMenu
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.graphics.Color
-import android.util.Log
 import android.widget.AbsoluteLayout
 import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
@@ -100,7 +99,6 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
                         allGamesScore = it.get()!!.rawScore
                     }
                 }
-                Log.i("WHY", allGamesScore.toString())
             }
         }
     }
