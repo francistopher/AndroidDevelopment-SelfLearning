@@ -85,7 +85,9 @@ class Ads(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Layout
         dialogBuilder.setMessage(spannableString)
         val dialogClickListener = DialogInterface.OnClickListener{ _, which ->
             when(which) {
-                DialogInterface.BUTTON_POSITIVE -> MainActivity.gdController!!.saveThemeState(-1)
+                DialogInterface.BUTTON_POSITIVE -> {
+                    MainActivity.gdController!!.saveThemeState(-1)
+                }
                 DialogInterface.BUTTON_NEUTRAL -> notEnoughAlertDialog!!.hide()
             }
         }
@@ -98,7 +100,7 @@ class Ads(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Layout
         adsButton!!.setOnClickListener {
             if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
                 if (themeState == 2) {
-                    if (LeaderBoard.allGamesScore < 90000 && false) {
+                    if (LeaderBoard.allGamesScore < 90000) {
                         notEnoughAlertDialog!!.show()
                     } else {
                         removeAdsAlertDialog!!.show()

@@ -2,6 +2,7 @@ package com.example.savethecat_colormatching.Controllers
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.ParticularViews.MCView.Companion.mouseCoinCount
@@ -38,13 +39,13 @@ class GameDataController {
 
     private fun loadGameData() {
         Ads.themeState = gameSPData!!.getInt("themeState", 2)
+        Log.i("AMAZING", Ads.themeState.toString())
         MainActivity.mouseCoinView!!.startMouseCoinCount(
             gameSPData!!.getInt("mouseCoins",
                 0))
         SettingsMenu.moreCatsButton!!.loadMyCatsData(
             gameSPData!!.getString("myCats",
                 "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"))
-        SettingsMenu.adsButton!!.setStyle()
         MainActivity.staticSelf!!.setAllStyles(Ads.themeState)
     }
 
