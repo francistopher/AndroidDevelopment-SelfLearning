@@ -18,8 +18,8 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     private var originalParams:LayoutParams? = null
     private var shrunkParams:LayoutParams? = null
 
-    private var selectionButtons:MutableSet<CButton>? = null
-    private var selectedButtons:MutableSet<CButton>? = null
+    var selectionButtons:MutableSet<CButton>? = null
+    var selectedButtons:MutableSet<CButton>? = null
 
     private var selectedColor:Int = Color.LTGRAY
 
@@ -228,5 +228,12 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         selectionButtons!!.clear()
     }
 
-
+    fun setStyle() {
+        for (selectionButton in selectionButtons!!) {
+            selectionButton.setStyle()
+        }
+        for (selectedButton in selectedButtons!!) {
+            selectedButton.setStyle()
+        }
+    }
 }

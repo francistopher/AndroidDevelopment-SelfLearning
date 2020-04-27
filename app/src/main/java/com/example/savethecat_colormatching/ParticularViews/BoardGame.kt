@@ -741,4 +741,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     fun setButtonsBackgroundColorTransparent() {
         catButtons!!.setBackgroundTransparent()
     }
+
+    fun setStyle() {
+        for (catButton in getCatButtons().getCurrentCatButtons()) {
+            catButton.setStyle()
+        }
+    }
 }

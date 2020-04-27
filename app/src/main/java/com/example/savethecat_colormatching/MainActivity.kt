@@ -672,11 +672,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                 rootView!!.setBackgroundColor(Color.BLACK)
                 window.statusBarColor = this.resources.getColor(R.color.Black)
                 isThemeDark = true
+
             } else {
                 rootView!!.setBackgroundColor(Color.WHITE)
                 window.statusBarColor = this.resources.getColor(R.color.White)
                 isThemeDark = false
             }
+            boardGame!!.setStyle()
         }
     }
 

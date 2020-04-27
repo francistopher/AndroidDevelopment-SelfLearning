@@ -9,7 +9,6 @@ import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
-import android.widget.ImageView
 import androidx.core.animation.doOnEnd
 import com.daasuu.ei.Ease
 import com.daasuu.ei.EasingInterpolator
@@ -153,10 +152,6 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
 
     fun getOriginalParams():LayoutParams {
         return originalParams!!
-    }
-
-    fun getEnemy(): ImageView {
-        return enemyImage!!.getThis()
     }
 
     private fun lightDominant() {

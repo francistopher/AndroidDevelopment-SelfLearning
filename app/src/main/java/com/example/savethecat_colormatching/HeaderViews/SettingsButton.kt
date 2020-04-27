@@ -204,7 +204,7 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         settingsButton!!.setBackgroundResource(R.drawable.darkgear)
     }
 
-    private fun setStyle() {
+    fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()
         } else {
