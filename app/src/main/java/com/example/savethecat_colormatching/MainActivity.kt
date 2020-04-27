@@ -29,6 +29,7 @@ import com.example.savethecat_colormatching.HeaderViews.LivesMeter
 import com.example.savethecat_colormatching.HeaderViews.SettingsButton
 import com.example.savethecat_colormatching.HeaderViews.SettingsMenu
 import com.example.savethecat_colormatching.ParticularViews.*
+import com.example.savethecat_colormatching.SettingsMenu.Ads
 import com.example.savethecat_colormatching.SettingsMenu.LeaderBoard
 import com.google.android.gms.ads.*
 import com.google.android.gms.auth.api.Auth
@@ -204,11 +205,11 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
         if (isConnected) {
-            if (settingsButton != null && settingsButton!!.getThis().alpha > 0f) {
+            if (settingsButton != null && settingsButton!!.getThis().alpha > 0f && Ads.themeState == 2) {
                 adView!!.alpha = 1f
                 noInternetAdView!!.alpha = 0f
             }
-            if (adView != null) {
+            if (adView != null && Ads.themeState == 2) {
                 adView!!.loadAd(adRequest)
             }
             isInternetReachable = true
@@ -218,7 +219,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             setupGDController()
             setupMPController()
         } else {
-            if (settingsButton != null && settingsButton!!.getThis().alpha > 0f) {
+            if (settingsButton != null && settingsButton!!.getThis().alpha > 0f && Ads.themeState == 2) {
                 adView!!.alpha = 0f
                 noInternetAdView!!.alpha = 1f
             }
@@ -351,7 +352,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         gameNotification!!.displayNoGooglePlayGameServices()
     }
 
-
     private fun setupGameNotificationLabel() {
         gameNotification = GameNotification(view = Button(this), parentLayout = rootLayout!!,
         params = LayoutParams((dUnitWidth * 12).toInt(), (dUnitHeight * 1.5).toInt(),
@@ -398,12 +398,14 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                         opponentLivesMeter!!.fadeIn()
                         glovePointer!!.sway()
                         enemies!!.sway()
-                        if (isInternetReachable) {
-                            adView!!.alpha = 1f
-                            noInternetAdView!!.alpha = 0f
-                        } else {
-                            adView!!.alpha = 0f
-                            noInternetAdView!!.alpha = 1f
+                        if (Ads.themeState == 2) {
+                            if (isInternetReachable) {
+                                adView!!.alpha = 1f
+                                noInternetAdView!!.alpha = 0f
+                            } else {
+                                adView!!.alpha = 0f
+                                noInternetAdView!!.alpha = 1f
+                            }
                         }
                     }
                 }
@@ -504,9 +506,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
     }
 
-    private var adView:AdView? = null
+    var adView:AdView? = null
     private var adRequest:AdRequest? = null
-    private var noInternetAdView: ImageView? = null
+    var noInternetAdView: ImageView? = null
     private fun setupBannerAds() {
         fun setupNoInternetAdView(width:Int, height:Int) {
             noInternetAdView = ImageView(this)
@@ -685,6 +687,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             myLivesMeter!!.setCompiledStyle()
             attackMeter!!.setCompiledStyle()
             introAnimation!!.setStyle()
+            adView!!.alpha = 0f
+            noInternetAdView!!.alpha = 0f
         }
     }
 

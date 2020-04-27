@@ -87,6 +87,8 @@ class Ads(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Layout
             when(which) {
                 DialogInterface.BUTTON_POSITIVE -> {
                     MainActivity.gdController!!.saveThemeState(-1)
+                    MainActivity.staticSelf!!.adView!!.alpha = 0f
+                    MainActivity.staticSelf!!.noInternetAdView!!.alpha = 0f
                 }
                 DialogInterface.BUTTON_NEUTRAL -> notEnoughAlertDialog!!.hide()
             }

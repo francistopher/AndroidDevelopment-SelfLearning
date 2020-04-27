@@ -57,7 +57,6 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     }
 
     private var spaceBetween:Float = 0f
-
     init {
         this.menuView = view
         this.menuView!!.layoutParams = params
