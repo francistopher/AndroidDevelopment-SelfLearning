@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
@@ -172,7 +173,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         startImageRotation()
     }
 
-    fun setStyle() {
+    private fun justSetCatStyle() {
         when (cat) {
             Cat.STANDARD -> {
                 if (catState == CatState.SMILING) {
@@ -310,8 +311,26 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 }
             }
         }
-        setCornerRadiusAndBorderWidth((getOriginalParams().height.toDouble() / 5.0).toInt(),
-            ((kotlin.math.sqrt(getOriginalParams().width * 0.01) * 10.0) * 0.45).toInt(), true)
+
+    }
+
+    private fun justSetShapeStyle() {
+        if (isPodded) {
+            setCornerRadiusAndBorderWidth((getOriginalParams().height.toDouble() / 2.0).toInt(),
+                ((kotlin.math.sqrt(getOriginalParams().width * 0.01) * 10.0) * 0.45).toInt(),
+                true
+            )
+        } else {
+            setCornerRadiusAndBorderWidth((getOriginalParams().height.toDouble() / 5.0).toInt(),
+                ((kotlin.math.sqrt(getOriginalParams().width * 0.01) * 10.0) * 0.45).toInt(),
+                true
+            )
+        }
+    }
+
+    fun setStyle() {
+        justSetCatStyle()
+        justSetShapeStyle()
     }
 
     fun doNotStartRotationAndShow() {
@@ -371,16 +390,12 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 podAnimator = null
             }
         }
-        podAnimator = ValueAnimator.ofFloat(
-            cornerRadius.toFloat(),
-            (imageButton!!.layoutParams as LayoutParams).width * 0.5f
-        )
+        podAnimator = ValueAnimator.ofFloat(cornerRadius.toFloat(),
+            (imageButton!!.layoutParams as LayoutParams).height * 0.5f)
         podAnimator!!.addUpdateListener {
             setCornerRadiusAndBorderWidth(
                 (it.animatedValue as Float).toInt(),
-                borderWidth,
-                withBackground = true
-            )
+                borderWidth,true)
         }
         podAnimator!!.duration = 500
         podAnimator!!.startDelay = 125
@@ -455,10 +470,9 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var targetY: Int = 0
     fun disperseVertically() {
         catState = CatState.CHEERING
-        setStyle()
+        justSetCatStyle()
         angle = (0..30).random().toFloat()
-        disperseXAnimator =
-            ValueAnimator.ofInt((imageButton!!.layoutParams as LayoutParams).x,
+        disperseXAnimator = ValueAnimator.ofInt((imageButton!!.layoutParams as LayoutParams).x,
                 getElevatedTargetX())
         disperseXAnimator!!.addUpdateListener {
             val params = LayoutParams(originalParams!!.width, originalParams!!.height,
@@ -632,7 +646,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
             if (isPodded) {
                 setCornerRadiusAndBorderWidth(
-                    (height / 5f).toInt(), borderWidth,
+                    (height / 2f).toInt(), borderWidth,
                     withBackground = true
                 )
             } else {
@@ -641,6 +655,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                     withBackground = false
                 )
             }
+            Log.i("WHY", "WHY")
         }
         transformAnimatorSet = AnimatorSet()
         transformAnimatorSet!!.play(transformXAnimator!!).with(transformYAnimator!!)

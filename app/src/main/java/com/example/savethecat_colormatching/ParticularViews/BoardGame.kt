@@ -193,16 +193,12 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                                 // The button is found and colors match
                                 if ((catButton.getOriginalParams().x == params.x) &&
                                     (catButton.getOriginalParams().y == params.y) &&
-                                    !catButton.isPodded
-                                ) {
+                                    !catButton.isPodded) {
                                     if (MainActivity.colorOptions!!.getSelectedColor() ==
-                                        catButton.getOriginalBackgroundColor()
-                                    ) {
+                                        catButton.getOriginalBackgroundColor()) {
                                         catButton.transitionColor(catButton.getOriginalBackgroundColor())
                                         gridColorsCount!![catButton.getOriginalBackgroundColor()] =
-                                            gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(
-                                                1
-                                            )
+                                            gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
                                         MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
                                         catButton.pod()
                                         verifyRemainingCatsArePodded(catButton = catButton)
@@ -422,12 +418,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         buttonWidth = originalParams!!.height * 0.9f / (aliveCats.size).toFloat()
         for (aliveCat in aliveCats) {
             x += columnGap
-            aliveCat.transformTo(
-                LayoutParams(
-                    buttonWidth.toInt(), aliveCat.getOriginalParams().height,
-                    (originalParams!!.x + x).toInt(), y.toInt()
-                )
-            )
+            aliveCat.transformTo(LayoutParams(buttonWidth.toInt(),
+                aliveCat.getOriginalParams().height, (originalParams!!.x + x).toInt(), y.toInt()))
             x += buttonWidth
         }
     }
@@ -451,12 +443,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         fun resetCatButtonsPosition(rowIndex: Int) {
             y += gridButtonRowGap
             for (catButton in catButtons!!.getRowOfAliveCats(rowIndex = rowIndex)) {
-                catButton.transformTo(
-                    LayoutParams(
-                        catButton.getOriginalParams().width,
-                        gridButtonHeight.toInt(), catButton.getOriginalParams().x, y.toInt()
-                    )
-                )
+                catButton.transformTo(LayoutParams(catButton.getOriginalParams().width,
+                        gridButtonHeight.toInt(), catButton.getOriginalParams().x, y.toInt()))
             }
             y += gridButtonHeight
         }
