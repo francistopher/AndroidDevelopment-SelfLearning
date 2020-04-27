@@ -30,6 +30,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private var imageButton: ImageButton? = null
     private var originalBackgroundColor: Int = 0
+    private var currentBackgroundColor:Int = 0
     private var imageView: CImageView? = null
 
     private var buttonContext: Context? = null
@@ -53,6 +54,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         this.buttonLayout = AbsoluteLayout(buttonContext)
         this.imageButton!!.layoutParams = params
         this.originalBackgroundColor = backgroundColor
+        this.currentBackgroundColor = backgroundColor
         this.parentLayout = parentLayout
         parentLayout.addView(this.imageButton)
         setOriginalParams(params = params)
@@ -126,13 +128,10 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 transitionColorAnimator = null
             }
         }
-        transitionColorAnimator = if (targetColor == Color.TRANSPARENT) {
-            ValueAnimator.ofArgb(originalBackgroundColor, targetColor)
-        } else {
-            ValueAnimator.ofArgb(Color.TRANSPARENT, targetColor)
-        }
+        transitionColorAnimator = ValueAnimator.ofArgb(currentBackgroundColor, targetColor)
         transitionColorAnimator!!.addUpdateListener {
-            imageButton!!.setBackgroundColor(it.animatedValue as Int)
+            currentBackgroundColor = (it.animatedValue as Int)
+            imageButton!!.setBackgroundColor(currentBackgroundColor)
             setCornerRadiusAndBorderWidth(
                 (originalParams!!.height / 5.0).toInt(), borderWidth,
                 true

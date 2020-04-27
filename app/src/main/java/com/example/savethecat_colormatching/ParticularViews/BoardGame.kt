@@ -258,7 +258,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     fun wonMultiPlayer() {
         MPController.isPlaying = false
         MainActivity.mpController!!.disconnect()
-        // SET OPPOSITION LIVES METER COUNTZ
+        // SET OPPOSITION LIVES METER COUNT
         MainActivity.opponentLivesMeter!!.translate(false)
         MainActivity.attackMeter!!.sendEnemyToStart()
         AttackMeter.didNotInvokeRelease = true
