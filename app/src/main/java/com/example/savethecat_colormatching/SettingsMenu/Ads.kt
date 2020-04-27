@@ -27,6 +27,11 @@ class Ads(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Layout
     private var adsButton:ImageButton? = null
 
     private var notEnoughAlertDialog:AlertDialog? = null
+    private var removeAdsAlertDialog:AlertDialog? = null
+
+    companion object {
+        var themeState:Int = 2
+    }
 
     init {
         this.adsButton = imageButton
@@ -34,6 +39,7 @@ class Ads(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Layout
         parentLayout.addView(imageButton)
         this.adsButton!!.setBackgroundColor(Color.TRANSPARENT)
         setupNotEnoughAlertDialog()
+        setupRemoveAdsAlertDialog()
         setupSelector()
         setStyle()
     }
@@ -62,11 +68,41 @@ class Ads(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Layout
         notEnoughAlertDialog = dialogBuilder.create()
     }
 
+    private fun setupRemoveAdsAlertDialog() {
+        val dialogBuilder = AlertDialog.Builder(MainActivity.staticSelf!!)
+        var spannableString = SpannableString("No Ads")
+        spannableString.setSpan(
+            AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+            0, spannableString.length, 0
+        )
+        dialogBuilder.setTitle(spannableString)
+        spannableString = SpannableString("You have saved over 90000 cats!,\n" +
+                "Would you like to hide ads visible during gameplay?")
+        spannableString.setSpan(
+            AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+            0, spannableString.length, 0
+        )
+        dialogBuilder.setMessage(spannableString)
+        val dialogClickListener = DialogInterface.OnClickListener{ _, which ->
+            when(which) {
+                DialogInterface.BUTTON_POSITIVE -> MainActivity.gdController!!.saveThemeState(-1)
+                DialogInterface.BUTTON_NEUTRAL -> notEnoughAlertDialog!!.hide()
+            }
+        }
+        dialogBuilder.setPositiveButton("Yes", dialogClickListener)
+        dialogBuilder.setNegativeButton("Cancel", dialogClickListener)
+        removeAdsAlertDialog = dialogBuilder.create()
+    }
+
     private fun setupSelector() {
         adsButton!!.setOnClickListener {
             if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
-                if (LeaderBoard.allGamesScore < 90000) {
-                    notEnoughAlertDialog!!.show()
+                if (themeState == 2) {
+                    if (LeaderBoard.allGamesScore < 90000 && false) {
+                        notEnoughAlertDialog!!.show()
+                    } else {
+                        removeAdsAlertDialog!!.show()
+                    }
                 } else {
 
                 }
@@ -170,10 +206,20 @@ class Ads(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Layout
     }
 
     fun setStyle() {
-        if (MainActivity.isThemeDark) {
-            lightDominant()
+        if (themeState != 2) {
+            if (themeState == -1) {
+                adsButton!!.setBackgroundResource(R.drawable.autostyle)
+            } else if (themeState == 0) {
+                adsButton!!.setBackgroundResource(R.drawable.darkstyle)
+            } else if (themeState == 1) {
+                adsButton!!.setBackgroundResource(R.drawable.lightstyle)
+            }
         } else {
-            darkDominant()
+            if (MainActivity.isThemeDark) {
+                lightDominant()
+            } else {
+                darkDominant()
+            }
         }
     }
 }
