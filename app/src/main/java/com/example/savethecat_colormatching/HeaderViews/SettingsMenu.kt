@@ -65,8 +65,6 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         parentLayout.addView(view)
         setOriginalParams(params = params)
         setStyle()
-        setCornerRadiusAndBorderWidth(radius = params.height / 2,
-            borderWidth = params.height / 12)
         setupAdsButton()
         setupMouseCoinButton()
         setupLeaderBoardButton()
@@ -321,6 +319,8 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         } else {
             darkDominant()
         }
+        setCornerRadiusAndBorderWidth(radius = getOriginalParams().height / 2,
+            borderWidth = getOriginalParams().height / 12)
     }
 
 }

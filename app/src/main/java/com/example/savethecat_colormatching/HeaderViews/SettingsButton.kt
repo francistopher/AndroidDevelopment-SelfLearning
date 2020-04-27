@@ -41,8 +41,6 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         borderImageView!!.layoutParams = params
         parentLayout.addView(borderImageView!!)
         // Stop border image view setup
-        setCornerRadiusAndBorderWidth((params.height / 2.0).toInt(),
-            (params.height / 12.0).toInt())
         setStyle()
         settingsButton!!.bringToFront()
         settingsButton!!.alpha = 0f
@@ -115,6 +113,10 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
                     originalParams!!.x, originalParams!!.y
                 )
             )
+    }
+
+    fun getSettingsMenu():SettingsMenu {
+        return settingsMenu!!
     }
 
     fun getThis():ImageButton {
@@ -204,7 +206,11 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         settingsButton!!.setBackgroundResource(R.drawable.darkgear)
     }
 
+
+
     fun setStyle() {
+        setCornerRadiusAndBorderWidth((getOriginalParams().height / 2.0).toInt(),
+            (getOriginalParams().height / 12.0).toInt())
         if (MainActivity.isThemeDark) {
             lightDominant()
         } else {
