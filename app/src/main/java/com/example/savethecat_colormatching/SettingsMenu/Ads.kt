@@ -104,7 +104,15 @@ class Ads(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Layout
                         removeAdsAlertDialog!!.show()
                     }
                 } else {
-
+                    if (themeState == -1) {
+                        themeState = 0
+                    } else if (themeState == 0) {
+                        themeState = 1
+                    } else {
+                        themeState = -1
+                    }
+                    MainActivity.gdController!!.saveThemeState(themeState)
+                    setStyle()
                 }
             } else {
                 MPController.displayFailureReason()
