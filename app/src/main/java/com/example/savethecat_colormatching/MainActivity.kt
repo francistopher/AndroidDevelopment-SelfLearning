@@ -664,6 +664,22 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                     (dUnitHeight * 0.175).toInt()))
     }
 
+    fun setAllStyles(style:Int) {
+        if (style < 2) {
+            if (style == -1) {
+                setCurrentTheme()
+            } else if (style == 0) {
+                rootView!!.setBackgroundColor(Color.BLACK)
+                window.statusBarColor = this.resources.getColor(R.color.Black)
+                isThemeDark = true
+            } else {
+                rootView!!.setBackgroundColor(Color.WHITE)
+                window.statusBarColor = this.resources.getColor(R.color.White)
+                isThemeDark = false
+            }
+        }
+    }
+
     override fun onConnectionFailed(p0: ConnectionResult) {
         TODO("Not yet implemented")
     }
