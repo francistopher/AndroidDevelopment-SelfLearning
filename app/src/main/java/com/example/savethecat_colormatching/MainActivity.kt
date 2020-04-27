@@ -684,7 +684,6 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             opponentLivesMeter!!.setCompiledStyle()
             myLivesMeter!!.setCompiledStyle()
             attackMeter!!.setCompiledStyle()
-
         }
     }
 

@@ -746,5 +746,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         for (catButton in getCatButtons().getCurrentCatButtons()) {
             catButton.setStyle()
         }
+        singlePlayerButton!!.setStyle()
+        twoPlayerButton!!.setStyle()
+        searchMG!!.setStyle()
     }
 }

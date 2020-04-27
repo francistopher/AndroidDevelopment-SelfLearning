@@ -61,7 +61,6 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setupImageView()
         this.imageView!!.getThis().alpha = 0f
         this.imageButton!!.alpha = 0f
-
     }
 
     private var fadeInAnimator: ValueAnimator? = null
