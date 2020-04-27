@@ -40,7 +40,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var doNotStartImageRotation: Boolean = false
     var rowIndex: Int = 0
     var columnIndex: Int = 0
-
+    var noBorder:Boolean = false
     var isPodded: Boolean = false
     var isAlive: Boolean = true
 
@@ -61,6 +61,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setupImageView()
         this.imageView!!.getThis().alpha = 0f
         this.imageButton!!.alpha = 0f
+
     }
 
     private var fadeInAnimator: ValueAnimator? = null
@@ -102,7 +103,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 shape!!.setColor(originalBackgroundColor)
             }
         }
-        if (borderWidth > 0) {
+        if (borderWidth > 0 && !noBorder) {
             this.borderWidth = borderWidth
             if (MainActivity.isThemeDark) {
                 shape!!.setStroke(borderWidth, Color.WHITE)
@@ -311,6 +312,8 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 }
             }
         }
+        setCornerRadiusAndBorderWidth((getOriginalParams().height.toDouble() / 5.0).toInt(),
+            ((kotlin.math.sqrt(getOriginalParams().width * 0.01) * 10.0) * 0.45).toInt(), true)
     }
 
     fun doNotStartRotationAndShow() {

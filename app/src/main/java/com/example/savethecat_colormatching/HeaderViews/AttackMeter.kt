@@ -50,8 +50,6 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         parentLayout.addView(this.meterView!!)
         setOriginalParams(params = params)
         setStyle()
-        setCornerRadiusAndBorderWidth((params.height / 2.0).toInt(),
-            (params.height / 12.0).toInt())
         setupCharacters()
         this.meterView!!.alpha = 0f
     }
@@ -91,6 +89,8 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
                 getOriginalParams().y), backgroundColor = Color.TRANSPARENT)
         catButton!!.doNotStartRotationAndShow()
         catButton!!.getThis().alpha = 0f
+        catButton!!.noBorder = true
+        catButton!!.setStyle()
     }
 
     private fun setupEnemy() {
@@ -510,11 +510,19 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         displacementDuration = previousDisplacementDuration
     }
 
-    fun setStyle() {
+    fun setCompiledStyle() {
+        setStyle()
+        catButton!!.setStyle()
+        enemyImage!!.setStyle()
+    }
+
+    private fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()
         } else {
             darkDominant()
         }
+        setCornerRadiusAndBorderWidth((getOriginalParams().height / 2.0).toInt(),
+            (getOriginalParams().height / 12.0).toInt())
     }
 }

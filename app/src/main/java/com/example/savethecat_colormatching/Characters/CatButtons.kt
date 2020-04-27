@@ -20,8 +20,6 @@ class CatButtons {
                        params: AbsoluteLayout.LayoutParams, backgroundColor:Int): CatButton {
         catButton = CatButton(imageButton= imageButton, parentLayout=parentLayout, params=params,
             backgroundColor = backgroundColor)
-        catButton!!.setCornerRadiusAndBorderWidth((params.height.toDouble() / 5.0).toInt(),
-            ((kotlin.math.sqrt(params.width * 0.01) * 10.0) * 0.45).toInt(), true)
         // If cat button is pressed fade out cat button
         currentCatButtons!!.add(catButton!!)
         return catButton!!
