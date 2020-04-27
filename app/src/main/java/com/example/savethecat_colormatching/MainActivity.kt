@@ -679,8 +679,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                 isThemeDark = false
             }
             boardGame!!.setStyle()
-            settingsButton!!.setStyle()
-            settingsButton!!.getSettingsMenu().setStyle()
+            settingsButton!!.setCompiledStyle()
+
         }
     }
 

@@ -115,10 +115,6 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
             )
     }
 
-    fun getSettingsMenu():SettingsMenu {
-        return settingsMenu!!
-    }
-
     fun getThis():ImageButton {
         return settingsButton!!
     }
@@ -206,9 +202,16 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         settingsButton!!.setBackgroundResource(R.drawable.darkgear)
     }
 
+    fun setCompiledStyle() {
+        setStyle()
+        settingsMenu!!.setStyle()
+        SettingsMenu.adsButton!!.setStyle()
+        SettingsMenu.leaderBoardButton!!.setStyle()
+        SettingsMenu.volumeButton!!.setStyle()
+        SettingsMenu.moreCatsButton!!.setStyle()
+    }
 
-
-    fun setStyle() {
+    private fun setStyle() {
         setCornerRadiusAndBorderWidth((getOriginalParams().height / 2.0).toInt(),
             (getOriginalParams().height / 12.0).toInt())
         if (MainActivity.isThemeDark) {

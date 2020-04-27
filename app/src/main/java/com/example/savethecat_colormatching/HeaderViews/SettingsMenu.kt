@@ -321,6 +321,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
         setCornerRadiusAndBorderWidth(radius = getOriginalParams().height / 2,
             borderWidth = getOriginalParams().height / 12)
+
     }
 
 }
