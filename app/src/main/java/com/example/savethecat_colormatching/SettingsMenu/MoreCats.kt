@@ -474,20 +474,11 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private fun setupCatPresentation() {
         val sideLength:Int = (contentViewParams!!.width * 0.7).toInt()
-        val color:Int = if (MainActivity.isThemeDark) {
-            Color.BLACK
-        } else {
-            Color.WHITE
-        }
         presentationCat = PCatButton(button = Button(popupContainerView!!.context),
             parentLayout = parentLayout!!,
             params = LayoutParams(sideLength, sideLength,
                 contentViewParams!!.x + ((contentViewParams!!.width - sideLength) * 0.5).toInt(),
-                contentViewParams!!.y + ((contentViewParams!!.height - sideLength) * 0.5).toInt()),
-            backgroundColor = color)
-        presentationCat!!.setCornerRadiusAndBorderWidth(
-            presentationCat!!.getOriginalParams().height / 5, 0,
-            withBackground = true)
+                contentViewParams!!.y + ((contentViewParams!!.height - sideLength) * 0.5).toInt()))
         presentationCat!!.show()
         presentationCatShownY = presentationCat!!.getOriginalParams().y
         presentationCatHiddenY = (presentationCatShownY + MainActivity.dHeight).toInt()
@@ -500,8 +491,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         memoriamMessage!!.setText(memoriam.toString(), false)
         memoriamMessage!!.setTextSize(memoriamMessage!!.getOriginalParams().height * 0.07f)
         memoriamMessage!!.backgroundColor = ColorOptions.blue
-        memoriamMessage!!.setCornerRadiusAndBorderWidth((memoriamMessage!!.
-        getOriginalParams().height / 5.1).toInt(), 0)
         memoriamMessage!!.getThis().alpha = 1f
         memoriamMessage!!.shrunk()
     }
@@ -535,11 +524,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         controlButton = CButton(button = Button(popupContainerView!!.context),
             parentLayout = parentLayout!!,
             params =  LayoutParams(width, height, x, y))
+        controlButton!!.isInverted = true
         controlButton!!.backgroundColor = ColorOptions.pink
         controlButton!!.getThis().alpha = 1f
         controlButton!!.setStyle()
-        setCornerRadiusAndBorderWidth((controlButton!!.getOriginalParams().height / 2.0).toInt(),
-            0, 7)
         controlButton!!.setTextSize(height * 0.2f)
         fun setupMouseCoin() {
             mouseCoin = Button(popupContainerView!!.context)
@@ -683,8 +671,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         catViewHandler = Button(MainActivity.rootView!!.context)
         catViewHandler!!.layoutParams = LayoutParams(width, height, x, y)
         catViewHandler!!.setBackgroundColor(color)
-        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 2.5).toInt(),
-            (MainActivity.dUnitWidth / 3).toInt(), 6)
         MainActivity.rootLayout!!.addView(catViewHandler!!)
         catViewHandler!!.isEnabled = false
         catHandlerShownY = y
@@ -697,13 +683,38 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         popupContainerView!!.layoutParams = LayoutParams(((MainActivity.dWidth) - (MainActivity.dWidth * 0.05)).toInt(),
             (MainActivity.dHeight - (MainActivity.dWidth * 0.0625) - MainActivity.dStatusBarHeight - MainActivity.dNavigationBarHeight).toInt(),
             (MainActivity.dWidth * 0.025).toInt(), (MainActivity.dStatusBarHeight + (MainActivity.dWidth * 0.0125)).toInt())
-        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
-            (MainActivity.dUnitWidth / 3).toInt(), 1)
         popupContainerView!!.isEnabled = false
         MainActivity.rootLayout!!.addView(popupContainerView!!)
         setupContentViewParams()
         infoClosePopupShownY = contentViewParams!!.y
         infoClosePopupHiddenY = (infoClosePopupShownY + MainActivity.dHeight).toInt()
+    }
+
+    private fun setCompiledStyle() {
+        memoriamMessage!!.setStyle()
+        catTitleLabel!!.setStyle()
+        infoButton!!.setStyle()
+        closeButton!!.setStyle()
+        previousButton!!.setStyle()
+        nextButton!!.setStyle()
+        controlButton!!.setStyle()
+        presentationCat!!.setStyle()
+        memoriamMessage!!.setCornerRadiusAndBorderWidth((memoriamMessage!!.
+        getOriginalParams().height / 5.1).toInt(), 0)
+        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
+            (MainActivity.dUnitWidth / 3).toInt(), 1)
+        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
+            (MainActivity.dUnitWidth / 3).toInt(), 2)
+        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
+            (MainActivity.dUnitWidth / 3).toInt(), 3)
+        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
+            (MainActivity.dUnitWidth / 3).toInt(), 4)
+        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
+            (MainActivity.dUnitWidth / 3).toInt(), 5)
+        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 2.5).toInt(),
+            (MainActivity.dUnitWidth / 3).toInt(), 6)
+        setCornerRadiusAndBorderWidth((controlButton!!.getOriginalParams().height / 2.0).toInt(),
+            0, 7)
     }
 
     private fun setupInfoButton() {
@@ -713,8 +724,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                             (contentViewParams!!.width * 0.18f).toInt(), contentViewParams!!.x,
                                 contentViewParams!!.y ))
         infoButton!!.getThis().setBackgroundColor(ColorOptions.blue)
-        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
-            (MainActivity.dUnitWidth / 3).toInt(), 2)
         infoButton!!.setTextSize(infoButton!!.getOriginalParams().height * 0.3f)
         infoButton!!.setText("i", false)
         infoButton!!.getThis().alpha = 1f
@@ -732,8 +741,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                                         (contentViewParams!!.width * 0.3f)).toInt(),
                             contentViewParams!!.y))
         closeButton!!.getThis().setBackgroundColor(Color.RED)
-        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
-            (MainActivity.dUnitWidth / 3).toInt(), 3)
         closeButton!!.setTextSize(infoButton!!.getOriginalParams().height * 0.3f)
         closeButton!!.setText("x", false)
         closeButton!!.getThis().alpha = 1f
@@ -754,8 +761,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 (contentViewParams!!.x), contentViewParams!!.y + contentViewParams!!.height -
                         (contentViewParams!!.width * 0.18f).toInt()))
         previousButton!!.getThis().setBackgroundColor(Color.YELLOW)
-        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
-            (MainActivity.dUnitWidth / 3).toInt(), 4)
         previousButton!!.setTextSize(previousButton!!.getOriginalParams().height * 0.3f)
         previousButton!!.setText("<", false)
         previousButton!!.getThis().alpha = 1f
@@ -782,8 +787,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 contentViewParams!!.y + contentViewParams!!.height -
                         (contentViewParams!!.width * 0.18f).toInt()))
         nextButton!!.getThis().setBackgroundColor(Color.YELLOW)
-        setCornerRadiusAndBorderWidth((MainActivity.dUnitWidth * 1.5).toInt(),
-            (MainActivity.dUnitWidth / 3).toInt(), 5)
         nextButton!!.setTextSize(nextButton!!.getOriginalParams().height * 0.3f)
         nextButton!!.setText(">", false)
         nextButton!!.getThis().alpha = 1f
@@ -929,6 +932,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         } else {
             darkDominant()
         }
+        setCompiledStyle()
     }
 }
 

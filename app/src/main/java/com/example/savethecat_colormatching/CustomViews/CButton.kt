@@ -19,7 +19,7 @@ import com.example.savethecat_colormatching.ParticularViews.BoardGame
 
 class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
-    private var isInverted: Boolean = false
+    var isInverted: Boolean = false
 
     private var originalParams: LayoutParams? = null
     private var shrunkParams: LayoutParams? = null
@@ -488,6 +488,7 @@ class CButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutParams
         this.darkImageR = darkImageR
         fun lightDominant() {
             button!!.setBackgroundResource(lightImageR)
+
         }
         fun darkDominant() {
             button!!.setBackgroundResource(darkImageR)
