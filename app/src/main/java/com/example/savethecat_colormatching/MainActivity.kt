@@ -681,7 +681,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             boardGame!!.setStyle()
             settingsButton!!.setCompiledStyle()
             enemies!!.setStyle()
-
+            opponentLivesMeter!!.setCompiledStyle()
+            myLivesMeter!!.setCompiledStyle()
         }
     }
 

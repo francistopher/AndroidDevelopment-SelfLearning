@@ -52,8 +52,6 @@ class LivesMeter(meterView: View,
         this.meterView!!.layoutParams = params
         // Set border width and corner radius
         setStyle()
-        setCornerRadiusAndBorderWidth(radius = params.height / 2,
-            borderWidth = params.height / 12)
         this.parentLayout = parentLayout
         setupContainerMeterView()
         parentLayout.addView(this.meterView!!)
@@ -282,11 +280,18 @@ class LivesMeter(meterView: View,
         meterView!!.setBackgroundColor(Color.WHITE)
     }
 
-    fun setStyle() {
+    fun setCompiledStyle() {
+        containerView!!.setStyle()
+        setStyle()
+    }
+
+    private fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()
         } else {
             darkDominant()
         }
+        setCornerRadiusAndBorderWidth(radius = getOriginalParams().height / 2,
+            borderWidth = getOriginalParams().height / 12)
     }
 }
