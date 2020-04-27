@@ -282,6 +282,8 @@ class LivesMeter(meterView: View,
 
     fun setCompiledStyle() {
         containerView!!.setStyle()
+        containerView!!.setCornerRadiusAndBorderWidth(getOriginalParams().height / 2,
+            getOriginalParams().height / 12)
         setStyle()
     }
 
