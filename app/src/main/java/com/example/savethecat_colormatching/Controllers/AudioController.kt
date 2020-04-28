@@ -131,6 +131,23 @@ class AudioController {
             }
         }
 
+        fun chopinPrelude(play:Boolean, startOver:Boolean) {
+            if (play) {
+                if (startOver) {
+                    chopinPreludePlayer!!.stop()
+                    chopinPreludePlayer!!.prepare()
+                    chopinPreludePlayer!!.start()
+                } else {
+                    chopinPreludePlayer!!.start()
+                }
+            } else {
+                chopinPreludePlayer!!.stop()
+            }
+            if (!Volume.isVolumeOn) {
+                chopinPreludePlayer?.setVolume(0f, 0f)
+            }
+        }
+
         fun setupChopinPrelude(context: Context) {
             if (chopinPreludePlayer == null) {
                 chopinPreludePlayer = MediaPlayer.create(context, R.raw.chopinprelude)
@@ -146,23 +163,6 @@ class AudioController {
                 mozartSonataPlayer?.setVolume(0f, 0f)
             }
         }
-
-        fun chopinPrelude(play:Boolean, startOver:Boolean) {
-            if (play) {
-                if (startOver) {
-                    chopinPreludePlayer!!.stop()
-                    chopinPreludePlayer!!.start()
-                } else {
-                    chopinPreludePlayer!!.start()
-                }
-            } else {
-                chopinPreludePlayer!!.stop()
-            }
-            if (!Volume.isVolumeOn) {
-                chopinPreludePlayer?.setVolume(0f, 0f)
-            }
-        }
-
     }
 
 }

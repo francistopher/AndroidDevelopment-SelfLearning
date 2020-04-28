@@ -372,7 +372,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         MainActivity.colorOptions!!.shrinkAllColorOptionButtons()
         MainActivity.colorOptions!!.loadSelectionToSelectedButtons()
         AudioController.mozartSonata(play = false, startOver = false)
-        AudioController.chopinPrelude(play = true, startOver = false)
+        AudioController.chopinPrelude(play = true, startOver = true)
         // Build the game and hide the cat button
         currentStage = 1
         buildGame()
