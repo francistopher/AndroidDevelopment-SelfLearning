@@ -1,6 +1,6 @@
+
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
-import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
 import androidx.core.animation.doOnEnd
@@ -9,7 +9,8 @@ import com.example.savethecat_colormatching.MainActivity
 
 class TransitionPackage(spawnParams:LayoutParams,
                         targetParams:LayoutParams,
-                        heartButton: ImageButton) {
+                        heartButton: ImageButton,
+                        isOpponent:Boolean) {
 
     private var targetParams:LayoutParams? = null
     private var spawnParams:LayoutParams? = null
@@ -18,6 +19,7 @@ class TransitionPackage(spawnParams:LayoutParams,
     private var xAnimation:ValueAnimator? = null
     private var yAnimation:ValueAnimator? = null
     private var transitionedToBase:Boolean = false
+    private var isOpponent:Boolean = false
     private var targetX:Int = 0
     private var targetY:Int = 0
 
@@ -25,6 +27,7 @@ class TransitionPackage(spawnParams:LayoutParams,
         this.targetParams = targetParams
         this.spawnParams = spawnParams
         this.heartButton = heartButton
+        this.isOpponent = isOpponent
         heartButton.bringToFront()
         setupAnimationX()
         setupAnimationY()
@@ -36,7 +39,7 @@ class TransitionPackage(spawnParams:LayoutParams,
         xAnimation = ValueAnimator.ofInt(spawnParams!!.x , targetParams!!.x)
         xAnimation!!.addUpdateListener {
             targetX = (it.animatedValue as Int)
-            heartButton!!.layoutParams = AbsoluteLayout.LayoutParams(
+            heartButton!!.layoutParams = LayoutParams(
                 targetParams!!.width, targetParams!!.height,
                 targetX, targetY
             )
@@ -48,7 +51,8 @@ class TransitionPackage(spawnParams:LayoutParams,
         yAnimation = ValueAnimator.ofInt(spawnParams!!.y, targetParams!!.y)
         yAnimation!!.addUpdateListener {
             targetY = (it.animatedValue as Int)
-            heartButton!!.layoutParams = LayoutParams(targetParams!!.width, targetParams!!.height,
+            heartButton!!.layoutParams = LayoutParams(
+                targetParams!!.width, targetParams!!.height,
                 targetX, targetY)
         }
     }
@@ -62,8 +66,11 @@ class TransitionPackage(spawnParams:LayoutParams,
         animatorSet!!.doOnEnd {
             if (!transitionedToBase) {
                 transitionedToBase = true
-                MainActivity.myLivesMeter!!.incrementLivesLeftCount()
-                MainActivity.myLivesMeter!!.setLivesLeftTextCount()
+                if (isOpponent) {
+                    MainActivity.opponentLivesMeter!!.incrementLivesLeftCount()
+                } else {
+                    MainActivity.myLivesMeter!!.incrementLivesLeftCount()
+                }
             } else {
                 MainActivity.rootLayout!!.removeView(heartButton!!)
             }

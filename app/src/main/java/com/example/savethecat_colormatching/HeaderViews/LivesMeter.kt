@@ -40,8 +40,6 @@ class LivesMeter(meterView: View,
     private var containerView:CView? = null
     private var y:Int = 0
     private var x:Int = 0
-
-    private var isOpponent:Boolean = false
     init {
         if (isOpponent) {
             imageHeart = R.drawable.opponentheart
@@ -79,8 +77,9 @@ class LivesMeter(meterView: View,
 
     private fun setupImageButtonText() {
         livesCountLabel = CLabel(textView = TextView(meterView!!.context),
-            parentLayout = MainActivity.rootLayout!!, params =  LayoutParams(getOriginalParams().width,
-                getOriginalParams().height, getOriginalParams().x,
+            parentLayout = MainActivity.rootLayout!!, params =  LayoutParams(
+                getOriginalParams().width, getOriginalParams().height,
+                getOriginalParams().x,
                 (getOriginalParams().y + (getOriginalParams().height * 0.05).toInt())))
         livesCountLabel!!.setText(livesLeft.toString())
         livesCountLabel!!.setTextSize((getOriginalParams().height * 0.15).toFloat())
@@ -89,23 +88,26 @@ class LivesMeter(meterView: View,
     }
 
     private var transitionPackages:MutableList<TransitionPackage> = mutableListOf()
-    fun incrementLivesLeftCount(catButton: CatButton, forOpponent:Boolean) {
-        transitionPackages.add(TransitionPackage(spawnParams = LayoutParams(
-            getOriginalParams().width, getOriginalParams().height,
-            (catButton.getOriginalParams().x + (catButton.getOriginalParams().width * 0.25)).toInt(),
-            (catButton.getOriginalParams().y + (catButton.getOriginalParams().height * 0.25)).toInt()),
-            targetParams = getOriginalParams(), heartButton = buildHeartButton()))
-        Timer().schedule(object : TimerTask() {
-            override fun run() {
-                MainActivity.staticSelf!!.runOnUiThread {
-                    if (!forOpponent) {
+    fun incrementLivesLeftCount(catButton: CatButton?, forOpponent:Boolean) {
+        if (!forOpponent) {
+            transitionPackages.add(TransitionPackage(spawnParams = LayoutParams(
+                getOriginalParams().width, getOriginalParams().height,
+                (catButton!!.getOriginalParams().x +
+                        (catButton.getOriginalParams().width * 0.25)).toInt(),
+                (catButton.getOriginalParams().y +
+                        (catButton.getOriginalParams().height * 0.25)).toInt()),
+                targetParams = getOriginalParams(), heartButton = buildHeartButton(),
+                isOpponent = forOpponent))
+            Timer().schedule(object : TimerTask() {
+                override fun run() {
+                    MainActivity.staticSelf!!.runOnUiThread {
                         MainActivity.mpController!!.setMyLivesLeft(
                             MainActivity.myLivesMeter!!.getLivesLeftCount().toLong()
                         )
                     }
                 }
-            }
-        }, 2750)
+            }, 2750)
+        }
     }
 
     private fun setupHeartInteractiveButtons() {
@@ -215,28 +217,28 @@ class LivesMeter(meterView: View,
         meterView!!.setBackgroundDrawable(shape)
     }
 
-    private var transformYAnimator:ValueAnimator? = null
+    private var translateXY:ValueAnimator? = null
     fun translate(show:Boolean) {
-        if (transformYAnimator != null) {
-            transformYAnimator!!.cancel()
+        if (translateXY != null) {
+            translateXY!!.cancel()
         }
         if (show) {
             if (MainActivity.dAspectRatio > 2.08) {
-                transformYAnimator = ValueAnimator.ofInt(
+                translateXY = ValueAnimator.ofInt(
                     (meterView!!.layoutParams as LayoutParams).x, x - originalParams!!.height)
             } else {
-                transformYAnimator = ValueAnimator.ofInt(y, y + originalParams!!.height)
+                translateXY = ValueAnimator.ofInt(y, y + originalParams!!.height)
             }
         } else {
             if (MainActivity.dAspectRatio > 2.08) {
-                transformYAnimator = ValueAnimator.ofInt((
+                translateXY = ValueAnimator.ofInt((
                         meterView!!.layoutParams as LayoutParams).x, x)
             } else {
-                transformYAnimator = ValueAnimator.ofInt(y + originalParams!!.height, y)
+                translateXY = ValueAnimator.ofInt(y + originalParams!!.height, y)
             }
         }
-        transformYAnimator!!.addUpdateListener {
-            var params:LayoutParams?
+        translateXY!!.addUpdateListener {
+            val params:LayoutParams?
             if (MainActivity.dAspectRatio > 2.08) {
                 params = LayoutParams(
                     originalParams!!.width,
@@ -253,11 +255,13 @@ class LivesMeter(meterView: View,
             }
             meterView!!.layoutParams = params
             currentHeartButton!!.layoutParams = params
-            livesCountLabel!!.getThis().layoutParams = LayoutParams(params.width,
-                params.height, params.x, params.y + (getOriginalParams().height * 0.05).toInt())
+            livesCountLabel!!.getThis().layoutParams = LayoutParams(
+                params.width, params.height,
+                params.x, params.y + (getOriginalParams().height * 0.05).toInt())
+            originalParams = params
         }
-        transformYAnimator!!.duration = 1000
-        transformYAnimator!!.start()
+        translateXY!!.duration = 1000
+        translateXY!!.start()
     }
 
     fun setOriginalParams(params: LayoutParams) {
