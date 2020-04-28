@@ -175,10 +175,10 @@ class MPController {
         private fun updateOpponentLivesMeter(livesLeft: Long) {
             if (MainActivity.opponentLivesMeter!!.getLivesLeftCount() < livesLeft) {
                 MainActivity.opponentLivesMeter!!.incrementLivesLeftCount()
-            }
-
-            if (MainActivity.opponentLivesMeter!!.getLivesLeftCount() > livesLeft) {
-                MainActivity.opponentLivesMeter!!.dropLivesLeftHeart()
+            } else {
+                if (MainActivity.opponentLivesMeter!!.getLivesLeftCount() > livesLeft) {
+                    MainActivity.opponentLivesMeter!!.dropLivesLeftHeart()
+                }
             }
         }
 
