@@ -228,6 +228,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     fun attackCatButton(catButton: CatButton) {
         MainActivity.attackMeter!!.updateDuration(-0.75f)
         MainActivity.myLivesMeter!!.dropLivesLeftHeart()
+        MainActivity.mpController!!.setMyLivesLeft(
+            MainActivity.myLivesMeter!!.getLivesLeftCount().toLong()
+        )
         MainActivity.enemies!!.translateToCatAndBack(catButton)
         catButton.disperseRadially()
         gridColorsCount!![catButton.getOriginalBackgroundColor()] =

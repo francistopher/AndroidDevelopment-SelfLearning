@@ -41,7 +41,6 @@ class MPController {
     private fun setupRoomsReference() {
         class RoomsValueListener:ValueEventListener {
             override fun onCancelled(de: DatabaseError) {
-                Log.i("MPCONTROLLER", "CANCELED ROOMS")
                 displayFailureReason()
             }
             override fun onDataChange(ds: DataSnapshot) {
@@ -101,25 +100,11 @@ class MPController {
 
     fun startPlaying() {
         isPlaying = true
-        setLivesLeft(1)
+        setMyLivesLeft(1)
         BoardGame.searchMG!!.stopAnimation()
         MainActivity.gameNotification!!.displayGameOpponent()
         MainActivity.boardGame!!.startTwoPlayerMatch()
         Log.i("MPCONTROLLER", "START PLAYING")
-    }
-
-    fun setLivesLeft(livesLeft:Long) {
-        if (isPlaying) {
-            if (isPlayerA!!) {
-                database!!.getReference(
-                    "rooms/${getRoomNameToJoin()}/playerALives"
-                ).setValue(livesLeft)
-            } else {
-                database!!.getReference(
-                    "rooms/${getRoomNameToJoin()}/playerBLives"
-                ).setValue(livesLeft)
-            }
-        }
     }
 
     fun disconnect() {
@@ -172,16 +157,6 @@ class MPController {
             MainActivity.mpController!!.closeRoom()
         }
 
-        private fun updateOpponentLivesMeter(livesLeft: Long) {
-            if (MainActivity.opponentLivesMeter!!.getLivesLeftCount() < livesLeft) {
-                MainActivity.opponentLivesMeter!!.incrementLivesLeftCount()
-            } else {
-                if (MainActivity.opponentLivesMeter!!.getLivesLeftCount() > livesLeft) {
-                    MainActivity.opponentLivesMeter!!.dropLivesLeftHeart()
-                }
-            }
-        }
-
         override fun onDataChange(ds: DataSnapshot) {
             if (ds.children.count() == 3) {
                 opponent = if (isPlayerA!!) {
@@ -191,21 +166,65 @@ class MPController {
                 }
                 MainActivity.mpController!!.startPlaying()
             } else if (ds.children.count() == 5) {
-                if (isPlayerA!!) {
-                    if ((ds.child("playerBLives").value as Long) < 1) {
-                        MainActivity.boardGame!!.wonMultiPlayer()
-                    } else {
-                        updateOpponentLivesMeter(ds.child("playerBLives").value as Long)
-                    }
+//                investigatePlayerA((ds.child("playerALives").value as Long))
+//                investigatePlayerB((ds.child("playerBLives").value as Long))
+            }
+        }
+
+        private fun investigatePlayerA(livesLeft:Long) {
+            if (!isPlayerA!!) {
+                if (livesLeft < 1) {
+                    MainActivity.boardGame!!.wonMultiPlayer()
                 } else {
-                    if ((ds.child("playerALives").value as Long) < 1) {
-                        MainActivity.boardGame!!.wonMultiPlayer()
-                    } else {
-                        updateOpponentLivesMeter(ds.child("playerALives").value as Long)
-                    }
+                    updateOpponentLivesMeter(livesLeft)
                 }
             }
         }
+
+        private fun investigatePlayerB(livesLeft: Long) {
+            if (isPlayerA!!) {
+                if (livesLeft < 1) {
+                    MainActivity.boardGame!!.wonMultiPlayer()
+                } else {
+                    updateOpponentLivesMeter(livesLeft)
+                }
+            }
+        }
+
+        private var increment:Boolean = false
+        private var decrement:Boolean = false
+        private fun updateOpponentLivesMeter(livesLeft: Long) {
+            increment = MainActivity.opponentLivesMeter!!.getLivesLeftCount() < livesLeft
+            decrement = MainActivity.opponentLivesMeter!!.getLivesLeftCount() > livesLeft
+            if (increment) {
+                MainActivity.opponentLivesMeter!!.incrementLivesLeftCount()
+            }
+            if (decrement) {
+                MainActivity.opponentLivesMeter!!.dropLivesLeftHeart()
+            }
+        }
+    }
+
+    fun setMyLivesLeft(livesLeft:Long) {
+        if (isPlaying) {
+            if (isPlayerA!!) {
+                setPlayerALivesLeft(livesLeft)
+            } else {
+                setPlayerBLivesLeft(livesLeft)
+            }
+        }
+    }
+
+    private fun setPlayerALivesLeft(livesLeft: Long) {
+        database!!.getReference(
+            "rooms/${getRoomNameToJoin()}/playerALives"
+        ).setValue(livesLeft)
+    }
+
+    private fun setPlayerBLivesLeft(livesLeft: Long) {
+        database!!.getReference(
+            "rooms/${getRoomNameToJoin()}/playerBLives"
+        ).setValue(livesLeft)
     }
 
     private fun setupRoom() {

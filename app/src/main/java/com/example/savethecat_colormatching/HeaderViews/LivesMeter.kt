@@ -17,6 +17,7 @@ import com.example.savethecat_colormatching.CustomViews.CLabel
 import com.example.savethecat_colormatching.CustomViews.CView
 import com.example.savethecat_colormatching.MainActivity
 import com.example.savethecat_colormatching.R
+import java.util.*
 
 class LivesMeter(meterView: View,
                  parentLayout: AbsoluteLayout,
@@ -39,6 +40,8 @@ class LivesMeter(meterView: View,
     private var containerView:CView? = null
     private var y:Int = 0
     private var x:Int = 0
+
+    private var isOpponent:Boolean = false
     init {
         if (isOpponent) {
             imageHeart = R.drawable.opponentheart
@@ -87,12 +90,22 @@ class LivesMeter(meterView: View,
 
     private var transitionPackages:MutableList<TransitionPackage> = mutableListOf()
     fun incrementLivesLeftCount(catButton: CatButton, forOpponent:Boolean) {
-        transitionPackages.add(TransitionPackage(spawnParams = LayoutParams(getOriginalParams().width,
-            getOriginalParams().height, (catButton.getOriginalParams().x +
-                    (catButton.getOriginalParams().width * 0.25)).toInt(),
-            (catButton.getOriginalParams().y +
-                    (catButton.getOriginalParams().height * 0.25)).toInt()),
+        transitionPackages.add(TransitionPackage(spawnParams = LayoutParams(
+            getOriginalParams().width, getOriginalParams().height,
+            (catButton.getOriginalParams().x + (catButton.getOriginalParams().width * 0.25)).toInt(),
+            (catButton.getOriginalParams().y + (catButton.getOriginalParams().height * 0.25)).toInt()),
             targetParams = getOriginalParams(), heartButton = buildHeartButton()))
+        Timer().schedule(object : TimerTask() {
+            override fun run() {
+                MainActivity.staticSelf!!.runOnUiThread {
+                    if (!forOpponent) {
+                        MainActivity.mpController!!.setMyLivesLeft(
+                            MainActivity.myLivesMeter!!.getLivesLeftCount().toLong()
+                        )
+                    }
+                }
+            }
+        }, 2750)
     }
 
     private fun setupHeartInteractiveButtons() {
@@ -125,7 +138,6 @@ class LivesMeter(meterView: View,
     fun setLivesLeftTextCount() {
         livesCountLabel!!.setText(livesLeft.toString())
         livesCountLabel!!.getThis().bringToFront()
-        MainActivity.mpController!!.setLivesLeft(livesLeft.toLong())
     }
 
     fun fadeIn() {
