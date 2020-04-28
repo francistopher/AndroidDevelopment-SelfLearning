@@ -19,8 +19,36 @@ class AudioController {
         private var kittenMeowPlayer2:MediaPlayer? = null
         private var kittenMeowPlayer3:MediaPlayer? = null
         private var kittenDiePlayer:MediaPlayer? = null
+        
         private var mozartSonataPlayer: MediaPlayer? = null
         private var chopinPreludePlayer:MediaPlayer? = null
+
+
+        private var volume:Float = 0f
+        fun setVolume(on:Boolean) {
+            if (on) {
+                volume = 1f
+            } else {
+                volume = 0f
+            }
+            gearSpinningPlayer?.setVolume(volume, volume)
+            heavenPlayer?.setVolume(volume, volume)
+            animeWowPlayer?.setVolume(volume, volume)
+
+            coinEarnedPlayer?.setVolume(volume, volume)
+            coinEarnedPlayer2?.setVolume(volume, volume)
+            coinEarnedPlayer3?.setVolume(volume, volume)
+
+            kittenMeowPlayer?.setVolume(volume, volume)
+            kittenMeowPlayer2?.setVolume(volume, volume)
+            kittenMeowPlayer3?.setVolume(volume, volume)
+            kittenDiePlayer?.setVolume(volume, volume)
+
+            if ((Volume.isVolumeOn && volume == 1f) || volume == 0f) {
+                mozartSonataPlayer?.setVolume(volume, volume)
+                chopinPreludePlayer?.setVolume(volume, volume)
+            }
+        }
 
         fun setupGearSpinning(context: Context) {
             if (gearSpinningPlayer == null) {
@@ -154,7 +182,7 @@ class AudioController {
             }
         }
 
-        fun setVolume(on:Boolean) {
+        fun setMusicVolume(on:Boolean) {
             if (on) {
                 chopinPreludePlayer?.setVolume(1f, 1f)
                 mozartSonataPlayer?.setVolume(1f, 1f)
@@ -164,5 +192,4 @@ class AudioController {
             }
         }
     }
-
 }

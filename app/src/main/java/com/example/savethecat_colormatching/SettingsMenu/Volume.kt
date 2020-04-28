@@ -143,7 +143,7 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
         loadData()
         this.volumeButton!!.setOnClickListener {
             saveData()
-            AudioController.setVolume(isVolumeOn)
+            AudioController.setMusicVolume(isVolumeOn)
             setStyle()
         }
     }

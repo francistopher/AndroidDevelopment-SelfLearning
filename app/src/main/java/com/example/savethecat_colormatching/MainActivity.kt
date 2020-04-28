@@ -709,11 +709,13 @@ class ForegroundBackgroundListener : LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun startSomething() {
+        AudioController.setVolume(true)
         Log.v("ProcessLog", "APP IS ON FOREGROUND")
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun stopSomething() {
+        AudioController.setVolume(false)
         MainActivity.mpController?.disconnect()
         Log.v("ProcessLog", "APP IS IN BACKGROUND")
     }
