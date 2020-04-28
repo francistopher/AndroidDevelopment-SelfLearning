@@ -114,6 +114,7 @@ class LivesMeter(meterView: View,
 
     fun incrementLivesLeftCount() {
         livesLeft += 1
+        setLivesLeftTextCount()
     }
 
     fun resetLivesLeftCount() {
@@ -124,6 +125,7 @@ class LivesMeter(meterView: View,
     fun setLivesLeftTextCount() {
         livesCountLabel!!.setText(livesLeft.toString())
         livesCountLabel!!.getThis().bringToFront()
+        MainActivity.mpController!!.setLivesLeft(livesLeft.toLong())
     }
 
     fun fadeIn() {

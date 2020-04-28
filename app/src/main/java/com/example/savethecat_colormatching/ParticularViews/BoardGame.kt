@@ -230,9 +230,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         MainActivity.myLivesMeter!!.dropLivesLeftHeart()
         MainActivity.enemies!!.translateToCatAndBack(catButton)
         catButton.disperseRadially()
-        MainActivity.mpController!!.setLivesLeft(
-            MainActivity.myLivesMeter!!.getLivesLeftCount().toLong()
-        )
         gridColorsCount!![catButton.getOriginalBackgroundColor()] =
             gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
         MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
@@ -508,9 +505,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         MainActivity.glovePointer!!.hide()
         GameResults.savedCatButtonsCount += catButtons!!.aliveCount()
         MainActivity.myLivesMeter!!.incrementLivesLeftCount(
-            catButton = catButton,
-            forOpponent = false
-        )
+            catButton = catButton, forOpponent = false)
         MainActivity.attackMeter!!.updateDuration(0.075f)
         AttackMeter.didNotInvokeRelease = true
         unveilHeaven()
@@ -534,9 +529,6 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 }
             }
         }, 1250)
-        MainActivity.mpController!!.setLivesLeft(
-            MainActivity.myLivesMeter!!.getLivesLeftCount().toLong()
-        )
     }
 
     private fun reset(allSurvived: Boolean) {

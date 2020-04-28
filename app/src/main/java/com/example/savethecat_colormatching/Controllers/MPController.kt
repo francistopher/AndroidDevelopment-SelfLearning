@@ -209,7 +209,7 @@ class MPController {
     }
 
     private fun setupRoom() {
-        if (roomReference != null) {
+        if (roomReference != null || roomsReadyToJoin!!.count() <= 0) {
             roomReference?.removeEventListener(roomValueListener!!)
             forcedRemoveValues(MainActivity.playerID())
         }
@@ -219,9 +219,6 @@ class MPController {
     }
 
     private fun createOrJoinRoom() {
-        if (roomsReadyToJoin!!.count() <= 0) {
-            forcedRemoveValues(MainActivity.playerID())
-        }
         roomReference = database!!.getReference(
             "rooms/" + getRoomNameToJoin() + "/"
         )
