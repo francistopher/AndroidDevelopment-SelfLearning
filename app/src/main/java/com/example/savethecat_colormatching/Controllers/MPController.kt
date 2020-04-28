@@ -166,8 +166,8 @@ class MPController {
                 }
                 MainActivity.mpController!!.startPlaying()
             } else if (ds.children.count() == 5) {
-//                investigatePlayerA((ds.child("playerALives").value as Long))
-//                investigatePlayerB((ds.child("playerBLives").value as Long))
+                investigatePlayerA((ds.child("playerALives").value as Long))
+                investigatePlayerB((ds.child("playerBLives").value as Long))
             }
         }
 
