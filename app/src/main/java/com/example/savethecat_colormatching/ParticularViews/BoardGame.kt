@@ -79,20 +79,12 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 button = Button(MainActivity.rootView!!.context),
                 parentLayout = MainActivity.rootLayout!!,
                 params = LayoutParams(
-                    (searchMGSideTemplateParams!!.width / 3.0).toInt(),
-                    (searchMGSideTemplateParams!!.height / 3.0).toInt(),
+                    (searchMGSideTemplateParams!!.width / 2.1).toInt(),
+                    (searchMGSideTemplateParams!!.height / 2.1).toInt(),
                     (searchMGSideTemplateParams!!.x + ((searchMGSideTemplateParams!!.width -
-                            (searchMGSideTemplateParams!!.width / 3.0)) * 0.5).toInt()),
+                            (searchMGSideTemplateParams!!.width / 2.1)) * 0.5).toInt()),
                     (searchMGSideTemplateParams!!.y + ((searchMGSideTemplateParams!!.height -
-                            (searchMGSideTemplateParams!!.height / 3.0)) * 0.5).toInt())
-                ),
-                topLeftCorner = Pair(
-                    searchMGSideTemplateParams!!.x,
-                    searchMGSideTemplateParams!!.y
-                ),
-                bottomRightCorner = Pair(
-                    searchMGSideTemplateParams!!.x + searchMGSideTemplateParams!!.width,
-                    searchMGSideTemplateParams!!.y + searchMGSideTemplateParams!!.height
+                            (searchMGSideTemplateParams!!.height / 2.1)) * 0.5).toInt())
                 )
             )
         }
