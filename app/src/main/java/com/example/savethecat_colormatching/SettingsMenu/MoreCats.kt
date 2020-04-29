@@ -276,6 +276,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         } else {
             memoriamMessage!!.grow = false
             memoriamMessage!!.growUnGrow(0.05f)
+            infoButton!!.setText("i", false)
             infoClosePopupYAnimator = ValueAnimator.ofInt(infoClosePopupShownY, infoClosePopupHiddenY)
             previousNextButtonYAnimator = ValueAnimator.ofInt(previousNextShownY, previousNextHiddenY)
             presentationCatYAnimator = ValueAnimator.ofInt(presentationCatShownY, presentationCatHiddenY)
@@ -729,6 +730,11 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         infoButton!!.getThis().alpha = 1f
         infoButton!!.getThis().setOnClickListener {
             memoriamMessage!!.growUnGrow(0.5f)
+            if (memoriamMessage!!.grow) {
+                infoButton!!.setText("i", false)
+            } else {
+                infoButton!!.setText("x", false)
+            }
         }
     }
 
