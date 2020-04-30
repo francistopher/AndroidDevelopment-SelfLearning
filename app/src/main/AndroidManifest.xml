@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -24,7 +23,7 @@
         </activity>
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1509758614200945~2491295494"/>
+            android:value="ca-app-pub-9972661202816089~2797104179"/>
         <meta-data
             android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/app_id"/>

@@ -206,11 +206,11 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     override fun onNetworkConnectionChanged(isConnected: Boolean) {
         if (isConnected) {
             if (settingsButton != null && settingsButton!!.getThis().alpha > 0f && Ads.themeState == 2) {
-                adView!!.alpha = 1f
+                bannerAdView!!.alpha = 1f
                 noInternetAdView!!.alpha = 0f
             }
-            if (adView != null && Ads.themeState == 2) {
-                adView!!.loadAd(adRequest)
+            if (bannerAdView != null && Ads.themeState == 2) {
+                bannerAdView!!.loadAd(adRequest)
             }
             isInternetReachable = true
             gameNotification!!.displayYesInternet()
@@ -220,7 +220,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             setupMPController()
         } else {
             if (settingsButton != null && settingsButton!!.getThis().alpha > 0f && Ads.themeState == 2) {
-                adView!!.alpha = 0f
+                bannerAdView!!.alpha = 0f
                 noInternetAdView!!.alpha = 1f
             }
             isInternetReachable = false
@@ -279,6 +279,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             appObserver = it
         })
         setContentView(R.layout.activity_main)
+        MobileAds.initialize(this) {}
         setupAspectRatio()
         setupDecorView()
         rootView = window.decorView.rootView
@@ -400,10 +401,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
                         enemies!!.sway()
                         if (Ads.themeState == 2) {
                             if (isInternetReachable) {
-                                adView!!.alpha = 1f
+                                bannerAdView!!.alpha = 1f
                                 noInternetAdView!!.alpha = 0f
                             } else {
-                                adView!!.alpha = 0f
+                                bannerAdView!!.alpha = 0f
                                 noInternetAdView!!.alpha = 1f
                             }
                         }
@@ -480,14 +481,13 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     }
 
     private fun setupAdvertisement() {
-        MobileAds.initialize(this) {}
         setupBannerAds()
         setupInterstitialAds()
     }
 
     private fun setupInterstitialAds() {
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd!!.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        mInterstitialAd!!.adUnitId = "ca-app-pub-9972661202816089/4402023404"
         mInterstitialAd!!.loadAd(AdRequest.Builder().build())
         mInterstitialAd!!.adListener = object: AdListener() {
             override fun onAdClosed() {
@@ -506,7 +506,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
     }
 
-    var adView:AdView? = null
+    var bannerAdView:AdView? = null
     private var adRequest:AdRequest? = null
     var noInternetAdView: ImageView? = null
     private fun setupBannerAds() {
@@ -536,14 +536,14 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             return AdSize.getCurrentOrientationBannerAdSizeWithWidth(this, adWidth)
         }
         val bannerAdSize:AdSize = getAdaptiveBannerAdSize()
-        adView = AdView(this)
-        adView!!.adUnitId = "ca-app-pub-3940256099942544/6300978111"
-        adView!!.adSize = bannerAdSize
+        bannerAdView = AdView(this)
+        bannerAdView!!.adSize = bannerAdSize
+        bannerAdView!!.adUnitId = "ca-app-pub-9972661202816089/5151804774"
         adRequest = AdRequest.Builder().build()
-        adView!!.loadAd(adRequest)
-        rootLayout!!.addView(adView)
-        adView!!.translationY = (dHeight - (bannerAdSize.height * 2)).toFloat()
-        adView!!.alpha = 0f
+        bannerAdView!!.loadAd(adRequest)
+        rootLayout!!.addView(bannerAdView)
+        bannerAdView!!.translationY = (dHeight - (bannerAdSize.height * 2)).toFloat()
+        bannerAdView!!.alpha = 0f
         setupNoInternetAdView((bannerAdSize.width * 2), (bannerAdSize.height * 2))
     }
 
@@ -687,7 +687,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             myLivesMeter!!.setCompiledStyle()
             attackMeter!!.setCompiledStyle()
             introAnimation!!.setStyle()
-            adView!!.alpha = 0f
+            bannerAdView!!.alpha = 0f
             noInternetAdView!!.alpha = 0f
         }
     }

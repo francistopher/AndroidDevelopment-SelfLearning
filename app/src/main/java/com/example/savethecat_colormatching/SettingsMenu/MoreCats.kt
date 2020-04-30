@@ -5,10 +5,12 @@ import android.animation.ValueAnimator
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.text.Layout
 import android.text.SpannableString
 import android.text.style.AlignmentSpan
+import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.Button
@@ -97,10 +99,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var achievementsClient:AchievementsClient? = null
 
     init {
-        this.moreCatsButton = imageButton
-        this.moreCatsButton!!.layoutParams = params
+        moreCatsButton = imageButton
+        moreCatsButton!!.layoutParams = params
         setupParentLayout(parentLayout)
-        this.moreCatsButton!!.setBackgroundColor(Color.TRANSPARENT)
+        moreCatsButton!!.setBackgroundColor(Color.TRANSPARENT)
         setupPopupView()
         setupInfoButton()
         setupCloseButton()
@@ -126,7 +128,6 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             MoreCats.myCatsString = "sdd+1bdg00tco00etn00spR00ccn00col00nna00fat00"
             MainActivity.gameNotification!!.displayFirebaseTrouble()
         }
-
     }
 
     private var tempMyCatsDict:MutableMap<Cat, Int>? = null
@@ -404,6 +405,13 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         presentationCat!!.cat = myCatsDict.keys.toTypedArray()[displayedCatIndex]
         catTitleLabel!!.setText(catNames[displayedCatIndex])
         presentationCat!!.setStyle()
+        if (myCatsDict[presentationCat!!.cat] == 0) {
+            presentationCat!!.getThisImage().alpha = 0f
+            presentationCat!!.getThis().text = "?"
+        } else {
+            presentationCat!!.getThisImage().alpha = 1f
+            presentationCat!!.getThis().text = ""
+        }
     }
 
     private fun setupParentLayout(layout:AbsoluteLayout) {
@@ -483,6 +491,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         presentationCat!!.show()
         presentationCatShownY = presentationCat!!.getOriginalParams().y
         presentationCatHiddenY = (presentationCatShownY + MainActivity.dHeight).toInt()
+        presentationCat!!.getThis().textAlignment = View.TEXT_ALIGNMENT_CENTER
+        presentationCat!!.getThis().textSize = presentationCat!!.getOriginalParams().height * 0.20f
+        presentationCat!!.getThis().typeface = Typeface.createFromAsset(
+            MainActivity.rootView!!.context.assets, "SleepyFatCat.ttf")
     }
 
     private fun setupMemoriamMessage() {
