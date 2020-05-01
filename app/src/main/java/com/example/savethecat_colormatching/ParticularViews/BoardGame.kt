@@ -566,22 +566,15 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     fun setupSinglePlayerButton() {
         singlePlayerButton = CButton(
             button = Button(boardGameContext), parentLayout = boardGameLayout!!,
-            params = LayoutParams(
-                (originalParams!!.width * 0.425).toInt(),
-                (MainActivity.dUnitHeight
-                        * 1.5 * 0.8).toInt(),
-                (originalParams!!.x + (originalParams!!.width * 0.05)).toInt(),
-                (originalParams!!.y + originalParams!!.height + (-MainActivity.dUnitHeight * 1.5 * 0.475) + (originalParams!!.height * 0.1)).toInt()
-            )
-        )
+            params = LayoutParams((originalParams!!.width * 0.425).toInt(), (MainActivity.dUnitHeight
+                    * 1.5 * 0.8).toInt(), (originalParams!!.x + (originalParams!!.width * 0.05)).toInt(),
+                (originalParams!!.y + originalParams!!.height + (-MainActivity.dUnitHeight * 1.5 * 0.475)
+                        + (originalParams!!.height * 0.1)).toInt()))
         singlePlayerButton!!.setCornerRadiusAndBorderWidth(
             (singlePlayerButton!!.getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(
                 singlePlayerButton!!.getOriginalParams().width * 0.01
-            ) * 10.0) * 0.65).toInt()
-        )
-        singlePlayerButton!!.setTextSize(
-            (singlePlayerButton!!.getOriginalParams().height * 0.175).toFloat()
-        )
+            ) * 10.0) * 0.65).toInt())
+        singlePlayerButton!!.setTextSize((singlePlayerButton!!.getOriginalParams().height * 0.175).toFloat())
         singlePlayerButton!!.setText("Single Player", false)
         singlePlayerButton!!.getThis().setOnClickListener {
             if (!singlePlayerButton!!.growWidthAndChangeColorIsRunning) {

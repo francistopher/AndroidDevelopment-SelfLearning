@@ -49,9 +49,8 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
     }
 
     fun forceSettingsMenuContraction() {
-        if (settingsMenu!!.isTransforming && !SettingsMenu.isExpanded) {
-            settingsMenu!!.transformingAnimator!!.cancel()
-            settingsMenu!!.expandOrContract()
+        if (SettingsMenu.isExpanded) {
+            clickSettingsButton()
         }
     }
 
@@ -132,21 +131,25 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
 
     private fun setupListener() {
         settingsButton!!.setOnClickListener {
-            if (MainActivity.dAspectRatio < 1.8) {
-                if (SettingsMenu.isExpanded) {
-                    MainActivity.mouseCoinView!!.fadeIn()
-                } else {
-                    MainActivity.mouseCoinView!!.fadeOut()
-                }
-            }
-            settingsMenu!!.expandOrContract()
-            SettingsMenu.adsButton!!.expandOrContract()
-            SettingsMenu.leaderBoardButton!!.expandOrContract()
-            SettingsMenu.volumeButton!!.expandOrContract()
-            SettingsMenu.moreCatsButton!!.expandOrContract()
-            SettingsMenu.mouseCoinButton!!.expandOrContract()
-            rotateGear()
+            clickSettingsButton()
         }
+    }
+
+    private fun clickSettingsButton() {
+        if (MainActivity.dAspectRatio < 1.8) {
+            if (SettingsMenu.isExpanded) {
+                MainActivity.mouseCoinView!!.fadeIn()
+            } else {
+                MainActivity.mouseCoinView!!.fadeOut()
+            }
+        }
+        settingsMenu!!.expandOrContract()
+        SettingsMenu.adsButton!!.expandOrContract()
+        SettingsMenu.leaderBoardButton!!.expandOrContract()
+        SettingsMenu.volumeButton!!.expandOrContract()
+        SettingsMenu.moreCatsButton!!.expandOrContract()
+        SettingsMenu.mouseCoinButton!!.expandOrContract()
+        rotateGear()
     }
 
     private var rotateGearAnimator: ValueAnimator? = null

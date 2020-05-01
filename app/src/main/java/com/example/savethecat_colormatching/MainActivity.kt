@@ -587,8 +587,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupColorOptions() {
         val boardGameSideLength:Float = (dUnitHeight * 9).toFloat()
-        colorOptions = ColorOptions(view = View(this), parentLayout = rootLayout!!, params =
-        LayoutParams(boardGameSideLength.toInt(), (dUnitHeight * 1.5).toInt(),
+        colorOptions = ColorOptions(view = View(this), parentLayout = rootLayout!!,
+            params = LayoutParams(boardGameSideLength.toInt(), (dUnitHeight * 1.5).toInt(),
             boardGame!!.getOriginalParams().x, boardGame!!.getOriginalParams().y + boardGame!!.
             getOriginalParams().height))
         CenterController.centerViewHorizontally(colorOptions!!.getThis(), parentParams = params!!,
@@ -599,12 +599,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupSettingsButton() {
         val sideLength:Float = (dHeight * ((1.0/300.0) + 0.085)).toFloat()
-        settingsButton =
-            SettingsButton(imageButton = ImageButton(this), parentLayout = rootLayout!!,
-                params = LayoutParams(sideLength.toInt(), sideLength.toInt(), dUnitWidth.toInt(),
-                    dUnitHeight.toInt()
-                )
-            )
+        settingsButton = SettingsButton(imageButton = ImageButton(this),
+            parentLayout = rootLayout!!, params = LayoutParams(sideLength.toInt(),
+                sideLength.toInt(), dUnitWidth.toInt(), dUnitHeight.toInt()))
     }
 
     private fun setupAttackMeter() {
