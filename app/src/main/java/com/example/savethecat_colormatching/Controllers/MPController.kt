@@ -23,7 +23,7 @@ class MPController {
         var isPlayerA:Boolean? = null
     }
 
-    private var searchTimeInMilli:Long = 30000
+    private var searchTimeInMilli:Long = 10000
     private var pairedTimeInMilli:Long = 1800000
     private var database: FirebaseDatabase? = null
     private var roomsReference: DatabaseReference? = null

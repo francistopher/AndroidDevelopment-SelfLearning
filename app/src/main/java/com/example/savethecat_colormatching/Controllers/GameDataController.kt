@@ -50,13 +50,21 @@ class GameDataController {
     }
 
     fun uploadMouseCoinCount() {
-        gameSPEditor!!.putInt("mouseCoins", mouseCoinCount)
-        commitUpload()
+        try {
+            gameSPEditor!!.putInt("mouseCoins", mouseCoinCount)
+            commitUpload()
+        } catch (e: Exception) {
+            MPController.displayFailureReason()
+        }
     }
 
     fun uploadMyCatsData() {
-        gameSPEditor!!.putString("myCats", myCatsString)
-        commitUpload()
+        try {
+            gameSPEditor!!.putString("myCats", myCatsString)
+            commitUpload()
+        } catch (e: Exception) {
+            MPController.displayFailureReason()
+        }
     }
 
     private fun commitUpload() {

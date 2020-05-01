@@ -377,7 +377,11 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 MainActivity.staticSelf!!.runOnUiThread {
-                    MainActivity.mpController!!.closeRoom()
+                    try {
+                        MainActivity.mpController!!.closeRoom()
+                    } catch (e: Exception) {
+                        MPController.displayFailureReason()
+                    }
                 }
             }
         }, 500)

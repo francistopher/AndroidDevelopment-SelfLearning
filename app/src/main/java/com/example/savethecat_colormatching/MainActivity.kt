@@ -487,7 +487,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
 
     private fun setupInterstitialAds() {
         mInterstitialAd = InterstitialAd(this)
-        mInterstitialAd!!.adUnitId = "ca-app-pub-9972661202816089/4402023404"
+        mInterstitialAd!!.adUnitId = "ca-app-pub-9972661202816089/1381159692"
         mInterstitialAd!!.loadAd(AdRequest.Builder().build())
         mInterstitialAd!!.adListener = object: AdListener() {
             override fun onAdClosed() {
@@ -538,7 +538,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         val bannerAdSize:AdSize = getAdaptiveBannerAdSize()
         bannerAdView = AdView(this)
         bannerAdView!!.adSize = bannerAdSize
-        bannerAdView!!.adUnitId = "ca-app-pub-9972661202816089/5151804774"
+        bannerAdView!!.adUnitId = "ca-app-pub-9972661202816089/1716201619"
         adRequest = AdRequest.Builder().build()
         bannerAdView!!.loadAd(adRequest)
         rootLayout!!.addView(bannerAdView)
@@ -586,7 +586,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         var width: Float = (dUnitWidth * 9).toFloat()
         var y:Float = (dUnitHeight).toFloat()
         var x: Float
-        if (dAspectRatio >= 2.09){
+        if (dAspectRatio >= 1.8){
             x = ((dWidth - width) * 0.5).toFloat()
             y = ((settingsButton!!.getOriginalParams().y +
                     settingsButton!!.getOriginalParams().height) +
@@ -596,7 +596,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             x += dUnitWidth.toFloat()
             width += (dUnitWidth * 0.5).toFloat()
         } else {
-            width *= 1.4f
+            width *= 0.8f
             x = ((dWidth - width) * 0.5).toFloat()
         }
         val attackMeterParams = LayoutParams(width.toInt(), height.toInt(),
