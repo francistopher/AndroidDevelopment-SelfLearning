@@ -248,6 +248,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     fun wonMultiPlayer() {
+        MainActivity.settingsButton!!.forceSettingsMenuExpansion()
         MPController.isPlaying = false
         MainActivity.mpController!!.disconnect()
         // SET OPPOSITION LIVES METER COUNT
@@ -319,6 +320,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     }
 
     private fun gameOver() {
+        MainActivity.settingsButton!!.forceSettingsMenuExpansion()
         MPController.isPlaying = false
         MainActivity.mpController!!.disconnect()
         MainActivity.opponentLivesMeter!!.translate(false)

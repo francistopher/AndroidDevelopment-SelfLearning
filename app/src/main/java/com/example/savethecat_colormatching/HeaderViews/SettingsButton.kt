@@ -54,6 +54,13 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         }
     }
 
+    fun forceSettingsMenuExpansion() {
+        if (!SettingsMenu.isExpanded) {
+            clickSettingsButton()
+        }
+        SettingsMenu.mouseCoinButton!!.getThis().performClick()
+    }
+
     private var fadeAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
