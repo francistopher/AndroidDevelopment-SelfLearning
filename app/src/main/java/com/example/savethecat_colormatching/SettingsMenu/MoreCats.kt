@@ -530,7 +530,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         if (MainActivity.dAspectRatio >= 1.8) {
             catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.3f)
         } else if (MainActivity.dAspectRatio >= 1.7) {
-            catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.3f)
+            catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.25f)
         } else {
             catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.225f)
         }
