@@ -485,8 +485,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         var sideLength:Int = 0
         if (MainActivity.dAspectRatio >= 1.8) {
             sideLength = (contentViewParams!!.width * 0.65).toInt()
-        } else if (MainActivity.dAspectRatio >= 1.7) {
-            sideLength = (contentViewParams!!.width * 0.65).toInt()
+        } else if (MainActivity.dAspectRatio >= 1.4) {
+            sideLength = (contentViewParams!!.width * 0.6).toInt()
         } else {
             sideLength = (contentViewParams!!.width * 0.5).toInt()
         }
@@ -564,11 +564,11 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 mouseCoinParams.height = (height * 0.8).toInt()
                 mouseCoinParams.x =  x + (width * 0.66).toInt()
                 mouseCoinParams.y = y + (height * 0.1).toInt()
-            } else if (MainActivity.dAspectRatio >= 1.7) {
-                mouseCoinParams.width = (height * 0.8).toInt()
-                mouseCoinParams.height = (height * 0.8).toInt()
-                mouseCoinParams.x =  x + (width * 0.66).toInt()
-                mouseCoinParams.y = y + (height * 0.1).toInt()
+            } else if (MainActivity.dAspectRatio >= 1.4) {
+                mouseCoinParams.width = (height * 0.7).toInt()
+                mouseCoinParams.height = (height * 0.7).toInt()
+                mouseCoinParams.x =  x + (width * 0.67).toInt()
+                mouseCoinParams.y = y + (height * 0.15).toInt()
             } else {
                 mouseCoinParams.width = (height * 0.7).toInt()
                 mouseCoinParams.height = (height * 0.7).toInt()
@@ -709,8 +709,8 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         var sideLength:Int = 0
         if (MainActivity.dAspectRatio >= 1.8) {
             sideLength = (contentViewParams!!.width * 0.65).toInt()
-        } else if (MainActivity.dAspectRatio >= 1.7) {
-            sideLength = (contentViewParams!!.width * 0.65).toInt()
+        } else if (MainActivity.dAspectRatio >= 1.4) {
+            sideLength = (contentViewParams!!.width * 0.6).toInt()
         } else {
             sideLength = (contentViewParams!!.width * 0.5).toInt()
         }

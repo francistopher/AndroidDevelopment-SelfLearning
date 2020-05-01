@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics!!)
         dWidth = displayMetrics!!.widthPixels.toDouble()
-        dHeight = (1080).toDouble()
+        dHeight = (1152).toDouble()
 //            displayMetrics!!.heightPixels.toDouble() + dNavigationBarHeight + dStatusBarHeight
         Log.i("WIDTH, HEIGHT", "$dWidth $dHeight")
     }
@@ -622,6 +622,10 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             x = ((dWidth - width) * 0.5).toFloat()
             x += dUnitWidth.toFloat()
             width += (dUnitWidth * 0.5).toFloat()
+        } else if (dAspectRatio >= 1.5) {
+            width *= 0.65f
+            x = ((dWidth - width) * 0.5).toFloat()
+            width += (dUnitWidth * 2.25).toFloat()
         } else if (dAspectRatio >= 1.4) {
             width *= 0.7f
             x = ((dWidth - width) * 0.5).toFloat()

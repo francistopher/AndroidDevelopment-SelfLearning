@@ -163,7 +163,10 @@ class LivesMeter(meterView: View,
         }
         fadeInAnimator!!.addUpdateListener {
             currentHeartButton!!.alpha = it.animatedValue as Float
-            containerView!!.getThis().alpha = it.animatedValue as Float
+            if (!(MainActivity.dAspectRatio >= 1.5)) {
+                containerView!!.getThis().alpha = it.animatedValue as Float
+            }
+
             livesCountLabel!!.getThis().alpha = it.animatedValue as Float
             meterView!!.alpha = it.animatedValue as Float
         }
@@ -181,6 +184,9 @@ class LivesMeter(meterView: View,
                         borderWidth, getOriginalParams().y))
         containerView!!.setCornerRadiusAndBorderWidth(getOriginalParams().height / 2,
             getOriginalParams().height / 12)
+        if (MainActivity.dAspectRatio >= 1.5) {
+            containerView!!.getThis().alpha = 0f
+        }
     }
 
     private fun buildHeartButton(): ImageButton {
@@ -223,14 +229,14 @@ class LivesMeter(meterView: View,
             translateXY!!.cancel()
         }
         if (show) {
-            if (MainActivity.dAspectRatio > 2.08) {
+            if (MainActivity.dAspectRatio > 2.08 && MainActivity.dAspectRatio < 1.5) {
                 translateXY = ValueAnimator.ofInt(
                     (meterView!!.layoutParams as LayoutParams).x, x - originalParams!!.height)
             } else {
                 translateXY = ValueAnimator.ofInt(y, y + originalParams!!.height)
             }
         } else {
-            if (MainActivity.dAspectRatio > 2.08) {
+            if (MainActivity.dAspectRatio > 2.08 && MainActivity.dAspectRatio < 1.5) {
                 translateXY = ValueAnimator.ofInt((
                         meterView!!.layoutParams as LayoutParams).x, x)
             } else {
