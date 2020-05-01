@@ -293,6 +293,10 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         leaderBoardButton!!.getThis().layoutParams = leaderBoardButton!!.getContractedParams()
         volumeButton!!.getThis().layoutParams = volumeButton!!.getContractedParams()
         moreCatsButton!!.getThis().layoutParams = moreCatsButton!!.getContractedParams()
+        mouseCoinButton!!.setContractedParams(LayoutParams(expandedParams!!.height,
+            expandedParams!!.height, (contractedParams!!.x + contractedParams!!.width -
+                    expandedParams!!.height),
+            getOriginalParams().y))
         mouseCoinButton!!.getThis().layoutParams = mouseCoinButton!!.getContractedParams()
     }
 
