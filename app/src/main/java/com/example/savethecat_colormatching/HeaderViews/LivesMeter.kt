@@ -163,7 +163,7 @@ class LivesMeter(meterView: View,
         }
         fadeInAnimator!!.addUpdateListener {
             currentHeartButton!!.alpha = it.animatedValue as Float
-            if (!(MainActivity.dAspectRatio >= 1.5)) {
+            if (MainActivity.dAspectRatio !in 1.5..1.7) {
                 containerView!!.getThis().alpha = it.animatedValue as Float
             }
 
@@ -184,7 +184,7 @@ class LivesMeter(meterView: View,
                         borderWidth, getOriginalParams().y))
         containerView!!.setCornerRadiusAndBorderWidth(getOriginalParams().height / 2,
             getOriginalParams().height / 12)
-        if (MainActivity.dAspectRatio >= 1.5) {
+        if (MainActivity.dAspectRatio in 1.5..1.7) {
             containerView!!.getThis().alpha = 0f
         }
     }

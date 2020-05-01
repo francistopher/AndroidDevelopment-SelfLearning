@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics!!)
         dWidth = displayMetrics!!.widthPixels.toDouble()
-        dHeight = (1280).toDouble()
+        dHeight = (1368).toDouble()
 //            displayMetrics!!.heightPixels.toDouble() + dNavigationBarHeight + dStatusBarHeight
         Log.i("WIDTH, HEIGHT", "$dWidth $dHeight")
     }
@@ -639,11 +639,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         }
         val attackMeterParams = LayoutParams(width.toInt(), height.toInt(),
             x.toInt(), y.toInt())
-        attackMeter =
-            AttackMeter(
-                meterView = View(this), parentLayout = rootLayout!!,
-                params = attackMeterParams
-            )
+        attackMeter = AttackMeter(meterView = View(this), parentLayout = rootLayout!!,
+                params = attackMeterParams)
     }
 
     private fun setupMouseCoinView() {

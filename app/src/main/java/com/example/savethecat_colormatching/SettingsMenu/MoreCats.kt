@@ -528,7 +528,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         catTitleLabel!!.setStyle()
         catTitleLabel!!.setText("Standard Cat")
         if (MainActivity.dAspectRatio >= 1.8) {
-            catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.3f)
+            catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.25f)
         } else if (MainActivity.dAspectRatio >= 1.7) {
             catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.25f)
         } else {
@@ -559,11 +559,11 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         fun setupMouseCoin() {
             mouseCoin = Button(popupContainerView!!.context)
             var mouseCoinParams = LayoutParams(0,0,0,0)
-            if (MainActivity.dAspectRatio >= 1.8) {
-                mouseCoinParams.width = (height * 0.8).toInt()
-                mouseCoinParams.height = (height * 0.8).toInt()
-                mouseCoinParams.x =  x + (width * 0.66).toInt()
-                mouseCoinParams.y = y + (height * 0.1).toInt()
+            if (MainActivity.dAspectRatio >= 1.7) {
+                mouseCoinParams.width = (height * 0.65).toInt()
+                mouseCoinParams.height = (height * 0.65).toInt()
+                mouseCoinParams.x =  x + (width * 0.67).toInt()
+                mouseCoinParams.y = y + (height * 0.155).toInt()
             } else if (MainActivity.dAspectRatio >= 1.4) {
                 mouseCoinParams.width = (height * 0.7).toInt()
                 mouseCoinParams.height = (height * 0.7).toInt()
