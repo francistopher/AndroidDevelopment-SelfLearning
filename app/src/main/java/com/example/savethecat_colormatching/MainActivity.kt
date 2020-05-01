@@ -5,12 +5,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
 import android.widget.*
@@ -92,6 +94,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         // Multi Player Controller
         var gdController:GameDataController? = null
         var mpController:MPController? = null
+        var catsSavedLabel:TextView? = null
     }
 
     var introAnimation:IntroView? = null
@@ -421,6 +424,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupIntroAnimation()
         setupAdvertisement()
         setupBoardGame()
+        setupCatSavedLabel()
         setupColorOptions()
         setupLivesMeters()
         setupSettingsButton()
@@ -557,6 +561,28 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         boardGame!!.setOriginalParams(boardGame!!.getThis().layoutParams as LayoutParams)
     }
 
+    private fun setupCatSavedLabel() {
+        catsSavedLabel = TextView(this)
+        catsSavedLabel!!.layoutParams = boardGame!!.getOriginalParams()
+        rootLayout!!.addView(catsSavedLabel!!)
+        catsSavedLabel!!.typeface = Typeface.createFromAsset(
+            rootView!!.context.assets, "SleepyFatCat.ttf")
+        catsSavedLabel!!.gravity = Gravity.CENTER
+        catsSavedLabel!!.text = ""
+        catsSavedLabel!!.textSize = boardGame!!.getOriginalParams().height * 0.2f
+        catsSavedLabel!!.alpha = 0f
+    }
+
+    var catsSavedCount:Int = 0
+    fun flashCatsSavedLabel() {
+        catsSavedLabel!!.alpha = 1f
+        catsSavedLabel!!.text = catsSavedCount.toString()
+        catsSavedLabel!!.bringToFront()
+        Handler().postDelayed({
+            catsSavedLabel!!.alpha = 0f
+        }, 250)
+    }
+
     private fun setupColorOptions() {
         val boardGameSideLength:Float = (dUnitHeight * 9).toFloat()
         colorOptions = ColorOptions(view = View(this), parentLayout = rootLayout!!, params =
@@ -689,6 +715,16 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             introAnimation!!.setStyle()
             bannerAdView!!.alpha = 0f
             noInternetAdView!!.alpha = 0f
+            if (isThemeDark) {
+                catsSavedLabel!!.setTextColor(Color.WHITE)
+            } else {
+                catsSavedLabel!!.setTextColor(Color.BLACK)
+            }
+        }
+        if (isThemeDark) {
+            catsSavedLabel!!.setTextColor(Color.WHITE)
+        } else {
+            catsSavedLabel!!.setTextColor(Color.BLACK)
         }
     }
 

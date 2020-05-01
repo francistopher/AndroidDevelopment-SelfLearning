@@ -63,6 +63,7 @@ class GameDataController {
             gameSPEditor!!.putString("myCats", myCatsString)
             commitUpload()
         } catch (e: Exception) {
+        } catch (e: Exception) {
             MPController.displayFailureReason()
         }
     }

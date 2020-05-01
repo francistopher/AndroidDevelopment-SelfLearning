@@ -193,6 +193,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                                             gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
                                         MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
                                         catButton.pod()
+                                        MainActivity.staticSelf!!.catsSavedCount += 1
+                                        MainActivity.staticSelf!!.flashCatsSavedLabel()
                                         verifyRemainingCatsArePodded(catButton = catButton)
                                     } else {
                                         attackCatButton(catButton = catButton)
@@ -237,6 +239,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         if (catButtons!!.allSurvived()) {
             promote(catButton = catButton)
         } else if (MainActivity.myLivesMeter!!.getLivesLeftCount() == 0) {
+            MainActivity.staticSelf!!.flashCatsSavedLabel()
+            MainActivity.staticSelf!!.catsSavedCount = 0
             gameOver()
         } else if (catButtons!!.areAliveAndPodded()) {
             maintain()
