@@ -235,10 +235,17 @@ class GameResults(resultsView: View,
 
     private fun setupMouseCoin() {
         var mouseCoinParams: LayoutParams
-        mouseCoinParams = if (MainActivity.dAspectRatio >= 1.9) {
-            LayoutParams((watchAdButton!!.getOriginalParams().height * 0.7).toInt(),
-                (watchAdButton!!.getOriginalParams().height * 0.7).toInt(),
-                (getOriginalParams().x + getOriginalParams().width * 0.7).toInt(),
+
+        mouseCoinParams =  if (MainActivity.dAspectRatio >= 2.05) {
+            LayoutParams((watchAdButton!!.getOriginalParams().height * 0.725).toInt(),
+                (watchAdButton!!.getOriginalParams().height * 0.725).toInt(),
+                (getOriginalParams().x + getOriginalParams().width * 0.71).toInt(),
+                (watchAdButton!!.getOriginalParams().y +
+                        (watchAdButton!!.getOriginalParams().height * 0.15).toInt()))
+        } else if (MainActivity.dAspectRatio >= 1.9) {
+            LayoutParams((watchAdButton!!.getOriginalParams().height * 0.725).toInt(),
+                (watchAdButton!!.getOriginalParams().height * 0.725).toInt(),
+                (getOriginalParams().x + getOriginalParams().width * 0.725).toInt(),
                 (watchAdButton!!.getOriginalParams().y +
                         (watchAdButton!!.getOriginalParams().height * 0.15).toInt()))
         } else {

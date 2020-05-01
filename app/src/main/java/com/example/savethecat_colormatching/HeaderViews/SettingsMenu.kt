@@ -179,12 +179,14 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         mouseCoinButton!!.getThis().alpha = 0f
         mouseCoinButton!!.getThis().setOnClickListener {
             AudioController.coinEarned()
-            MainActivity.mouseCoinView!!.setCornerRadiusBorderWidth(false)
-            MainActivity.mouseCoinView!!.fadeIn()
-            Handler().postDelayed({
-                MainActivity.mouseCoinView!!.fadeOut()
-                MainActivity.mouseCoinView!!.setCornerRadiusBorderWidth(true)
-            }, 2250)
+            if (MainActivity.dAspectRatio < 1.8) {
+                MainActivity.mouseCoinView!!.setCornerRadiusBorderWidth(false)
+                MainActivity.mouseCoinView!!.fadeIn()
+                Handler().postDelayed({
+                    MainActivity.mouseCoinView!!.fadeOut()
+                    MainActivity.mouseCoinView!!.setCornerRadiusBorderWidth(true)
+                }, 2250)
+            }
         }
     }
 
