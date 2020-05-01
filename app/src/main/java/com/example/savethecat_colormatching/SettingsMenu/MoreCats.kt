@@ -482,7 +482,14 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     }
 
     private fun setupCatPresentation() {
-        val sideLength:Int = (contentViewParams!!.width * 0.7).toInt()
+        var sideLength:Int = 0
+        if (MainActivity.dAspectRatio >= 1.8) {
+            sideLength = (contentViewParams!!.width * 0.65).toInt()
+        } else if (MainActivity.dAspectRatio >= 1.7) {
+            sideLength = (contentViewParams!!.width * 0.65).toInt()
+        } else {
+            sideLength = (contentViewParams!!.width * 0.5).toInt()
+        }
         presentationCat = PCatButton(button = Button(popupContainerView!!.context),
             parentLayout = parentLayout!!,
             params = LayoutParams(sideLength, sideLength,
@@ -509,10 +516,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     }
 
     private fun setupCatTitleLabel() {
-        val width:Int = (presentationCat!!.getOriginalParams().width * 0.8).toInt()
+        val width:Int = (presentationCat!!.getOriginalParams().width * 0.7).toInt()
         val height:Int = (infoButton!!.getOriginalParams().height * 0.75).toInt()
         val x:Int = presentationCat!!.getOriginalParams().x +
-                (presentationCat!!.getOriginalParams().width * 0.1).toInt()
+                (presentationCat!!.getOriginalParams().width * 0.15).toInt()
         val y:Int = (catViewHandler!!.layoutParams as LayoutParams).y +
                 (infoButton!!.getOriginalParams().height * 0.1).toInt()
         catTitleLabel = CLabel(textView = TextView(popupContainerView!!.context),
@@ -520,7 +527,14 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         catTitleLabel!!.isInverted
         catTitleLabel!!.setStyle()
         catTitleLabel!!.setText("Standard Cat")
-        catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.35f)
+        if (MainActivity.dAspectRatio >= 1.8) {
+            catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.3f)
+        } else if (MainActivity.dAspectRatio >= 1.7) {
+            catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.3f)
+        } else {
+            catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.2f)
+        }
+
         titleLabelShownY = y
         titleLabelHiddenY = (titleLabelShownY + MainActivity.dHeight).toInt()
     }
@@ -671,11 +685,18 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     }
 
     private fun setupCatHandler() {
-        val sideLength:Int = (contentViewParams!!.width * 0.7).toInt()
         val color:Int = if (MainActivity.isThemeDark) {
             Color.WHITE
         } else {
             Color.BLACK
+        }
+        var sideLength:Int = 0
+        if (MainActivity.dAspectRatio >= 1.8) {
+            sideLength = (contentViewParams!!.width * 0.65).toInt()
+        } else if (MainActivity.dAspectRatio >= 1.7) {
+            sideLength = (contentViewParams!!.width * 0.65).toInt()
+        } else {
+            sideLength = (contentViewParams!!.width * 0.5).toInt()
         }
         val width:Int = (sideLength * 1.1).toInt()
         val height:Int = sideLength + (infoButton!!.getOriginalParams().height * 1.75).toInt()
