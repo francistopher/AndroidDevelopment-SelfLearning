@@ -132,6 +132,11 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
 
     private fun setupListener() {
         settingsButton!!.setOnClickListener {
+            if (SettingsMenu.isExpanded) {
+                MainActivity.mouseCoinView!!.fadeIn()
+            } else {
+                MainActivity.mouseCoinView!!.fadeOut()
+            }
             settingsMenu!!.expandOrContract()
             SettingsMenu.adsButton!!.expandOrContract()
             SettingsMenu.leaderBoardButton!!.expandOrContract()

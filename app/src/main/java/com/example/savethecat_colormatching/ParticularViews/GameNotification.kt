@@ -216,12 +216,10 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
                         "more Mouse Coins!!!")
             imageButton!!.setBackgroundResource(R.drawable.mousecoin)
         } else if (notificationQueue[0] == Notification.FIREBASE_TROUBLE) {
-            spannableString = SpannableString("Unable to connect\nto Firebase to " +
-                    "save\nGame Data!!!")
+            spannableString = SpannableString("Lost connection with Firebase")
             imageButton!!.setBackgroundResource(R.drawable.nofirebase)
         } else if (notificationQueue[0] == Notification.FIREBASE_CONNECTED) {
-            spannableString = SpannableString("Able to connect\nto Firebase to " +
-                    "operate\nGame Data!!!")
+            spannableString = SpannableString("Connected with Firebase\nSynchronizing game data")
             imageButton!!.setBackgroundResource(R.drawable.firebase)
         } else if (notificationQueue[0] == Notification.PLAYING_AGAINST) {
             spannableString = SpannableString("Playing against,\n" +

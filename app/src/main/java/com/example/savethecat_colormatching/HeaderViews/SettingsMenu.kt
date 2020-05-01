@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
+import android.os.Handler
 import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
@@ -178,6 +179,12 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         mouseCoinButton!!.getThis().alpha = 0f
         mouseCoinButton!!.getThis().setOnClickListener {
             AudioController.coinEarned()
+            MainActivity.mouseCoinView!!.setCornerRadiusBorderWidth(false)
+            MainActivity.mouseCoinView!!.fadeIn()
+            Handler().postDelayed({
+                MainActivity.mouseCoinView!!.fadeOut()
+                MainActivity.mouseCoinView!!.setCornerRadiusBorderWidth(true)
+            }, 2250)
         }
     }
 

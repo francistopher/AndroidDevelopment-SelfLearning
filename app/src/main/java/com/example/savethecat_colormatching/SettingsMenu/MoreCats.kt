@@ -558,8 +558,24 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         controlButton!!.setTextSize(height * 0.2f)
         fun setupMouseCoin() {
             mouseCoin = Button(popupContainerView!!.context)
-            mouseCoin!!.layoutParams = LayoutParams((height * 0.8).toInt(), (height * 0.8).toInt(),
-                x + (width * 0.66).toInt(), y + (height * 0.1).toInt())
+            var mouseCoinParams = LayoutParams(0,0,0,0)
+            if (MainActivity.dAspectRatio >= 1.8) {
+                mouseCoinParams.width = (height * 0.8).toInt()
+                mouseCoinParams.height = (height * 0.8).toInt()
+                mouseCoinParams.x =  x + (width * 0.66).toInt()
+                mouseCoinParams.y = y + (height * 0.1).toInt()
+            } else if (MainActivity.dAspectRatio >= 1.7) {
+                mouseCoinParams.width = (height * 0.8).toInt()
+                mouseCoinParams.height = (height * 0.8).toInt()
+                mouseCoinParams.x =  x + (width * 0.66).toInt()
+                mouseCoinParams.y = y + (height * 0.1).toInt()
+            } else {
+                mouseCoinParams.width = (height * 0.7).toInt()
+                mouseCoinParams.height = (height * 0.7).toInt()
+                mouseCoinParams.x =  x + (width * 0.7).toInt()
+                mouseCoinParams.y = y + (height * 0.15).toInt()
+            }
+            mouseCoin!!.layoutParams = mouseCoinParams
             mouseCoin!!.setBackgroundResource(R.drawable.mousecoin)
             mouseCoinShownY = (mouseCoin!!.layoutParams as LayoutParams).y
             mouseCoinHiddenY = (mouseCoinShownY + MainActivity.dHeight).toInt()

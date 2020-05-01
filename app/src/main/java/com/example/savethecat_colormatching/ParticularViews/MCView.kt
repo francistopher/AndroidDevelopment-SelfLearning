@@ -41,6 +41,10 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
         fade(true, false, 1f, 0.125f)
     }
 
+    fun fadeOut() {
+        fade(false, true, 1f, 0.125f)
+    }
+
     private var fadeInAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     private fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
@@ -64,6 +68,26 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
         fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
         fadeInAnimator!!.start()
         fadeAnimatorIsRunning = true
+    }
+
+    fun setCornerRadiusBorderWidth(removeBackground:Boolean) {
+        shape = null
+        shape = GradientDrawable()
+        shape!!.shape = GradientDrawable.RECTANGLE
+        if (removeBackground) {
+            shape!!.setColor(Color.TRANSPARENT)
+        } else {
+            if (MainActivity.isThemeDark) {
+                shape!!.setColor(Color.BLACK)
+            } else {
+                shape!!.setColor(Color.WHITE)
+            }
+        }
+        if (borderWidth > 0) {
+            shape!!.setStroke(borderWidth, Color.parseColor("#ffd60a"))
+        }
+        shape!!.cornerRadius = cornerRadius.toFloat()
+        mouseCoinView!!.setBackgroundDrawable(shape)
     }
 
     private var shape: GradientDrawable? = null

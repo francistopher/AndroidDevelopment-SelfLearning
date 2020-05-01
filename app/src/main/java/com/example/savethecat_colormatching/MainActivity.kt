@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics!!)
         dWidth = displayMetrics!!.widthPixels.toDouble()
-        dHeight = (960).toDouble()
+        dHeight = (1080).toDouble()
 //            displayMetrics!!.heightPixels.toDouble() + dNavigationBarHeight + dStatusBarHeight
         Log.i("WIDTH, HEIGHT", "$dWidth $dHeight")
     }
@@ -431,8 +431,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupLivesMeters()
         setupSettingsButton()
         setupAttackMeter()
-        setupMouseCoinView()
         settingsButton!!.bringContentsForward()
+        setupMouseCoinView()
         setupGameResults()
         setupSuccessResults()
         setupGlovePointer()
@@ -622,6 +622,9 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
             x = ((dWidth - width) * 0.5).toFloat()
             x += dUnitWidth.toFloat()
             width += (dUnitWidth * 0.5).toFloat()
+        } else if (dAspectRatio >= 1.4) {
+            width *= 0.7f
+            x = ((dWidth - width) * 0.5).toFloat()
         } else {
             width *= 0.8f
             x = ((dWidth - width) * 0.5).toFloat()
