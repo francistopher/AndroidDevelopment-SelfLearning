@@ -804,6 +804,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             if (MainActivity.gameResults!!.getThis().alpha > 0f) {
                 MainActivity.glovePointer!!.getThis().alpha = 1f
                 MainActivity.gameResults!!.getWatchAdButton().getThis().alpha = 1f
+                MainActivity.gameResults!!.getMouseCoin().alpha = 1f
             }
         }
     }
@@ -884,6 +885,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             if (MainActivity.gameResults!!.getThis().alpha > 0f) {
                 MainActivity.glovePointer!!.getThis().alpha = 0f
                 MainActivity.gameResults!!.getWatchAdButton().getThis().alpha = 0f
+                MainActivity.gameResults!!.getMouseCoin().alpha = 0f
             }
         }
     }
