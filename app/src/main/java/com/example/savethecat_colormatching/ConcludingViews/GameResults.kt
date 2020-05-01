@@ -234,12 +234,23 @@ class GameResults(resultsView: View,
     }
 
     private fun setupMouseCoin() {
+        var mouseCoinParams: LayoutParams
+        mouseCoinParams = if (MainActivity.dAspectRatio >= 1.9) {
+            LayoutParams((watchAdButton!!.getOriginalParams().height * 0.7).toInt(),
+                (watchAdButton!!.getOriginalParams().height * 0.7).toInt(),
+                (getOriginalParams().x + getOriginalParams().width * 0.7).toInt(),
+                (watchAdButton!!.getOriginalParams().y +
+                        (watchAdButton!!.getOriginalParams().height * 0.15).toInt()))
+        } else {
+            LayoutParams((watchAdButton!!.getOriginalParams().height * 0.8).toInt(),
+                (watchAdButton!!.getOriginalParams().height * 0.8).toInt(),
+                (getOriginalParams().x + getOriginalParams().width * 0.7).toInt(),
+                (watchAdButton!!.getOriginalParams().y +
+                        (watchAdButton!!.getOriginalParams().height * 0.1).toInt()))
+        }
         mouseCoin = Button(resultsContext!!)
         parentLayout!!.addView(mouseCoin!!)
-        mouseCoin!!.layoutParams = LayoutParams((watchAdButton!!.getOriginalParams().height * 0.8).toInt(),
-            (watchAdButton!!.getOriginalParams().height * 0.8).toInt(),
-            (getOriginalParams().x + getOriginalParams().width * 0.7).toInt(),
-            (watchAdButton!!.getOriginalParams().y + (watchAdButton!!.getOriginalParams().height * 0.1).toInt()))
+        mouseCoin!!.layoutParams =mouseCoinParams
         mouseCoin!!.setBackgroundResource(R.drawable.mousecoin)
         mouseCoin!!.setOnClickListener {
             AudioController.coinEarned()

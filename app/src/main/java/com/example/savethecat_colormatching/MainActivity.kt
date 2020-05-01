@@ -176,7 +176,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         displayMetrics = DisplayMetrics()
         windowManager.defaultDisplay.getMetrics(displayMetrics!!)
         dWidth = displayMetrics!!.widthPixels.toDouble()
-        dHeight = (1368).toDouble()
+        dHeight = (1440).toDouble()
 //            displayMetrics!!.heightPixels.toDouble() + dNavigationBarHeight + dStatusBarHeight
         Log.i("WIDTH, HEIGHT", "$dWidth $dHeight")
     }
