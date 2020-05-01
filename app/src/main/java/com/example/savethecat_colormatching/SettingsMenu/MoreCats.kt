@@ -516,10 +516,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     }
 
     private fun setupCatTitleLabel() {
-        val width:Int = (presentationCat!!.getOriginalParams().width * 0.7).toInt()
+        val width:Int = (presentationCat!!.getOriginalParams().width * 0.725).toInt()
         val height:Int = (infoButton!!.getOriginalParams().height * 0.75).toInt()
         val x:Int = presentationCat!!.getOriginalParams().x +
-                (presentationCat!!.getOriginalParams().width * 0.15).toInt()
+                (presentationCat!!.getOriginalParams().width * 0.125).toInt()
         val y:Int = (catViewHandler!!.layoutParams as LayoutParams).y +
                 (infoButton!!.getOriginalParams().height * 0.1).toInt()
         catTitleLabel = CLabel(textView = TextView(popupContainerView!!.context),
@@ -532,7 +532,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         } else if (MainActivity.dAspectRatio >= 1.7) {
             catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.3f)
         } else {
-            catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.2f)
+            catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.225f)
         }
 
         titleLabelShownY = y
