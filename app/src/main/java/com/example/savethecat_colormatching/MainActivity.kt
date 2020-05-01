@@ -432,6 +432,7 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
         setupSettingsButton()
         setupAttackMeter()
         setupMouseCoinView()
+        settingsButton!!.bringContentsForward()
         setupGameResults()
         setupSuccessResults()
         setupGlovePointer()
@@ -600,10 +601,8 @@ class MainActivity : AppCompatActivity(), Reachability.ConnectivityReceiverListe
     private fun setupSettingsButton() {
         val sideLength:Float = (dHeight * ((1.0/300.0) + 0.085)).toFloat()
         settingsButton =
-            SettingsButton(
-                imageButton = ImageButton(this), parentLayout = rootLayout!!,
-                params = LayoutParams(
-                    sideLength.toInt(), sideLength.toInt(), dUnitWidth.toInt(),
+            SettingsButton(imageButton = ImageButton(this), parentLayout = rootLayout!!,
+                params = LayoutParams(sideLength.toInt(), sideLength.toInt(), dUnitWidth.toInt(),
                     dUnitHeight.toInt()
                 )
             )

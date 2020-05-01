@@ -119,6 +119,17 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         return settingsButton!!
     }
 
+    fun bringContentsForward() {
+        settingsMenu!!.getThis().bringToFront()
+        SettingsMenu.adsButton!!.getThis().bringToFront()
+        SettingsMenu.leaderBoardButton!!.getThis().bringToFront()
+        SettingsMenu.volumeButton!!.getThis().bringToFront()
+        SettingsMenu.moreCatsButton!!.getThis().bringToFront()
+        SettingsMenu.mouseCoinButton!!.getThis().bringToFront()
+        borderImageView!!.bringToFront()
+        settingsButton!!.bringToFront()
+    }
+
     private fun setupListener() {
         settingsButton!!.setOnClickListener {
             settingsMenu!!.expandOrContract()
