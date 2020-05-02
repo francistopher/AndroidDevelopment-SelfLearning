@@ -151,6 +151,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
     private var gridButtonX: Float = 0.0f
     private var gridButtonY: Float = 0.0f
     private var catButton: CatButton? = null
+    private var viewToCatButton:MutableMap<View, CatButton>? = null
     private fun buildGridButtons() {
         gridButtonRowGap = originalParams!!.height * 0.1f / (rowsAndColumns.first + 1.0f)
         gridButtonColumnGap = originalParams!!.width * 0.1f / (rowsAndColumns.second + 1.0f)
@@ -161,6 +162,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         gridButtonX = 0.0f
         gridButtonY = 0.0f
         // Build the cat buttons
+        viewToCatButton = mutableMapOf()
         for (rowIndex in (0 until rowsAndColumns.first)) {
             gridButtonY += gridButtonRowGap
             gridButtonX = 0.0f
@@ -177,37 +179,34 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 )
                 catButton!!.rowIndex = rowIndex
                 catButton!!.columnIndex = columnIndex
-                catButton!!.getThis().setOnClickListener {
-                    fun catButtonSelector(params: LayoutParams) {
-                        // The user has selected a color option
-                        if (MainActivity.colorOptions!!.getSelectedColor() != Color.LTGRAY) {
-                            for (catButton in catButtons!!.getCurrentCatButtons()) {
-                                // The button is found and colors match
-                                if ((catButton.getOriginalParams().x == params.x) &&
-                                    (catButton.getOriginalParams().y == params.y) &&
-                                    !catButton.isPodded) {
-                                    if (MainActivity.colorOptions!!.getSelectedColor() ==
-                                        catButton.getOriginalBackgroundColor()) {
-                                        catButton.transitionColor(catButton.getOriginalBackgroundColor())
-                                        gridColorsCount!![catButton.getOriginalBackgroundColor()] =
-                                            gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
-                                        MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
-                                        catButton.pod()
-                                        MainActivity.staticSelf!!.catsSavedCount += 1
-                                        MainActivity.staticSelf!!.flashCatsSavedLabel()
-                                        verifyRemainingCatsArePodded(catButton = catButton)
-                                    } else {
-                                        attackCatButton(catButton = catButton)
-                                    }
-                                    return
-                                } else if (catButton.getOriginalParams() == params && catButton.isPodded) {
-                                    AudioController.kittenMeow()
-                                    return
-                                }
+                viewToCatButton!![catButton!!.getTouchView()] = catButton!!
+                catButton!!.getTouchView().setOnClickListener {
+                    // The user has selected a color option
+                    if (MainActivity.colorOptions!!.getSelectedColor() != Color.LTGRAY) {
+                        val catButton = viewToCatButton!![it]
+                        // The button is found and colors match
+                        if (!catButton!!.isPodded) {
+                            if (MainActivity.colorOptions!!.getSelectedColor() ==
+                                catButton.getOriginalBackgroundColor()) {
+                                catButton.transitionColor(catButton.getOriginalBackgroundColor())
+                                gridColorsCount!![catButton.getOriginalBackgroundColor()] =
+                                    gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
+                                MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
+                                catButton.pod()
+                                MainActivity.staticSelf!!.catsSavedCount += 1
+                                MainActivity.staticSelf!!.flashCatsSavedLabel()
+                                verifyRemainingCatsArePodded(catButton = catButton)
+                            } else {
+                                attackCatButton(catButton = catButton)
                             }
+                        } else {
+                            AudioController.kittenMeow()
+                        }
+                    } else {
+                        if (catButton!!.isAlive) {
+                            AudioController.kittenMeow()
                         }
                     }
-                    catButtonSelector(params = (it as View).layoutParams as LayoutParams)
                 }
                 catButton!!.shrunk()
                 catButton!!.grow()

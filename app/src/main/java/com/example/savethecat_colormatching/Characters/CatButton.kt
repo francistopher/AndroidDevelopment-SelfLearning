@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.util.Log
+import android.view.View
 import android.widget.AbsoluteLayout
 import android.widget.AbsoluteLayout.LayoutParams
 import android.widget.ImageButton
@@ -38,6 +39,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
 
     private var buttonLayout: AbsoluteLayout? = null
     private var parentLayout: AbsoluteLayout? = null
+    private var touchView: View? = null
 
     private var doNotStartImageRotation: Boolean = false
     var rowIndex: Int = 0
@@ -62,8 +64,19 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setShrunkParams()
         this.imageButton!!.setBackgroundColor(backgroundColor)
         setupImageView()
+        setupTouchView()
         this.imageView!!.getThis().alpha = 0f
         this.imageButton!!.alpha = 0f
+    }
+
+    fun getTouchView():View {
+        return touchView!!
+    }
+
+    private fun setupTouchView() {
+        touchView = View(MainActivity.staticSelf!!)
+        touchView!!.layoutParams = originalParams!!
+        parentLayout!!.addView(touchView!!)
     }
 
     private var fadeInAnimator: ValueAnimator? = null
@@ -84,6 +97,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         fadeInAnimator!!.addUpdateListener {
             imageView!!.getThis().alpha = it.animatedValue as Float
             imageButton!!.alpha = it.animatedValue as Float
+            touchView!!.alpha = it.animatedValue as Float
         }
         fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
@@ -378,8 +392,10 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     fun pod() {
         parentLayout!!.removeView(imageButton!!)
         parentLayout!!.removeView(imageView!!.getThis())
+        parentLayout!!.removeView(touchView!!)
         MainActivity.rootLayout!!.addView(imageButton!!)
         MainActivity.rootLayout!!.addView(imageView!!.getThis())
+        MainActivity.rootLayout!!.addView(touchView!!)
         earnMouseCoin()
         AudioController.kittenMeow()
         isPodded = true
@@ -427,6 +443,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             y = (originalParams!!.y + (originalParams!!.height * 0.5) - (height * 0.5)).toInt()
             imageButton!!.layoutParams = LayoutParams(width, height, x, y)
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+            touchView!!.layoutParams = LayoutParams(width, height, x, y)
         }
 
         growHeightAnimator = ValueAnimator.ofFloat(1f, originalParams!!.height.toFloat())
@@ -436,6 +453,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             y = (originalParams!!.y + (originalParams!!.height * 0.5) - (height * 0.5)).toInt()
             imageButton!!.layoutParams = LayoutParams(width, height, x, y)
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+            touchView!!.layoutParams = LayoutParams(width, height, x, y)
         }
 
         growAnimatorSet = AnimatorSet()
@@ -479,6 +497,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 (it.animatedValue as Int).toInt(), targetY)
             imageButton!!.layoutParams = params
             imageView!!.getThis().layoutParams = params
+            touchView!!.layoutParams = params
         }
         disperseYAnimator = ValueAnimator.ofInt((imageButton!!.layoutParams as LayoutParams).y,
             getElevatedTargetY())
@@ -495,6 +514,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         disperseSet!!.doOnEnd {
             parentLayout!!.removeView(imageButton!!)
             parentLayout!!.removeView(imageView!!.getThis())
+            parentLayout!!.removeView(touchView!!)
         }
     }
 
@@ -510,10 +530,6 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         return targetX.toInt()
     }
 
-    fun getThisImage(): ImageView {
-        return imageView!!.getThis()
-    }
-
     private fun getElevatedTargetY(): Int {
         return -Random.nextInt(
             (originalParams!!.height),
@@ -527,6 +543,8 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         MainActivity.rootLayout!!.addView(imageView!!.getThis(), 0)
         MainActivity.rootLayout!!.removeView(imageButton!!)
         MainActivity.rootLayout!!.addView(imageButton!!, 0)
+        MainActivity.rootLayout!!.removeView(touchView!!)
+        MainActivity.rootLayout!!.addView(touchView!!)
         SettingsMenu.looseMouseCoin()
         stopImageRotation = true
         imageRotationAnimator!!.cancel()
@@ -543,6 +561,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 targetX, targetY)
             imageButton!!.layoutParams = params
             imageView!!.getThis().layoutParams = params
+            touchView!!.layoutParams = params
         }
         disperseYAnimator = ValueAnimator.ofInt(originalParams!!.y, getRadialTargetY())
         disperseYAnimator!!.addUpdateListener {
@@ -556,6 +575,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         radialAnimator!!.addUpdateListener {
             imageView!!.getThis().rotation = (it.animatedValue as Float)
             imageButton!!.rotation = (it.animatedValue as Float)
+            touchView!!.rotation = (it.animatedValue as Float)
         }
         disperseSet = AnimatorSet()
         disperseSet!!.play(disperseYAnimator).with(disperseXAnimator).with(radialAnimator!!)
@@ -567,6 +587,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         disperseSet!!.doOnEnd {
             parentLayout!!.removeView(imageButton!!)
             parentLayout!!.removeView(imageView!!.getThis())
+            parentLayout!!.removeView(touchView!!)
         }
     }
 
@@ -617,6 +638,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             x = (it.animatedValue as Float).toInt()
             imageButton!!.layoutParams = LayoutParams(width, height, x, y)
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+            touchView!!.layoutParams = LayoutParams(width, height, x, y)
         }
         transformYAnimator = ValueAnimator.ofFloat(
             (imageButton!!.layoutParams as
@@ -626,6 +648,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             y = (it.animatedValue as Float).toInt()
             imageButton!!.layoutParams = LayoutParams(width, height, x, y)
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+            touchView!!.layoutParams = LayoutParams(width, height, x, y)
         }
         transformWidthAnimator = ValueAnimator.ofFloat(
             (imageButton!!.layoutParams as
@@ -635,6 +658,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             width = (it.animatedValue as Float).toInt()
             imageButton!!.layoutParams = LayoutParams(width, height, x, y)
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+            touchView!!.layoutParams = LayoutParams(width, height, x, y)
         }
         transformHeightAnimator = ValueAnimator.ofFloat(
             (imageButton!!.layoutParams as
@@ -644,6 +668,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             height = (it.animatedValue as Float).toInt()
             imageButton!!.layoutParams = LayoutParams(width, height, x, y)
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
+            touchView!!.layoutParams = LayoutParams(width, height, x, y)
             if (isPodded) {
                 setCornerRadiusAndBorderWidth(
                     (height / 2f).toInt(), borderWidth,
@@ -674,6 +699,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     fun shrunk() {
         imageButton!!.layoutParams = shrunkParams!!
         imageView!!.getThis().layoutParams = shrunkParams!!
+        touchView!!.layoutParams = shrunkParams!!
     }
 }
 
@@ -737,7 +763,9 @@ class MouseCoin(spawnParams:LayoutParams, targetParams:LayoutParams, isEarned:Bo
             MainActivity.rootLayout!!.removeView(mouseCoin!!)
             if (isEarned) {
                 MainActivity.mouseCoinView!!.updateCount(MCView.mouseCoinCount + 1)
+                MainActivity.settingsButton!!.bringContentsForward()
                 AudioController.coinEarned()
+
             }
         }
     }
