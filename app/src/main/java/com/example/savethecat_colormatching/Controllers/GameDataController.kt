@@ -23,6 +23,9 @@ class GameDataController {
         return (gameSPData != null)
     }
 
+    /*
+        Setup the variabes that store and edit game data
+     */
     private fun setupSharedPreferences() {
         gameSPData = MainActivity.staticSelf!!.getSharedPreferences(
             "SVTHCT_SP${MainActivity.playerID()}",
@@ -30,6 +33,9 @@ class GameDataController {
         gameSPEditor = gameSPData!!.edit()
     }
 
+    /*
+        Sets the theme style and saves it
+     */
     fun saveThemeState(state:Int) {
         gameSPEditor!!.putInt("themeState", state)
         commitUpload()
@@ -37,9 +43,11 @@ class GameDataController {
         SettingsMenu.adsButton!!.setStyle()
     }
 
+    /*
+        Load the game data such as the mouse coins and the cats purchased
+     */
     private fun loadGameData() {
         Ads.themeState = gameSPData!!.getInt("themeState", 2)
-        Log.i("AMAZING", Ads.themeState.toString())
         MainActivity.mouseCoinView!!.startMouseCoinCount(
             gameSPData!!.getInt("mouseCoins",
                 0))
@@ -49,6 +57,9 @@ class GameDataController {
         MainActivity.staticSelf!!.setAllStyles(Ads.themeState)
     }
 
+    /*
+        Update mouse coin count data
+     */
     fun uploadMouseCoinCount() {
         try {
             gameSPEditor!!.putInt("mouseCoins", mouseCoinCount)
@@ -58,6 +69,9 @@ class GameDataController {
         }
     }
 
+    /*
+        Update the cats purchased data
+     */
     fun uploadMyCatsData() {
         try {
             gameSPEditor!!.putString("myCats", myCatsString)
@@ -68,12 +82,18 @@ class GameDataController {
         }
     }
 
+    /*
+        Finalize the updates
+     */
     private fun commitUpload() {
         if (!gameSPEditor!!.commit()) {
             displayFailureReason()
         }
     }
 
+    /*
+        Display an ingame notification for the data upload
+     */
     private fun displayFailureReason() {
         if (!MainActivity.isInternetReachable) {
             MainActivity.gameNotification!!.displayNoInternet()
