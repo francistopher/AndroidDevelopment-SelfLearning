@@ -1,4 +1,6 @@
 package com.example.savethecat_colormatching.Controllers
+
+// Create a type to represent all the screen aspect ratios
 enum class ARType {
     ar4by3, ar3by2, ar16by10, ar5by3,
     ar16by9, ar19by10, ar18by9,
