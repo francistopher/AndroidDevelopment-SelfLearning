@@ -11,13 +11,19 @@ class CenterController {
         private var parentParam:LayoutParams? = null
         private var childParam:LayoutParams? = null
 
+        /*
+            Centers the view onto its parent view
+         */
         fun centerView(childView: View, childParams: LayoutParams, parentParams: LayoutParams) {
             this.childParam = childParams
             this.parentParam = parentParams
             childView.layoutParams = LayoutParams(childParam!!.width, childParam!!.height,
                 getCenterX().toInt(), getCenterY().toInt())
         }
-        
+
+        /*
+            Centers the image view onto its parent view
+         */
         fun center(childView: ImageView, childParams:LayoutParams, parentParams:LayoutParams) {
             this.childParam = childParams
             this.parentParam = parentParams
@@ -25,6 +31,9 @@ class CenterController {
                 getCenterX().toInt(), (getCenterY()).toInt())
         }
 
+        /*
+            Centers the view horizontally onto its parents view
+         */
         fun centerViewHorizontally(childView: View, childParams:LayoutParams, parentParams: LayoutParams) {
             this.childParam = childParams
             this.parentParam = parentParams
