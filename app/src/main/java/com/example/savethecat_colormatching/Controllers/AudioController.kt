@@ -7,6 +7,7 @@ import com.example.savethecat_colormatching.SettingsMenu.Volume
 class AudioController {
 
     companion object {
+        // Intialize the media players
         private var gearSpinningPlayer:MediaPlayer? = null
         private var heavenPlayer:MediaPlayer? = null
         private var animeWowPlayer:MediaPlayer? = null
@@ -23,7 +24,9 @@ class AudioController {
         private var mozartSonataPlayer: MediaPlayer? = null
         private var chopinPreludePlayer:MediaPlayer? = null
 
-
+        /*
+            Sets the volume on or off
+         */
         private var volume:Float = 0f
         fun setVolume(on:Boolean) {
             if (on) {
@@ -43,7 +46,6 @@ class AudioController {
             kittenMeowPlayer2?.setVolume(volume, volume)
             kittenMeowPlayer3?.setVolume(volume, volume)
             kittenDiePlayer?.setVolume(volume, volume)
-
             if ((Volume.isVolumeOn && volume == 1f) || volume == 0f) {
                 mozartSonataPlayer?.setVolume(volume, volume)
                 chopinPreludePlayer?.setVolume(volume, volume)
@@ -182,6 +184,9 @@ class AudioController {
             }
         }
 
+        /*
+            Sets the volume for the music/songs on or off
+         */
         fun setMusicVolume(on:Boolean) {
             if (on) {
                 chopinPreludePlayer?.setVolume(1f, 1f)
