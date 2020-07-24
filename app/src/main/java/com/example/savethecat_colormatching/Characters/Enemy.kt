@@ -24,7 +24,6 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
     private var verticalSignFloat:Int = randomSignInt()
     private var horizontalSignFloat:Int = randomSignInt()
     init {
-
         this.enemyImage = imageView
         this.enemyImage!!.layoutParams = params
         parentLayout.addView(imageView)
@@ -49,9 +48,16 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
         this.darkImageR = darkImageR
     }
 
+    /*
+        Function fades the enemy into the screen or
+        fade the enemy out of the screen
+     */
     private var fadeAnimator: ViewPropertyAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        /*
+            If the fading animator is running, cancel it
+         */
         if (fadeAnimator != null) {
             if (fadeAnimatorIsRunning) {
                 fadeAnimator!!.cancel()
@@ -59,6 +65,7 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
                 fadeAnimator = null
             }
         }
+        // Set the animator to have the enemy fade in or out
         if (In) {
             fadeAnimator = enemyImage!!.animate().alpha(1.0f)
             fadeAnimator!!.interpolator = EasingInterpolator(Ease.SINE_IN_OUT)
@@ -67,11 +74,13 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
             fadeAnimator = enemyImage!!.animate().alpha(0.0f)
             fadeAnimator!!.interpolator =  EasingInterpolator(Ease.SINE_IN_OUT)
         }
+        // Setup the properties for the animator
         fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeAnimator!!.duration = (1000.0f * Duration).toLong()
         fadeAnimator!!.withStartAction {
             fadeAnimatorIsRunning = true
         }
+        // If the animator was assigned to fade in and out, fade out after fading in
         fadeAnimator!!.withEndAction {
             if (In and Out) {
                 CImageView.stopRotation = true
@@ -96,16 +105,23 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
         }
     }
 
+    /*
+        Translates the hairball to and from from the cat button
+        to its original position
+     */
     private var translateToCatButton:AnimatorSet? = null
     private var translateX:ValueAnimator? = null
     private var translateY:ValueAnimator? = null
     private var translatingToCatAndBack:Boolean = false
     fun translateToCatAndBack(targetX:Int, targetY:Int) {
+        // Stop the hairball from swinging back and forth
         translatingToCatAndBack = true
         swayAnimatorSet!!.cancel()
+        // If the hairball is translating to the cat button cancel it
         if (translateToCatButton != null) {
             translateToCatButton!!.cancel()
         }
+        // Translate the hairball to and from the the specified position
         this.targetX = (targetX - ((getOriginalParams().width * 0.5))).toInt()
         this.targetY = (targetY - ((getOriginalParams().height * 0.5))).toInt()
         translateX = ValueAnimator.ofInt(getOriginalParams().x, this.targetX)
@@ -114,6 +130,7 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
             enemyImage!!.layoutParams = LayoutParams(getOriginalParams().width,
                 getOriginalParams().height, swayX, swayY)
         }
+        // Initialize the properties of the animator
         translateY = ValueAnimator.ofInt(getOriginalParams().y, this.targetY)
         translateY!!.addUpdateListener {
             swayY = (it.animatedValue as Int)
@@ -124,12 +141,17 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
         translateToCatButton!!.play(translateX!!).with(translateY!!)
         translateToCatButton!!.duration = 250
         translateToCatButton!!.start()
+        // After the hairball attack is done, just sway back and forth
         translateToCatButton!!.doOnEnd {
             translatingToCatAndBack = false
             sway()
         }
     }
 
+    /*
+        Translates the hair ball back and forth
+        a short distance from its original position
+     */
     private var swayAnimatorSet:AnimatorSet? = null
     private var swayXAnimator:ValueAnimator? = null
     private var swayYAnimator:ValueAnimator? = null
@@ -140,6 +162,7 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
     private var targetX:Int = 0
     private var targetY:Int = 0
     fun sway() {
+        // If the hairball is already swaying, cancel the swaying
         if (swayAnimatorSet != null) {
             if (isSwaying) {
                 swayAnimatorSet!!.cancel()
@@ -147,6 +170,7 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
                 swayAnimatorSet = null
             }
         }
+        // If the hair ball is swaying to one side, sway to the other
         if (swayBack) {
             targetX = this.originalParams!!.x
             targetY = this.originalParams!!.y
@@ -172,11 +196,13 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
             enemyImage!!.layoutParams = LayoutParams(originalParams!!.width, originalParams!!.height,
                 swayX, swayY)
         }
+        // Set the properties for the sway animator
         swayAnimatorSet = AnimatorSet()
         swayAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         swayAnimatorSet!!.play(swayXAnimator!!).with(swayYAnimator!!)
         swayAnimatorSet!!.duration = 1750
         isSwaying = true
+        // Continue swaying
         swayAnimatorSet!!.doOnEnd {
             if (!translatingToCatAndBack) {
                 sway()
@@ -189,6 +215,7 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
         fade(true, false, 0.5f, 0.125f)
     }
 
+    // Set the hair ball color based on the current theme
     fun setStyle() {
         if(MainActivity.isThemeDark) {
             enemyImage!!.setBackgroundResource(darkImageR)
@@ -196,7 +223,4 @@ class Enemy(imageView: ImageView, parentLayout: AbsoluteLayout, params:LayoutPar
             enemyImage!!.setBackgroundResource(lightImageR)
         }
     }
-
-
-
 }
