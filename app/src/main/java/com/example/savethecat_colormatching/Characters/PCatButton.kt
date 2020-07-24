@@ -63,22 +63,25 @@ class PCatButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutPar
     private var fadeInAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning: Boolean = false
     fun fade(In: Boolean, Out: Boolean, Duration: Float, Delay: Float) {
+        // If the fade in animator is running, then cancel it
         if (fadeInAnimator != null) {
             if (fadeAnimatorIsRunning) {
                 fadeInAnimator!!.cancel()
                 fadeAnimatorIsRunning = false
                 fadeInAnimator = null
             }
-        }
+        }// Assign the animator to fade the cat button in or out
         if (In) {
             fadeInAnimator = ValueAnimator.ofFloat(imageButton!!.getThis().alpha, 1f)
         } else if (Out and !In) {
             fadeInAnimator = ValueAnimator.ofFloat(imageButton!!.getThis().alpha, 0f)
         }
+        // Fade the image view, button, and touch view
         fadeInAnimator!!.addUpdateListener {
             imageButton!!.getThis().alpha = it.animatedValue as Float
             catButton!!.alpha = it.animatedValue as Float
         }
+        // Setup the animator properties
         fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
@@ -92,20 +95,22 @@ class PCatButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutPar
     fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int) {
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
+        // Set the corner radius and border width with the background color
        if (MainActivity.isThemeDark) {
            shape!!.setColor(Color.BLACK)
         } else {
            shape!!.setColor(Color.WHITE)
         }
+        // Set the border color and width of the button
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
             if (MainActivity.isThemeDark) {
                 shape!!.setStroke(borderWidth, Color.WHITE)
-
             } else {
                 shape!!.setStroke(borderWidth, Color.BLACK)
             }
         }
+        // Set the corner radius of the button
         cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()
         catButton!!.setBackgroundDrawable(shape)
@@ -114,8 +119,6 @@ class PCatButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutPar
     fun getThisImage():Button {
         return imageButton!!.getThis()
     }
-
-
 
     private fun setOriginalParams(params: LayoutParams) {
         originalParams = params
@@ -140,6 +143,10 @@ class PCatButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutPar
         startImageRotation()
     }
 
+    /*
+       Updates the cat image on the button
+       based on the cat selected and the current state
+    */
     fun setStyle() {
        when (cat) {
            Cat.STANDARD -> {
@@ -281,6 +288,7 @@ class PCatButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutPar
        setCornerRadiusAndBorderWidth(getOriginalParams().height / 5, 0)
     }
 
+
     var imageRotationAnimator: ValueAnimator? = null
     var isImageRotating: Boolean = false
     var rotateImageToRight: Boolean = true
@@ -290,6 +298,7 @@ class PCatButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutPar
             imageButton!!.getThis().rotation = 0f
             return
         }
+        // If the image rotation animator is on, cancel it
         if (imageRotationAnimator != null) {
             if (isImageRotating) {
                 imageRotationAnimator!!.cancel()
@@ -297,18 +306,22 @@ class PCatButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutPar
                 imageRotationAnimator = null
             }
         }
+        // Swings the cat to the right or to the left
         imageRotationAnimator = if (rotateImageToRight) {
             ValueAnimator.ofFloat(-90f, 90f)
         } else {
             ValueAnimator.ofFloat(90f, -90f)
         }
+        // Sets the angle of the cat
         imageRotationAnimator!!.addUpdateListener {
             imageButton!!.getThis().rotation = (it.animatedValue as Float)
         }
+        // Sets the properties of the animator
         imageRotationAnimator!!.duration = 1750
         imageRotationAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         isImageRotating = true
         imageRotationAnimator!!.start()
+        // Enables the cat to go back and forth
         imageRotationAnimator!!.doOnEnd {
             if (!stopImageRotation) {
                 startImageRotation()
@@ -316,10 +329,12 @@ class PCatButton(button: Button, parentLayout: AbsoluteLayout, params: LayoutPar
             }
         }
     }
-
+    // Give a mouse coin to the user
     private fun earnMouseCoin() {
+        // Get the mouse coin button's params on the settings menu
         val mcSettingsButton:LayoutParams = SettingsMenu.mouseCoinButton!!.
         getThis().layoutParams as LayoutParams
+        // Create a mouse coin targeted to those params
         MouseCoin(spawnParams = LayoutParams(mcSettingsButton.width, mcSettingsButton.height,
             (getOriginalParams().x + (getOriginalParams().width * 0.5) -
                     (mcSettingsButton.width * 0.5)).toInt(),

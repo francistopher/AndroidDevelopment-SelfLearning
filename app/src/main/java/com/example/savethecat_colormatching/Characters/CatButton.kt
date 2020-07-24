@@ -90,7 +90,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 fadeInAnimator = null
             }
         }
-        // Assign the animator to fade in or out
+        // Assign the animator to fade the cat button in or out
         if (In) {
             fadeInAnimator = ValueAnimator.ofFloat(imageView!!.getThis().alpha, 1f)
         } else if (Out and !In) {
@@ -522,6 +522,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                     (mcSettingsButton.height * 0.5)).toInt()), targetParams = mcSettingsButton,
             isEarned = true)
     }
+
     /*
         Translate the cat button past the top edge of the screen
      */
