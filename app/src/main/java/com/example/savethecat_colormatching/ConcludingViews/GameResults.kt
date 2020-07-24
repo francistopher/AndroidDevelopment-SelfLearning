@@ -49,9 +49,7 @@ class GameResults(resultsView: View,
     companion object {
         var savedCatButtonsCount:Int = 0
         var deadCatButtonsCount:Int = 0
-
         var mouseCoinsEarned:Int = 5
-
         var watchAdButtonWasSelected:Boolean = false
     }
 
@@ -68,6 +66,9 @@ class GameResults(resultsView: View,
            params.height / 60)
     }
 
+    /*
+        Makes the game results panel invisible
+     */
     private fun hideEverything() {
         resultsView!!.alpha = 0f
         gameOverLabel!!.getThis().alpha = 0f
@@ -79,6 +80,9 @@ class GameResults(resultsView: View,
         mouseCoin!!.alpha = 0f
     }
 
+    /*
+        Fills the game results view/panel with components
+     */
     fun setupContents() {
         setupTitleView()
         setupSmilingCat()
@@ -97,11 +101,13 @@ class GameResults(resultsView: View,
         shape = null
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
+        // Colors the background of the component
         if (MainActivity.isThemeDark) {
             shape!!.setColor(Color.BLACK)
         } else {
             shape!!.setColor(Color.WHITE)
         }
+        // Draws the border onto the component
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
             if (MainActivity.isThemeDark) {
@@ -110,6 +116,7 @@ class GameResults(resultsView: View,
                 shape!!.setStroke(borderWidth, Color.BLACK)
             }
         }
+        // Sets the corner radius of the component
         cornerRadius = radius
         shape!!.cornerRadii = floatArrayOf(radius.toFloat(), radius.toFloat(),
             radius.toFloat(), radius.toFloat(), (MainActivity.dUnitHeight * 8.0 / 7.0).toFloat(),
@@ -147,6 +154,9 @@ class GameResults(resultsView: View,
         }
     }
 
+    /*
+        Setup the game over title label
+     */
     private fun setupTitleView() {
         gameOverLabel = CLabel(textView = TextView(resultsContext!!), parentLayout = parentLayout!!,
         params = LayoutParams((getOriginalParams().width * 0.5).toInt(), (unitHeight * 2.0).toInt(),
@@ -165,6 +175,9 @@ class GameResults(resultsView: View,
         mouseCoin!!.alpha = 0f
     }
 
+    /*
+        Setup the smiling cat image
+     */
     private fun setupSmilingCat() {
         smilingCat = CImageView(imageView = ImageView(resultsContext!!), parentLayout = parentLayout!!,
         params = LayoutParams((getOriginalParams().width * 0.625).toInt(),
@@ -175,6 +188,9 @@ class GameResults(resultsView: View,
         smilingCat!!.loadImages(R.drawable.lightsmilingcat, R.drawable.darksmilingcat)
     }
 
+    /*
+        Setup the dead cat image
+     */
     private fun setupDeadCat() {
         deadCat = CImageView(imageView = ImageView(resultsContext!!), parentLayout = parentLayout!!,
             params = LayoutParams((getOriginalParams().width * 0.625).toInt(),
@@ -186,6 +202,9 @@ class GameResults(resultsView: View,
         deadCat!!.loadImages(R.drawable.lightdeadcat, R.drawable.darkdeadcat)
     }
 
+    /*
+        Setup the cats alive count label
+     */
     private fun setupAliveCatCountLabel() {
         aliveCatCountLabel = CLabel(textView = TextView(resultsContext!!), parentLayout = parentLayout!!,
         params = LayoutParams((getOriginalParams().width * 0.5).toInt() - (borderWidth * 2.0).toInt(),
@@ -197,6 +216,9 @@ class GameResults(resultsView: View,
         aliveCatCountLabel!!.setStyle()
     }
 
+    /*
+        Setup the cats dead count label
+     */
     private fun setupDeadCatCountLabel() {
         deadCatCountLabel = CLabel(textView = TextView(resultsContext!!), parentLayout = parentLayout!!,
             params = LayoutParams((getOriginalParams().width * 0.5).toInt() -
@@ -210,6 +232,9 @@ class GameResults(resultsView: View,
         deadCatCountLabel!!.setStyle()
     }
 
+    /*
+        Setup the watch add button
+     */
     private fun setupWatchAdButton() {
         watchAdButton = CButton(button = Button(resultsContext!!), parentLayout = parentLayout!!,
         params = LayoutParams((getOriginalParams().width * 0.8).toInt(), unitHeight,
@@ -221,6 +246,7 @@ class GameResults(resultsView: View,
             (borderWidth * 0.75).toInt())
         watchAdButton!!.setText("Watch Short Ad to Win ····· s!", false)
         watchAdButton!!.setTextSize(watchAdButton!!.getOriginalParams().height * 0.2f)
+        // Show the ad if the ad is ready
         watchAdButton!!.getThis().setOnClickListener {
             if (MainActivity.isInternetReachable) {
                 if (mInterstitialAd!!.isLoaded) {
@@ -233,9 +259,12 @@ class GameResults(resultsView: View,
         watchAdButton!!.getThis().isEnabled = false
     }
 
+    /*
+        Setup a mouse coin onto the watch ad button
+     */
     private fun setupMouseCoin() {
         var mouseCoinParams: LayoutParams
-
+        // Position the mouse coin based on different screen aspect ratios
         mouseCoinParams =  if (MainActivity.dAspectRatio >= 2.05) {
             LayoutParams((watchAdButton!!.getOriginalParams().height * 0.725).toInt(),
                 (watchAdButton!!.getOriginalParams().height * 0.725).toInt(),
@@ -259,6 +288,7 @@ class GameResults(resultsView: View,
         parentLayout!!.addView(mouseCoin!!)
         mouseCoin!!.layoutParams =mouseCoinParams
         mouseCoin!!.setBackgroundResource(R.drawable.mousecoin)
+        // If the mouse coin is clicked and the ad is ready, show the ad
         mouseCoin!!.setOnClickListener {
             AudioController.coinEarned()
             if (mInterstitialAd!!.isLoaded) {
@@ -276,9 +306,13 @@ class GameResults(resultsView: View,
         return mouseCoin!!
     }
 
+    /*
+        Fade in or fade out the game results panel
+     */
     private var fadeInAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     private fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        // If the fade in animator is running, cancel it
         if (fadeInAnimator != null) {
             if (fadeAnimatorIsRunning) {
                 fadeInAnimator!!.cancel()
@@ -286,6 +320,7 @@ class GameResults(resultsView: View,
                 fadeInAnimator = null
             }
         }
+        // Fade the panel in or fade the panel out
         if (In) {
             fadeInAnimator = ValueAnimator.ofFloat(resultsView!!.alpha, 1f)
             watchAdButton!!.setText("Watch Short Ad to Win ····· s!", false)
@@ -303,6 +338,7 @@ class GameResults(resultsView: View,
             watchAdButton!!.getThis().alpha = alpha
             mouseCoin!!.alpha = alpha
         }
+        // Set the fade in/out animator properties
         fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
@@ -310,12 +346,16 @@ class GameResults(resultsView: View,
         fadeAnimatorIsRunning = true
     }
 
+    /*
+        Create a circle of mouse coins and give the user those mouse coins
+     */
     private var angle:Float = 0f
     private var increment:Float = 0f
     private var mouseCoinParams:LayoutParams = SettingsMenu.mouseCoinButton!!.getThis().layoutParams as LayoutParams
     fun giveMouseCoins() {
         angle = 52.5f
         increment = 360f / mouseCoinsEarned
+        // Plot the mouse coins around the center, 1 by 1
         for (iteration in 1..mouseCoinsEarned) {
             val x:Int = ((mouseCoinParams.width * -0.5) + (MainActivity.dWidth * 0.5) +
                     (MainActivity.dWidth * 0.35 * cos(PI * angle / 180f))).toInt()
