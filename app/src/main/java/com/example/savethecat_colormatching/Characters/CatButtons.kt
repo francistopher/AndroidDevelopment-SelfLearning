@@ -15,6 +15,10 @@ class CatButtons {
         previousCatButtons = mutableListOf()
     }
 
+    /*
+        Builds a cat button based on the parameters passed on and
+        saves it to the current cat buttons, then returns it
+     */
     private var catButton:CatButton? = null
     fun buildCatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout,
                        params: AbsoluteLayout.LayoutParams, backgroundColor:Int): CatButton {
@@ -25,6 +29,10 @@ class CatButtons {
         return catButton!!
     }
 
+    /*
+        Removes the previous cat buttons and
+        loads the current cat button to the previous cat buttons
+     */
     fun loadPreviousCats() {
         previousCatButtons!!.clear()
         for (catButton in currentCatButtons!!) {
@@ -32,12 +40,19 @@ class CatButtons {
         }
     }
 
+    /*
+        Sets every cat button background color to transparent
+     */
     fun setBackgroundTransparent() {
         for (catButton in previousCatButtons!!) {
             catButton.transitionColor(Color.TRANSPARENT)
         }
     }
 
+    /*
+        Returns a boolean to indicate whether or not
+        all the cats are dead
+     */
     fun areDead(): Boolean {
         for (catButton in currentCatButtons!!) {
             if (catButton.isAlive) {
@@ -51,6 +66,9 @@ class CatButtons {
         return currentCatButtons!!
     }
 
+    /*
+        Returns a random cat button that is not dead
+     */
     fun randomLivingCatButton(): CatButton? {
         return if (areDead()) {
             null
@@ -60,6 +78,9 @@ class CatButtons {
         }
     }
 
+    /*
+        Returns the number of cat buttons that are dead
+     */
     private var deadCount:Int = 0
     fun deadCount():Int {
         deadCount = 0
@@ -71,6 +92,10 @@ class CatButtons {
         return deadCount
     }
 
+    /*
+        Returns a boolean indicating wether or not
+        the cat buttons have been matched
+     */
     fun areAliveAndPodded():Boolean {
         for (catButton in currentCatButtons!!) {
             if (catButton.isAlive && !catButton.isPodded) {
@@ -80,6 +105,10 @@ class CatButtons {
         return true
     }
 
+    /*
+        Translates all the cat buttons to the top edge
+        of the screen
+     */
     fun disperseVertically() {
         for (catButton in currentCatButtons!!) {
             if (catButton.isAlive) {
@@ -88,6 +117,10 @@ class CatButtons {
         }
     }
 
+    /*
+        Returns the total number of cat buttons
+        that are alive in the current round
+     */
     var count:Int = 0
     fun aliveCount():Int {
         count = 0
@@ -99,6 +132,9 @@ class CatButtons {
         return count
     }
 
+    /*
+        Returns a boolean indicating that ALL the cat buttons survived
+     */
     fun allSurvived():Boolean {
         for (catButton in currentCatButtons!!) {
             if (!catButton.isAlive || !catButton.isPodded) {
@@ -108,6 +144,10 @@ class CatButtons {
         return true
     }
 
+    /*
+        Returns a row of cat buttons as a mutable list,
+        the row is passed in as an int
+     */
     private var rowOfAliveCats:MutableList<CatButton>? = null
     fun getRowOfAliveCats(rowIndex:Int):MutableList<CatButton> {
         rowOfAliveCats = mutableListOf()
@@ -119,6 +159,10 @@ class CatButtons {
         return rowOfAliveCats!!
     }
 
+    /*
+        Sets all the cat buttons of the current round
+        as DEAD
+     */
     fun setAllCatButtonsDead() {
         for (catButton in currentCatButtons!!) {
             if (catButton.isAlive) {
@@ -127,6 +171,10 @@ class CatButtons {
         }
     }
 
+    /*
+        Sets all the cat buttons that are alive and not matched as matched
+        Disperses all the cat buttons that are alive to the top edge of the screen
+     */
     fun saveAllCats() {
         for (catButton in currentCatButtons!!) {
             if (catButton.isAlive && !catButton.isPodded) {
@@ -138,6 +186,9 @@ class CatButtons {
         }
     }
 
+    /*
+        Updates the cat type of all the current cat buttons
+     */
     fun updateCatType(cat: Cat) {
         for (catButton in currentCatButtons!!) {
             Log.i("GATO", cat.toString())
@@ -150,6 +201,10 @@ class CatButtons {
         currentCatButtons!!.clear()
     }
 
+    /*
+        Returns the count of all the cats that are alive in a row
+        given a row index
+     */
     var indexAliveCatCountMap:MutableMap<Int, Int>? = null
     fun getRowIndexAliveCatCount():MutableMap<Int, Int> {
         indexAliveCatCountMap = mutableMapOf()
