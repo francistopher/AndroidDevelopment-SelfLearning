@@ -82,6 +82,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var fadeInAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning: Boolean = false
     fun fade(In: Boolean, Out: Boolean, Duration: Float, Delay: Float) {
+        // If the fade in animator is running, then cancel it
         if (fadeInAnimator != null) {
             if (fadeAnimatorIsRunning) {
                 fadeInAnimator!!.cancel()
@@ -89,16 +90,19 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 fadeInAnimator = null
             }
         }
+        // Assign the animator to fade in or out
         if (In) {
             fadeInAnimator = ValueAnimator.ofFloat(imageView!!.getThis().alpha, 1f)
         } else if (Out and !In) {
             fadeInAnimator = ValueAnimator.ofFloat(imageView!!.getThis().alpha, 0f)
         }
+        // Fade the image view, button, and touch view
         fadeInAnimator!!.addUpdateListener {
             imageView!!.getThis().alpha = it.animatedValue as Float
             imageButton!!.alpha = it.animatedValue as Float
             touchView!!.alpha = it.animatedValue as Float
         }
+        // Setup the animator properties
         fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
@@ -112,6 +116,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int, withBackground: Boolean) {
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
+        // Set the corner radius and border width with the background color
         if (withBackground) {
             try {
                 shape!!.setColor((imageButton!!.background as ColorDrawable).color)
@@ -119,6 +124,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 shape!!.setColor(originalBackgroundColor)
             }
         }
+        // Set the border color and width of the button
         if (borderWidth > 0 && !noBorder) {
             this.borderWidth = borderWidth
             if (MainActivity.isThemeDark) {
@@ -128,6 +134,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 shape!!.setStroke(borderWidth, Color.BLACK)
             }
         }
+        // Set the corner radius of the button
         cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()
         imageButton!!.setBackgroundDrawable(shape)
@@ -136,6 +143,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var transitionColorAnimator: ValueAnimator? = null
     private var isTransitioningColor: Boolean = false
     fun transitionColor(targetColor: Int) {
+        // Cancel the transition color animator
         if (transitionColorAnimator != null) {
             if (isTransitioningColor) {
                 transitionColorAnimator!!.cancel()
@@ -143,6 +151,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 transitionColorAnimator = null
             }
         }
+        // Set the color to transition to
         transitionColorAnimator = ValueAnimator.ofArgb(currentBackgroundColor, targetColor)
         transitionColorAnimator!!.addUpdateListener {
             currentBackgroundColor = (it.animatedValue as Int)
@@ -152,6 +161,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 true
             )
         }
+        // Set the animator properties
         transitionColorAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         transitionColorAnimator!!.startDelay = 125
         transitionColorAnimator!!.duration = 500
@@ -187,6 +197,10 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         startImageRotation()
     }
 
+    /*
+        Updates the cat image on the button
+        based on the cat selected and the current state
+     */
     private fun justSetCatStyle() {
         when (cat) {
             Cat.STANDARD -> {
@@ -325,9 +339,11 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 }
             }
         }
-
     }
 
+    /*
+        If the cat is podded, it makes the button circular.
+     */
     private fun justSetShapeStyle() {
         if (isPodded) {
             setCornerRadiusAndBorderWidth((getOriginalParams().height.toDouble() / 2.0).toInt(),
@@ -342,6 +358,9 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Sets the cat on the button and the shape of the button
+     */
     fun setStyle() {
         justSetCatStyle()
         justSetShapeStyle()
@@ -360,6 +379,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             imageView!!.getThis().rotation = 0f
             return
         }
+        // If the image rotation animator is on, cancel it
         if (imageRotationAnimator != null) {
             if (isImageRotating) {
                 imageRotationAnimator!!.cancel()
@@ -367,18 +387,22 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 imageRotationAnimator = null
             }
         }
+        // Swings the cat to the right or to the left
         imageRotationAnimator = if (rotateImageToRight) {
             ValueAnimator.ofFloat(-90f, 90f)
         } else {
             ValueAnimator.ofFloat(90f, -90f)
         }
+        // Sets the angle of the cat
         imageRotationAnimator!!.addUpdateListener {
             imageView!!.getThis().rotation = (it.animatedValue as Float)
         }
+        // Sets the properties of the animator
         imageRotationAnimator!!.duration = 1750
         imageRotationAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         isImageRotating = true
         imageRotationAnimator!!.start()
+        // Enables the cat to go back and forth
         imageRotationAnimator!!.doOnEnd {
             if (!stopImageRotation) {
                 startImageRotation()
@@ -387,18 +411,26 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Makes the cat button circular once it is correctly
+        matched with its original color
+     */
     private var podAnimator: ValueAnimator? = null
     private var isPodAnimatorRunning: Boolean = false
     fun pod() {
+        // Brings the cat to the front of all the other content
         parentLayout!!.removeView(imageButton!!)
         parentLayout!!.removeView(imageView!!.getThis())
         parentLayout!!.removeView(touchView!!)
         MainActivity.rootLayout!!.addView(imageButton!!)
         MainActivity.rootLayout!!.addView(imageView!!.getThis())
         MainActivity.rootLayout!!.addView(touchView!!)
+        // Give a mouse coin to the user
         earnMouseCoin()
+        // Kitten meows
         AudioController.kittenMeow()
         isPodded = true
+        // If the pod animation is running cancel it
         if (podAnimator != null) {
             if (isPodAnimatorRunning) {
                 podAnimator!!.cancel()
@@ -406,6 +438,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 podAnimator = null
             }
         }
+        // Make the cat button circular
         podAnimator = ValueAnimator.ofFloat(cornerRadius.toFloat(),
             (imageButton!!.layoutParams as LayoutParams).height * 0.5f)
         podAnimator!!.addUpdateListener {
@@ -413,6 +446,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 (it.animatedValue as Float).toInt(),
                 borderWidth,true)
         }
+        // Set the properties for the pod animator
         podAnimator!!.duration = 500
         podAnimator!!.startDelay = 125
         podAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
@@ -420,6 +454,10 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         podAnimator!!.start()
     }
 
+    /*
+        Grows the cat button from 1px to its original size
+        Gives the illusion the cat button appeared from no where
+     */
     private var growAnimatorSet: AnimatorSet? = null
     private var growWidthAnimator: ValueAnimator? = null
     private var growHeightAnimator: ValueAnimator? = null
@@ -429,6 +467,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var x: Int = 0
     private var y: Int = 0
     fun grow() {
+        // If the grow animator is running, cancel it
         if (growAnimatorSet != null) {
             if (isGrowing) {
                 growAnimatorSet!!.cancel()
@@ -436,6 +475,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 growAnimatorSet = null
             }
         }
+        // Updates both the horizontal position and horizontal size to grow from its center
         growWidthAnimator = ValueAnimator.ofFloat(1f, originalParams!!.width.toFloat())
         growWidthAnimator!!.addUpdateListener {
             width = (it.animatedValue as Float).toInt()
@@ -445,7 +485,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
             touchView!!.layoutParams = LayoutParams(width, height, x, y)
         }
-
+        // Updates both the vertical position and vertical size to grow from its center
         growHeightAnimator = ValueAnimator.ofFloat(1f, originalParams!!.height.toFloat())
         growHeightAnimator!!.addUpdateListener {
             height = (it.animatedValue as Float).toInt()
@@ -455,7 +495,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
             touchView!!.layoutParams = LayoutParams(width, height, x, y)
         }
-
+        // Set the grow animator properties
         growAnimatorSet = AnimatorSet()
         growAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         growAnimatorSet!!.play(growHeightAnimator!!).with(growWidthAnimator!!)
@@ -463,15 +503,18 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         growAnimatorSet!!.startDelay = 125
         isGrowing = true
         growAnimatorSet!!.start()
+        // Make sure its set to the max size assigned
         growAnimatorSet!!.doOnEnd {
             imageView!!.getThis().layoutParams = originalParams!!
             imageButton!!.layoutParams = originalParams!!
         }
     }
-
+    // Give a mouse coin to the user
     private fun earnMouseCoin() {
+        // Get the mouse coin button's params on the settings menu
         val mcSettingsButton:LayoutParams = SettingsMenu.mouseCoinButton!!.
         getThis().layoutParams as LayoutParams
+        // Create a mouse coin targeted to those params
         MouseCoin(spawnParams = LayoutParams(mcSettingsButton.width, mcSettingsButton.height,
             (getOriginalParams().x + (getOriginalParams().width * 0.5) -
                     (mcSettingsButton.width * 0.5)).toInt(),
@@ -479,7 +522,9 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                     (mcSettingsButton.height * 0.5)).toInt()), targetParams = mcSettingsButton,
             isEarned = true)
     }
-
+    /*
+        Translate the cat button past the top edge of the screen
+     */
     private var angle: Float = 0f
     private var disperseSet: AnimatorSet? = null
     private var disperseXAnimator: ValueAnimator? = null
@@ -487,9 +532,12 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var isDispersed: Boolean = false
     private var targetY: Int = 0
     fun disperseVertically() {
+        // Make the cat cheer
         catState = CatState.CHEERING
         justSetCatStyle()
+        // Select an angle normal to the bottom of the screen
         angle = (0..30).random().toFloat()
+        // Translate the cat button by changing the x and y over time
         disperseXAnimator = ValueAnimator.ofInt((imageButton!!.layoutParams as LayoutParams).x,
                 getElevatedTargetX())
         disperseXAnimator!!.addUpdateListener {
@@ -504,6 +552,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         disperseYAnimator!!.addUpdateListener {
             targetY = (it.animatedValue as Int)
         }
+        // Set the animator properties
         disperseSet = AnimatorSet()
         disperseSet!!.play(disperseYAnimator).with(disperseXAnimator)
         disperseSet!!.duration = 3000
@@ -511,16 +560,20 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         disperseSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         isDispersed = true
         disperseSet!!.start()
+        // Remove the cat button after the cat has disppeared to save memory
         disperseSet!!.doOnEnd {
             parentLayout!!.removeView(imageButton!!)
             parentLayout!!.removeView(imageView!!.getThis())
             parentLayout!!.removeView(touchView!!)
         }
     }
-
+    /*
+        Returns a target x coordinate based on the angle selected
+     */
     var targetX: Int = 0
     private fun getElevatedTargetX(): Int {
         targetX = (MainActivity.dWidth * 0.5).toInt()
+        // Make sure the cat is within the left and right bounds
         if (angle < 15f) {
             targetX -= originalParams!!.width
         } else {
@@ -529,30 +582,41 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         targetX *= cos(angle.toDouble()).toInt()
         return targetX.toInt()
     }
-
+    /*
+        Returns a target y coordinate based on the angle selected
+     */
     private fun getElevatedTargetY(): Int {
         return -Random.nextInt(
             (originalParams!!.height),
             (originalParams!!.height * 2.0).toInt()
         )
     }
-
+    /*
+        Send the cat button flying out of the screen
+     */
     private var radialAnimator: ValueAnimator? = null
     fun disperseRadially() {
+        // Move the cat button in front of everything
         MainActivity.rootLayout!!.removeView(imageView!!.getThis())
         MainActivity.rootLayout!!.addView(imageView!!.getThis(), 0)
         MainActivity.rootLayout!!.removeView(imageButton!!)
         MainActivity.rootLayout!!.addView(imageButton!!, 0)
         MainActivity.rootLayout!!.removeView(touchView!!)
         MainActivity.rootLayout!!.addView(touchView!!)
+        // Remove a coin from the user
         SettingsMenu.looseMouseCoin()
+        // Stop the cat button from spinnin back and forth
         stopImageRotation = true
         imageRotationAnimator!!.cancel()
+        // Fade in the original color of the cat button
         transitionColor(targetColor = originalBackgroundColor)
         isAlive = false
+        // Play the dead cat sound
         AudioController.kittenDie()
+        // Set the cat image as dead
         catState = CatState.DEAD
         setStyle()
+        // Translate the cat by changing the x and y over time
         disperseXAnimator = ValueAnimator.ofInt(originalParams!!.x, getRadialTargetX())
         disperseXAnimator!!.addUpdateListener {
             targetX = (it.animatedValue as Int)
@@ -567,6 +631,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         disperseYAnimator!!.addUpdateListener {
             targetY = (it.animatedValue as Int)
         }
+        // Randomly select on whether it spins to the left or right
         radialAnimator = if ((0..1).random() == 0) {
             ValueAnimator.ofFloat(0f, 360f)
         } else {
@@ -577,6 +642,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             imageButton!!.rotation = (it.animatedValue as Float)
             touchView!!.rotation = (it.animatedValue as Float)
         }
+        // Set the properties of the disperse animator
         disperseSet = AnimatorSet()
         disperseSet!!.play(disperseYAnimator).with(disperseXAnimator).with(radialAnimator!!)
         disperseSet!!.duration = 3000
@@ -584,6 +650,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         disperseSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         isDispersed = true
         disperseSet!!.start()
+        // Remove the cat button after it disppears from the screen to save memory
         disperseSet!!.doOnEnd {
             parentLayout!!.removeView(imageButton!!)
             parentLayout!!.removeView(imageView!!.getThis())
@@ -615,6 +682,9 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         return targetY
     }
 
+    /*
+        Updates x,y,width,height based on the parameters passed by the user
+     */
     private var transformAnimatorSet: AnimatorSet? = null
     private var transformXAnimator: ValueAnimator? = null
     private var transformYAnimator: ValueAnimator? = null
@@ -622,6 +692,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var transformHeightAnimator: ValueAnimator? = null
     private var isTransforming: Boolean = false
     fun transformTo(newParams: LayoutParams) {
+        // If the transform animator set is on, cancel it
         if (transformAnimatorSet != null) {
             if (isTransforming) {
                 transformAnimatorSet!!.cancel()
@@ -629,7 +700,9 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 transformAnimatorSet = null
             }
         }
+        // Update the original params to the new params
         originalParams = newParams
+        // Scale the width, height and translate the x, y of the cat button
         transformXAnimator = ValueAnimator.ofFloat(
             (imageButton!!.layoutParams as
                     LayoutParams).x.toFloat(), newParams.x.toFloat()
@@ -669,6 +742,7 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             imageButton!!.layoutParams = LayoutParams(width, height, x, y)
             imageView!!.getThis().layoutParams = LayoutParams(width, height, x, y)
             touchView!!.layoutParams = LayoutParams(width, height, x, y)
+            // If the cat button is podded set its shape to circular
             if (isPodded) {
                 setCornerRadiusAndBorderWidth(
                     (height / 2f).toInt(), borderWidth,
@@ -680,8 +754,8 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                     withBackground = false
                 )
             }
-            Log.i("WHY", "WHY")
         }
+        // Set the transform animator set properties
         transformAnimatorSet = AnimatorSet()
         transformAnimatorSet!!.play(transformXAnimator!!).with(transformYAnimator!!)
             .with(transformWidthAnimator!!).with(transformHeightAnimator!!)
@@ -690,12 +764,15 @@ class CatButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         transformAnimatorSet!!.duration = 500
         isTransforming = true
         transformAnimatorSet!!.start()
+        // After the transformation is complete, set the params to the exact values for reassurance
         transformAnimatorSet!!.doOnEnd {
             imageButton!!.layoutParams = originalParams!!
             imageView!!.getThis().layoutParams = originalParams!!
         }
     }
-
+    /*
+        Shrinks the cat button instantly
+     */
     fun shrunk() {
         imageButton!!.layoutParams = shrunkParams!!
         imageView!!.getThis().layoutParams = shrunkParams!!
@@ -725,6 +802,9 @@ class MouseCoin(spawnParams:LayoutParams, targetParams:LayoutParams, isEarned:Bo
         setupAnimationSet()
     }
 
+    /*
+        Creates mouse coin in front of everything else
+     */
     private fun setupMouseCoin() {
         mouseCoin = ImageView(MainActivity.rootView!!.context)
         mouseCoin!!.setImageResource(R.drawable.mousecoin)
@@ -733,6 +813,9 @@ class MouseCoin(spawnParams:LayoutParams, targetParams:LayoutParams, isEarned:Bo
         mouseCoin!!.bringToFront()
     }
 
+    /*
+        Sets animations to translate to the x and y
+     */
     private fun setupAnimationX() {
         targetX = spawnParams!!.x
         xAnimation = ValueAnimator.ofInt(spawnParams!!.x , targetParams!!.x)
@@ -753,19 +836,24 @@ class MouseCoin(spawnParams:LayoutParams, targetParams:LayoutParams, isEarned:Bo
         }
     }
 
+    /*
+        Sets the properties for the translation animation
+     */
     private fun setupAnimationSet() {
         animatorSet = AnimatorSet()
         animatorSet!!.play(xAnimation!!).with(yAnimation!!)
         animatorSet!!.startDelay = 500
         animatorSet!!.duration = 1000
         animatorSet!!.start()
+        // After the mouse coin is translated
         animatorSet!!.doOnEnd {
+            // It is removed from the screen
             MainActivity.rootLayout!!.removeView(mouseCoin!!)
             if (isEarned) {
                 MainActivity.mouseCoinView!!.updateCount(MCView.mouseCoinCount + 1)
                 MainActivity.settingsButton!!.bringContentsForward()
+                // Mouse coin earned audio is played
                 AudioController.coinEarned()
-
             }
         }
     }
