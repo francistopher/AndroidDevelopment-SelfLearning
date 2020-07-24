@@ -59,6 +59,9 @@ class SuccessResults(successView: View,
         hideEverything()
     }
 
+    /*
+        Makes the success results panel invisible
+     */
     private fun hideEverything() {
         successView!!.alpha = 0f
         successLabel!!.getThis().alpha = 0f
@@ -68,6 +71,9 @@ class SuccessResults(successView: View,
         deadCatCountLabel!!.getThis().alpha = 0f
     }
 
+    /*
+        Setup the smiling cat image
+     */
     private fun setupSmilingCat() {
         smilingCat = CImageView(imageView = ImageView(context!!), parentLayout = parentLayout!!,
             params = LayoutParams((getOriginalParams().width * 0.625).toInt(),
@@ -78,6 +84,9 @@ class SuccessResults(successView: View,
         smilingCat!!.loadImages(R.drawable.lightsmilingcat, R.drawable.darksmilingcat)
     }
 
+    /*
+        Setup the dead cat image
+     */
     private fun setupDeadCat() {
         deadCat = CImageView(imageView = ImageView(context!!), parentLayout = parentLayout!!,
             params = LayoutParams((getOriginalParams().width * 0.625).toInt(),
@@ -113,6 +122,9 @@ class SuccessResults(successView: View,
         deadCatCountLabel!!.setStyle()
     }
 
+    /*
+        Setup the success title view
+     */
     private fun setupTitleView() {
         successLabel = CLabel(textView = TextView(context!!), parentLayout = parentLayout!!,
             params = LayoutParams((getOriginalParams().width * 0.5).toInt(), (unitHeight * 2.0).toInt(),
@@ -126,18 +138,23 @@ class SuccessResults(successView: View,
             0)
     }
 
+    /*
+        Draws the border and the corner radius of the view
+     */
     private var shape: GradientDrawable? = null
     private var borderWidth:Int = 0
     private var cornerRadius:Int = 0
     private fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int) {
         shape = null
         shape = GradientDrawable()
+        // Draw the background color of the shape
         shape!!.shape = GradientDrawable.RECTANGLE
         if (MainActivity.isThemeDark) {
             shape!!.setColor(Color.BLACK)
         } else {
             shape!!.setColor(Color.WHITE)
         }
+        // Draw the border of the panel
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
             if (MainActivity.isThemeDark) {
@@ -151,9 +168,13 @@ class SuccessResults(successView: View,
         this.successView!!.setBackgroundDrawable(shape)
     }
 
+    /*
+        Fade in or out the view
+     */
     private var fadeInAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     private fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        // If the fade animator is running then cancel it
         if (fadeInAnimator != null) {
             if (fadeAnimatorIsRunning) {
                 fadeInAnimator!!.cancel()
@@ -161,6 +182,7 @@ class SuccessResults(successView: View,
                 fadeInAnimator = null
             }
         }
+        // Fade the view in or out
         if (In) {
             fadeInAnimator = ValueAnimator.ofFloat(successView!!.alpha, 1f)
             MainActivity.gameResults!!.getWatchAdButton().setText("Watch Short Ad to Win ····· s!", false)
@@ -178,6 +200,7 @@ class SuccessResults(successView: View,
             MainActivity.gameResults!!.getWatchAdButton().getThis().alpha = alpha
             MainActivity.gameResults!!.getMouseCoin().alpha = alpha
         }
+        // Setup the fade in out animator properties
         fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
@@ -185,12 +208,16 @@ class SuccessResults(successView: View,
         fadeAnimatorIsRunning = true
     }
 
+    /*
+        Create the mouse coins for the user to obtain
+     */
     private var angle:Float = 0f
     private var increment:Float = 0f
     private var mouseCoinParams:LayoutParams = SettingsMenu.mouseCoinButton!!.getThis().layoutParams as LayoutParams
     fun giveMouseCoins() {
         angle = 52.5f
         increment = 360f / GameResults.mouseCoinsEarned
+        // Spawn mouse coins radially equidistant from the center of the screen
         for (iteration in 1..GameResults.mouseCoinsEarned) {
             val x:Int = ((mouseCoinParams.width * -0.5) + (MainActivity.dWidth * 0.5) +
                     (MainActivity.dWidth * 0.35 * cos(PI * angle / 180f))).toInt()
@@ -252,6 +279,9 @@ class SuccessResults(successView: View,
         successView!!.setBackgroundColor(Color.WHITE)
     }
 
+    /*
+        Set the color of the panel based on the theme of the device
+     */
     fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()
