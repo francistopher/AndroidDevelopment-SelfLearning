@@ -10,6 +10,7 @@ import com.google.firebase.database.*
 class MPController {
 
     companion object {
+        // Displays in game notification
         fun displayFailureReason() {
             if (!MainActivity.isInternetReachable) {
                 MainActivity.gameNotification!!.displayNoInternet()
@@ -33,11 +34,17 @@ class MPController {
     private var roomValueListener:RoomValueListener? = null
     private var roomName:String? = null
 
+    /*
+        Setup firebase database
+     */
     fun setup() {
         database = FirebaseDatabase.getInstance()
         setupRoomsReference()
     }
 
+    /*
+        Listen for a virtual room
+     */
     private fun setupRoomsReference() {
         class RoomsValueListener:ValueEventListener {
             override fun onCancelled(de: DatabaseError) {
@@ -56,6 +63,9 @@ class MPController {
         roomsReference!!.addValueEventListener(RoomsValueListener())
     }
 
+    /*
+        Remove all the users who aren't playing
+     */
     private fun removeOldUsers(ds:DataSnapshot) {
         // Remove your previous self
         var children: List<DataSnapshot> = ds.children.filter { dataSnapshot ->
@@ -98,15 +108,20 @@ class MPController {
         startValueAnimatorTimer()
     }
 
+    /*
+        Start multiplayer for the user
+     */
     fun startPlaying() {
         isPlaying = true
         setMyLivesLeft(1)
         BoardGame.searchMG!!.stopAnimation()
         MainActivity.gameNotification!!.displayGameOpponent()
         MainActivity.boardGame!!.startTwoPlayerMatch()
-        Log.i("MPCONTROLLER", "START PLAYING")
     }
 
+    /*
+        End the multiplayer match
+     */
     fun disconnect() {
         if (!isPlaying) {
             roomReference?.removeEventListener(roomValueListener!!)
@@ -115,12 +130,18 @@ class MPController {
         }
     }
 
+    /*
+        Remove the virtual room
+     */
     fun closeRoom() {
         if (!isPlaying) {
             removeValues(MainActivity.playerID())
         }
     }
 
+    /*
+        Remove values in the database
+     */
     private fun forcedRemoveValues(playerID: String) {
         database!!.getReference("rooms/$playerID/playerA").removeValue()
         database!!.getReference("rooms/$playerID/playerB").removeValue()
@@ -129,6 +150,9 @@ class MPController {
         database!!.getReference("rooms/$playerID/whenCreated").removeValue()
     }
 
+    /*
+        Remove values if there is a room
+     */
     private fun removeValues(playerID:String) {
         if (roomReference != null) {
             database!!.getReference("rooms/$playerID/playerA").removeValue()
@@ -139,6 +163,9 @@ class MPController {
         }
     }
 
+    /*
+        Create disconnect timer
+     */
     private fun startValueAnimatorTimer() {
         valueAnimatorTimer = ValueAnimator.ofFloat(0f, 1f)
         valueAnimatorTimer!!.duration = 30000
@@ -151,6 +178,9 @@ class MPController {
         }
     }
 
+    /*
+        Listen for virtual room action
+     */
     class RoomValueListener:ValueEventListener {
         override fun onCancelled(de: DatabaseError) {
             MainActivity.mpController!!.disconnect()
@@ -158,6 +188,9 @@ class MPController {
         }
 
         override fun onDataChange(ds: DataSnapshot) {
+            /*
+                Start the match
+             */
             if (ds.children.count() == 3) {
                 opponent = if (isPlayerA!!) {
                     ds.child("playerB").value as String
@@ -171,6 +204,9 @@ class MPController {
             }
         }
 
+        /*
+            Update lives left, and declare the winner
+         */
         private fun investigatePlayerA(livesLeft:Long) {
             if (!isPlayerA!!) {
                 if (livesLeft < 1) {
