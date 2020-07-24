@@ -36,7 +36,7 @@ class Enemies {
         // Starting coordinates
         x = -enemyWidthSpacing * 0.665f
         y = -enemyHeightSpacing * 0.45f
-        // Build and plot enemies
+        // Build and plot hair balls equidistant from each other
         for (i in 0..2) {
             x += enemyWidthSpacing
             for (ii in 0..3) {
@@ -57,6 +57,10 @@ class Enemies {
         }
     }
 
+    /*
+        During an attack the hair balls swing to the center
+        of the screen and back
+     */
     fun translateToCatAndBack(catButton:CatButton) {
         for (enemy in enemies) {
             enemy.translateToCatAndBack((catButton.getOriginalParams().x +
@@ -66,18 +70,27 @@ class Enemies {
         }
     }
 
+    /*
+        Updates the image of all the hair balls
+     */
     fun setStyle() {
         for (enemy in enemies){
             enemy.setStyle()
         }
     }
 
+    /*
+        Enables all the hair balls to swing back and forth
+     */
     fun sway() {
         for (enemy in enemies) {
             enemy.sway()
         }
     }
 
+    /*
+        Fades in all the hair balls to appear from nothin
+     */
     fun fadeIn() {
         for (enemy in enemies) {
             enemy.fadeIn()
