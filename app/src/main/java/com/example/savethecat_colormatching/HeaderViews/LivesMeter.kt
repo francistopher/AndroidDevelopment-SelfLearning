@@ -75,6 +75,9 @@ class LivesMeter(meterView: View,
         livesCountLabel!!.getThis().alpha = 1f
     }
 
+    /*
+        Creates the image button with the heart
+     */
     private fun setupImageButtonText() {
         livesCountLabel = CLabel(textView = TextView(meterView!!.context),
             parentLayout = MainActivity.rootLayout!!, params =  LayoutParams(
@@ -87,6 +90,10 @@ class LivesMeter(meterView: View,
         livesCountLabel!!.getThis().setTextColor(Color.WHITE)
     }
 
+    /*
+        Increments the left count of the meter
+        and visually adds a heart to the lives meter
+     */
     private var transitionPackages:MutableList<TransitionPackage> = mutableListOf()
     fun incrementLivesLeftCount(catButton: CatButton?, forOpponent:Boolean) {
         if (!forOpponent) {
@@ -118,6 +125,9 @@ class LivesMeter(meterView: View,
         return livesLeft
     }
 
+    /*
+        Decreases the lives meter and removes a heart
+     */
     fun dropLivesLeftHeart() {
         livesLeft -= 1
         if (transitionPackages.size > 0) {
@@ -146,9 +156,13 @@ class LivesMeter(meterView: View,
         fade(true, false, 1f, 0.125f)
     }
 
+    /*
+        Updates the transparency of the lives meter
+     */
     private var fadeInAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     private fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        // If the fade animation is running, cancel it
         if (fadeInAnimator != null) {
             if (fadeAnimatorIsRunning) {
                 fadeInAnimator!!.cancel()
@@ -156,6 +170,7 @@ class LivesMeter(meterView: View,
                 fadeInAnimator = null
             }
         }
+        // Make the lives meter appear or disappear
         if (In) {
             fadeInAnimator = ValueAnimator.ofFloat(0f, 1f)
         } else if (Out and !In) {
@@ -166,10 +181,10 @@ class LivesMeter(meterView: View,
             if (MainActivity.dAspectRatio !in 1.5..1.7) {
                 containerView!!.getThis().alpha = it.animatedValue as Float
             }
-
             livesCountLabel!!.getThis().alpha = it.animatedValue as Float
             meterView!!.alpha = it.animatedValue as Float
         }
+        // Setup properties for the fade animation
         fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
@@ -177,6 +192,9 @@ class LivesMeter(meterView: View,
         fadeAnimatorIsRunning = true
     }
 
+    /*
+        Creates the view that containes the hearts
+     */
     private fun setupContainerMeterView() {
         containerView = CView(view = View(meterView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(((getOriginalParams().width * 2) - borderWidth),
@@ -189,6 +207,9 @@ class LivesMeter(meterView: View,
         }
     }
 
+    /*
+        Creates the original heart butto
+     */
     private fun buildHeartButton(): ImageButton {
         val currentHeartButton = ImageButton(meterView!!.context)
         currentHeartButton.layoutParams = LayoutParams(getOriginalParams().width,
@@ -198,6 +219,9 @@ class LivesMeter(meterView: View,
         return currentHeartButton
     }
 
+    /*
+        Draws the corners and border width of the lives meter
+     */
     private var shape: GradientDrawable? = null
     private var borderWidth:Int = 0
     private var cornerRadius:Int = 0
@@ -205,11 +229,13 @@ class LivesMeter(meterView: View,
         shape = null
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
+        // Draws the background of the lives meter
         if (MainActivity.isThemeDark) {
             shape!!.setColor(Color.BLACK)
         } else {
             shape!!.setColor(Color.WHITE)
         }
+        // Draws the border of the meter
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
             if (MainActivity.isThemeDark) {
@@ -218,16 +244,21 @@ class LivesMeter(meterView: View,
                 shape!!.setStroke(borderWidth, Color.BLACK)
             }
         }
+        // Draws the corner radius of the lives meter
         cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()
         meterView!!.setBackgroundDrawable(shape)
     }
 
+    /*
+        Translates the opponent's hearts from under neath the user's hearts
+     */
     private var translateXY:ValueAnimator? = null
     fun translate(show:Boolean) {
         if (translateXY != null) {
             translateXY!!.cancel()
         }
+        // Show or hide the opponent's hearts
         if (show) {
             if (MainActivity.dAspectRatio > 2.08 && MainActivity.dAspectRatio < 1.5) {
                 translateXY = ValueAnimator.ofInt(
@@ -243,6 +274,7 @@ class LivesMeter(meterView: View,
                 translateXY = ValueAnimator.ofInt(y + originalParams!!.height, y)
             }
         }
+        // Update the x and y of the opponent's heart stack
         translateXY!!.addUpdateListener {
             val params:LayoutParams?
             if (MainActivity.dAspectRatio > 2.08) {
@@ -304,6 +336,10 @@ class LivesMeter(meterView: View,
         meterView!!.setBackgroundColor(Color.WHITE)
     }
 
+
+    /*
+        Set the style of all the elements of the lives meter
+     */
     fun setCompiledStyle() {
         containerView!!.setStyle()
         containerView!!.setCornerRadiusAndBorderWidth(getOriginalParams().height / 2,
