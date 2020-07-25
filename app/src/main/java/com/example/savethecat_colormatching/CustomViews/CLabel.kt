@@ -46,6 +46,9 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutPara
         textView!!.layoutParams = shrunkParams!!
     }
 
+    /*
+        Update the text on the label
+     */
     fun setText(text:String) {
         textView!!.text = text
         textView!!.typeface = Typeface.createFromAsset(
@@ -63,6 +66,9 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutPara
         return originalParams!!
     }
 
+    /*
+        Set the corer radius and border width of the button
+     */
     private var shape:GradientDrawable? = null
     fun setCornerRadiusAndBorderWidth(radius:Int, borderWidth:Int) {
         shape = null
@@ -76,6 +82,10 @@ class CLabel(textView: TextView, parentLayout: AbsoluteLayout, params:LayoutPara
         textView!!.setBackgroundDrawable(shape)
     }
 
+    /*
+        Set the style of the label based on the theme of
+        the operating system
+     */
     fun setStyle() {
         fun lightDominant() {
             textView!!.setBackgroundColor(Color.BLACK)
