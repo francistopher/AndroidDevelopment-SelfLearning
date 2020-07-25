@@ -54,6 +54,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         this.meterView!!.alpha = 0f
     }
 
+    /*
+        Draw the border and the corner radius of the attack meter view
+     */
     private var shape: GradientDrawable? = null
     private var borderWidth:Int = 0
     private var cornerRadius:Int = 0
@@ -75,6 +78,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         meterView!!.setBackgroundDrawable(shape)
     }
 
+    /*
+        Setup the hairball and the cat on the attack meter
+     */
     private fun setupCharacters() {
         setupCatButton()
         setupEnemy()
@@ -82,6 +88,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
                 enemyImage!!.getOriginalParams().x
     }
 
+    /*
+        Creates and setup the cat button on the attack meter
+     */
     private fun setupCatButton() {
         catButton = CatButton(imageButton = ImageButton(meterContext!!), parentLayout = parentLayout!!,
             params = LayoutParams(getOriginalParams().height, getOriginalParams().height,
@@ -93,6 +102,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         catButton!!.setStyle()
     }
 
+    /*
+        Create and setup the hairball
+     */
     private fun setupEnemy() {
         enemyImage = CImageView(imageView = ImageButton(meterContext!!), parentLayout = parentLayout!!,
         params = LayoutParams(getOriginalParams().height, getOriginalParams().height,
@@ -101,9 +113,14 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         enemyImage!!.getThis().alpha = 0f
     }
 
+    /*
+        Makes the attack meter, and its contents appear or disappear
+        by changing its transparency
+     */
     private var fadeAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     private fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        // If the fade animation is running, cancel it
         if (fadeAnimator != null) {
             if (fadeAnimatorIsRunning) {
                 fadeAnimator!!.cancel()
@@ -111,6 +128,7 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
                 fadeAnimator = null
             }
         }
+        // Fade the animation in or out
         if (In) {
             fadeAnimator = ValueAnimator.ofFloat(0f, 1f)
         }
@@ -124,6 +142,7 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
             catButton!!.setCatImageAlpha(alpha)
             enemyImage!!.getThis().alpha = alpha
         }
+        // Setup the properties for the fade animator
         fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeAnimator!!.duration = (1000.0f * Duration).toLong()
@@ -171,7 +190,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         startRotation(0.5f)
     }
 
-    //Rotation animation
+    /*
+        Rotates the hairball clockwise
+     */
     private var rotationAnimator:ValueAnimator? = null
     private fun startRotation(delay: Float) {
          if (enemyPhase != null || didNotInvokeRelease) {
@@ -180,23 +201,28 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         setupRotationAnimation()
         rotationAnimator!!.startDelay = (1000 * delay).toLong()
         rotationAnimator!!.start()
-        enemyPhase =
-            EnemyPhase.ROTATION
+        enemyPhase = EnemyPhase.ROTATION
     }
 
+    /*
+        Sets up the rotation animation of the hairball
+     */
     var remainingPercentage:Float = 0f
     var rotationDuration:Float = 0f
     private fun setupRotationAnimation() {
         rotationDuration = 1f
+        // Enables the hairball to start rotating exactly from where it left off
         if (rotationCheckpoint > 0f) {
             remainingPercentage = (360f - enemyImage!!.getThis().rotation) / 360f
             rotationDuration *= remainingPercentage
         }
+        // Setup the rotation animation properties
         rotationAnimator = ValueAnimator.ofFloat(enemyImage!!.getThis().rotation, 360f)
         rotationAnimator!!.addUpdateListener {
             enemyImage!!.getThis().rotation = (it.animatedValue as Float)
         }
         rotationAnimator!!.duration = (1000 * rotationDuration).toLong()
+        // After the hairball stops rotating, translate it
         rotationAnimator!!.doOnEnd {
                 enemyImage!!.getThis().rotation = 0f
             if (enemyPhase != EnemyPhase.TranslationToStart) {
@@ -213,6 +239,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         rotationAnimator = null
     }
 
+    /*
+        Translates the hairball to the cat
+     */
     private var translationToCatAnimator:ValueAnimator? = null
     private fun startTranslationToCat(delay:Float) {
         if (isEnemyInPhase()) {
@@ -221,13 +250,16 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         setupTranslationToCatAnimation()
         translationToCatAnimator!!.startDelay = (1000 * delay).toLong()
         translationToCatAnimator!!.start()
-        enemyPhase =
-            EnemyPhase.TranslationToCat
+        enemyPhase = EnemyPhase.TranslationToCat
     }
 
+    /*
+        Sets up the animation for the hairball to translate to the cat
+     */
     private fun setupTranslationToCatAnimation() {
         translationToCatAnimator = ValueAnimator.ofInt(enemyImage!!.getOriginalParams().x,
         getCurrentEnemyCatDistance() + getOriginalParams().x)
+        // Update the x position
         translationToCatAnimator!!.addUpdateListener {
             val params = LayoutParams(
                 enemyImage!!.getOriginalParams().width,
@@ -238,7 +270,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
             enemyImage!!.getThis().layoutParams = params
             enemyImage!!.setOriginalParams(params)
         }
+        // Setup the animation properties
         translationToCatAnimator!!.duration = getEnemyToCatDuration()
+        // After translation, start jumping on the virus
         translationToCatAnimator!!.doOnEnd {
             if (enemyPhase != EnemyPhase.TranslationToStart) {
                 dismantleTranslationToCat()
@@ -254,6 +288,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         translationToCatAnimator = null
     }
 
+    /*
+        Causes the hairball to jump on the cat
+     */
     private var sizeExpansionAnimator:ValueAnimator? = null
     private fun startSizeExpansion(delay:Float) {
         if (isEnemyInPhase()) {
@@ -262,13 +299,16 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         setupSizeExpansionAnimation()
         sizeExpansionAnimator!!.startDelay = (1000 * delay).toLong()
         sizeExpansionAnimator!!.start()
-        enemyPhase =
-            EnemyPhase.SizeExpansion
+        enemyPhase = EnemyPhase.SizeExpansion
     }
 
+    /*
+        Creates the size expansion animation
+     */
     private fun setupSizeExpansionAnimation() {
         sizeExpansionAnimator = ValueAnimator.ofInt(enemyImage!!.getOriginalParams().height,
             (getOriginalParams().height * 1.5).toInt())
+        // Updates the x, y, and width, height of the hairball
         sizeExpansionAnimator!!.addUpdateListener {
             val value:Int = (it.animatedValue as Int)
             val x:Int = (getOriginalParams().x + getOriginalParams().width -
@@ -278,7 +318,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
             enemyImage!!.getThis().layoutParams = params
             enemyImage!!.setOriginalParams(params)
         }
+        // Setup the properties of the attack meter
         sizeExpansionAnimator!!.duration = (1000 * 0.5).toLong()
+        // Stop hairball jump after the cat is dead
         sizeExpansionAnimator!!.doOnEnd {
             if (enemyPhase != EnemyPhase.TranslationToStart) {
                 dismantleSizeExpansion()
@@ -294,6 +336,10 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         sizeExpansionAnimator = null
     }
 
+    /*
+        Starts reducing the size of the hairball
+        after jumping on the cat
+     */
     private var sizeReductionAnimator:ValueAnimator? = null
     private fun startSizeReduction(delay:Float) {
         if (isEnemyInPhase()) {
@@ -306,9 +352,13 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
             EnemyPhase.SizeReduction
     }
 
+    /*
+        Sets up the animation to reduce the hairball
+     */
     private fun setupSizeReductionAnimation() {
         sizeReductionAnimator = ValueAnimator.ofInt((getOriginalParams().height * 1.5).toInt(),
             (getOriginalParams().height))
+        // Translates the x,y and scales down the width and height of the hairball
         sizeReductionAnimator!!.addUpdateListener {
             val value:Int = (it.animatedValue as Int)
             val x:Int = (getOriginalParams().x + getOriginalParams().width -
@@ -318,7 +368,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
             enemyImage!!.getThis().layoutParams = params
             enemyImage!!.setOriginalParams(params)
         }
+        // Setup the properties for the animation
         sizeReductionAnimator!!.duration = (1000 * 0.5).toLong()
+        // Return the hairball to its original position after hairball attack
         sizeReductionAnimator!!.doOnEnd {
             if (enemyPhase != EnemyPhase.TranslationToStart) {
                 dismantleSizeReduction()
@@ -335,7 +387,6 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         if (randomCatButton != null) {
             MainActivity.boardGame!!.attackCatButton(randomCatButton)
         }
-
     }
 
     private fun dismantleSizeReduction() {
@@ -343,6 +394,10 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         sizeReductionAnimator = null
     }
 
+    /*
+        Starts translating the hairball to its original position
+        after attacking the cat
+     */
     private var transitionToStartAnimator:AnimatorSet? = null
     private fun startTransitionToStart(delay: Float) {
         if (isEnemyInPhase()) {
@@ -351,14 +406,17 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         setupTransitionToStartAnimation()
         transitionToStartAnimator!!.startDelay = (1000 * delay).toLong()
         transitionToStartAnimator!!.start()
-        enemyPhase =
-            EnemyPhase.TranslationToStart
+        enemyPhase = EnemyPhase.TranslationToStart
     }
 
+    /*
+        Setup transition animation of hairball to its original position
+     */
     var transitionToStartX:ValueAnimator? = null
     private fun setupTransitionToStartAnimation() {
         transitionToStartX = ValueAnimator.ofInt(enemyImage!!.getOriginalParams().x,
         getOriginalParams().x)
+        // Translate the x value of the hairball to the left
         transitionToStartX!!.addUpdateListener {
             val params = LayoutParams(
                 enemyImage!!.getOriginalParams().width,
@@ -369,6 +427,7 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
             enemyImage!!.getThis().layoutParams = params
             enemyImage!!.setOriginalParams(params)
         }
+        // Reduce the size of the hairball if its larger than its original size
         sizeReductionAnimator = ValueAnimator.ofInt((enemyImage!!.getOriginalParams().height),
             (getOriginalParams().height))
         sizeReductionAnimator!!.addUpdateListener {
@@ -379,6 +438,7 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
             enemyImage!!.getThis().layoutParams = params
             enemyImage!!.setOriginalParams(params)
         }
+        // Setup the properties for the translation to start animation
         transitionToStartAnimator = AnimatorSet()
         transitionToStartAnimator!!.play(transitionToStartX!!).with(sizeReductionAnimator!!)
         transitionToStartAnimator!!.duration = getEnemyToStartDuration()
@@ -412,6 +472,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
                 / initialEnemyCatDistance) * 1000).toLong()
     }
 
+    /*
+        Returns true if the hairball is currently doing something
+     */
     private fun isEnemyInPhase():Boolean {
         return ((rotationAnimator != null && rotationAnimator!!.isRunning) ||
                 (translationToCatAnimator != null && translationToCatAnimator!!.isRunning) ||
@@ -420,6 +483,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
                 (transitionToStartAnimator != null && transitionToStartAnimator!!.isRunning))
     }
 
+    /*
+        Stops the hairball from anything its doing and send it to its original state
+     */
     fun sendEnemyToStart() {
         if (enemyPhase != null && enemyPhase != EnemyPhase.TranslationToStart) {
             displacementDuration = 1.0f
@@ -438,6 +504,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         }
     }
 
+    /*
+        Stops the hairball wherever it is
+     */
     private fun pauseEnemyMovement() {
         when (enemyPhase!!) {
             EnemyPhase.ROTATION -> {
@@ -469,6 +538,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         }
     }
 
+    /*
+        Starts the hairball from wherever it left off
+     */
     private fun resumeEnemyMovement() {
         when(enemyPhase!!) {
             EnemyPhase.ROTATION -> {
@@ -490,6 +562,9 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         }
     }
 
+    /*
+        Changes the duration of the hairball attack
+     */
     fun updateDuration(change:Float) {
         if (change > 0f) {
             displacementDuration += change
@@ -516,6 +591,10 @@ class AttackMeter(meterView: View, parentLayout: AbsoluteLayout, params: LayoutP
         enemyImage!!.setStyle()
     }
 
+    /*
+        Sets the colors of the attack meter, hairball, and cat
+        based on the theme of the operating system
+     */
     private fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()
