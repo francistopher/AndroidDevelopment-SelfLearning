@@ -61,18 +61,23 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
         shrunkParams = AbsoluteLayout.LayoutParams(originalParams!!.x / 2, originalParams!!.y / 2, 1, 1)
     }
 
+    /*
+        Rotates the text around the button
+     */
     var rotationAnimator:ValueAnimator? = null
     var rotation:Float = 0f
-
     fun rotateText() {
+        // If the rotation animation is running, then cancel it
         if (rotationAnimator != null) {
             rotationAnimator!!.cancel()
             rotationAnimator = null
         }
+        // Rotate the iamge counterclockwise
         rotationAnimator = ValueAnimator.ofFloat(rotation, rotation + 90)
         rotationAnimator!!.addUpdateListener {
             imageView!!.rotation = (it.animatedValue as Float)
         }
+        // Setup the properties for the rotation animation
         rotationAnimator!!.interpolator = LinearInterpolator()
         rotationAnimator!!.duration = 1000
         rotationAnimator!!.doOnEnd {
@@ -82,9 +87,13 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
         rotationAnimator!!.start()
     }
 
+    /*
+        Disappear or appear the image view
+     */
     private var fadeAnimator: ViewPropertyAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        // Cancel the fade animation if its running
         if (fadeAnimator != null) {
             if (fadeAnimatorIsRunning) {
                 fadeAnimator!!.cancel()
@@ -92,6 +101,7 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
                 fadeAnimator = null
             }
         }
+        // Fade in or fade out
         if (In) {
             fadeAnimator = imageView!!.animate().alpha(1.0f)
             fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
@@ -100,6 +110,7 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
             fadeAnimator = imageView!!.animate().alpha(0.0f)
             fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         }
+        // Setup the properties for the animation
         fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeAnimator!!.duration = (1000.0f * Duration).toLong()
         fadeAnimator!!.withStartAction {
@@ -115,6 +126,9 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
         }
     }
 
+    /*
+        Fades out the image entirely
+     */
     fun fadeOut(Duration: Float) {
         if (isCatImage) {
             AudioController.kittenMeow()
@@ -125,6 +139,10 @@ class CImageView(imageView: ImageView, parentLayout: AbsoluteLayout, params: Abs
         stopRotation = true
     }
 
+    /*
+        Set the style of the image view based on the theme of the
+        operating system
+     */
     fun setStyle() {
         imageView!!.setBackgroundColor(Color.TRANSPARENT)
         imageView!!.scaleType = ImageView.ScaleType.FIT_CENTER
