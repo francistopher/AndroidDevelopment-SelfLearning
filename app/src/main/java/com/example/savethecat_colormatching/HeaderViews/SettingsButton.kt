@@ -48,19 +48,22 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         borderImageView!!.alpha = 0f
     }
 
-    fun forceSettingsMenuContraction() {
+    fun closeTheSettingsMenu() {
         if (SettingsMenu.isExpanded) {
             clickSettingsButton()
         }
     }
 
-    fun forceSettingsMenuExpansion() {
+    fun openTheSettingsMenu() {
         if (!SettingsMenu.isExpanded) {
             clickSettingsButton()
         }
         SettingsMenu.mouseCoinButton!!.getThis().performClick()
     }
 
+    /*
+        Update the transparency of the settings button
+     */
     private var fadeAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
@@ -71,6 +74,7 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
                 fadeAnimator = null
             }
         }
+        // Fade the settings button in or out
         if (In) {
             fadeAnimator = ValueAnimator.ofFloat(0f, 1f)
         }
@@ -89,6 +93,7 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
             SettingsMenu.moreCatsButton!!.getThis().alpha = alpha
             SettingsMenu.mouseCoinButton!!.getThis().alpha = alpha
         }
+        // Setup the properties for the fading animation
         fadeAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         fadeAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeAnimator!!.duration = (1000.0f * Duration).toLong()
@@ -106,9 +111,11 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         }
         fadeAnimatorIsRunning = true
     }
+
     fun fadeIn() {
         fade(true, false, 1f, 0.125f)
     }
+
     private fun setupSettingsMenu() {
         val width:Float = (MainActivity.dWidth - (originalParams!!.x * 2)).toFloat()
         settingsMenu =
@@ -142,6 +149,10 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         }
     }
 
+    /*
+        Close or open the settings button based on
+        its current state
+     */
     private fun clickSettingsButton() {
         if (MainActivity.dAspectRatio < 1.8) {
             if (SettingsMenu.isExpanded) {
@@ -159,9 +170,13 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         rotateGear()
     }
 
+    /*
+        Rotate the gear on the settings button
+     */
     private var rotateGearAnimator: ValueAnimator? = null
     private var isGearRotating:Boolean = false
     private fun rotateGear() {
+        // If the gear is rotating cancel it
         if (isGearRotating) {
             return
         } else {
@@ -170,14 +185,17 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
                 rotateGearAnimator = null
             }
         }
+        // Rotate the gear counter clockwise if the gear is closed
         rotateGearAnimator = if (SettingsMenu.isExpanded) {
             ValueAnimator.ofFloat(225f, 0f)
         } else {
+            // Rotate the gear clockwise to open
             ValueAnimator.ofFloat(settingsButton!!.rotation, 225f)
         }
         rotateGearAnimator!!.addUpdateListener {
             settingsButton!!.rotation = (it.animatedValue as Float)
         }
+        // Setup the properties for the gear animator
         rotateGearAnimator!!.interpolator = LinearInterpolator()
         rotateGearAnimator!!.duration = 1000
         rotateGearAnimator!!.start()
@@ -187,6 +205,10 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         }
     }
 
+    /*
+        Draw the corner radius and the border width
+        of the settings button
+     */
     private var shape: GradientDrawable? = null
     var borderWidth:Int = 0
     private var cornerRadius:Int = 0
@@ -194,8 +216,10 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         shape = null
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
+        // Draw the border
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
+            // Draw the background based on the theme
             if (MainActivity.isThemeDark) {
                 shape!!.setColor(Color.BLACK)
                 shape!!.setStroke(borderWidth, Color.WHITE)
@@ -204,6 +228,7 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
                 shape!!.setStroke(borderWidth, Color.BLACK)
             }
         }
+        // Draw the corner radius
         cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()
         settingsButton!!.setBackgroundDrawable(shape)
@@ -230,6 +255,10 @@ class SettingsButton(imageButton: ImageButton, parentLayout: AbsoluteLayout, par
         settingsButton!!.setBackgroundResource(R.drawable.darkgear)
     }
 
+    /*
+        Set the theme of all the elments of the settings button,
+        and the settings menu based on the current theme of the OS
+     */
     fun setCompiledStyle() {
         setStyle()
         settingsMenu!!.setStyle()
