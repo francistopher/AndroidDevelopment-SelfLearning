@@ -21,6 +21,9 @@ class CView(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
         setStyle()
     }
 
+    /*
+        Set the corner radius and the border width of the view
+     */
     private var shape: GradientDrawable? = null
     private var borderWidth:Int = 0
     private var cornerRadius:Int = 0
@@ -28,11 +31,13 @@ class CView(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
         shape = null
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
+        // Draw the background of the view
         if (MainActivity.isThemeDark) {
             shape!!.setColor(Color.BLACK)
         } else {
             shape!!.setColor(Color.WHITE)
         }
+        // Draw the border width of the view
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
             if (MainActivity.isThemeDark) {
@@ -41,6 +46,7 @@ class CView(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
                 shape!!.setStroke(borderWidth, Color.BLACK)
             }
         }
+        // Draw the corner radius of the view
         cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()
         view!!.setBackgroundDrawable(shape)
@@ -66,6 +72,10 @@ class CView(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
         return view!!
     }
 
+    /*
+        Set the appearance of the view based on the theme
+        of the operating system
+     */
     fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()
