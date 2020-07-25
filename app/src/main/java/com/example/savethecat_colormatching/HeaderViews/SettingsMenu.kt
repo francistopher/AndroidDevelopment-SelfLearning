@@ -20,10 +20,8 @@ import com.example.savethecat_colormatching.SettingsMenu.*
 class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParams) {
 
     private var menuView:View? = null
-
     private var expandedParams:LayoutParams? = null
     private var contractedParams:LayoutParams? = null
-
     private var parentLayout:AbsoluteLayout? = null
 
     companion object {
@@ -34,16 +32,21 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         var volumeButton: Volume? = null
         var moreCatsButton: MoreCats? = null
 
+        /*
+            Strips away a mouse coin from the settings menu
+         */
         fun looseMouseCoin() {
             if (MCView.mouseCoinCount > 0) {
                 val mcButton: LayoutParams =
                     mouseCoinButton!!.getThis().layoutParams as LayoutParams
+                // Select a random target to disappear
                 val x: Int = if ((0..1).random() == 0) {
                     (0..(MainActivity.dWidth * 0.5).toInt()).random()
                 } else {
                     ((MainActivity.dWidth * 0.5).toInt()..(MainActivity.dWidth.toInt() -
                             mcButton.width)).random()
                 }
+                // Create the mouse coin
                 MainActivity.mouseCoinView!!.updateCount(MCView.mouseCoinCount - 1)
                 com.example.savethecat_colormatching.Characters.MouseCoin(
                     spawnParams = mcButton,
@@ -83,6 +86,10 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         return menuView!!
     }
 
+    /*
+        Draw the corner radius and border width
+        of the settings menu
+     */
     private var shape: GradientDrawable? = null
     private var borderWidth:Int = 0
     private var cornerRadius:Int = 0
@@ -90,7 +97,9 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         shape = null
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
+        // Draw the background color
         shape!!.setColor((menuView!!.background as ColorDrawable).color)
+        // Draw the border
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
             if (MainActivity.isThemeDark) {
@@ -98,16 +107,21 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             } else {
                 shape!!.setStroke(borderWidth, Color.BLACK)
             }
-
         }
+        // Draw the corner radius
         cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()
         menuView!!.setBackgroundDrawable(shape)
     }
 
+    /*
+        Open or close the settings menu based on the
+        current state of the settings menu
+     */
     var transformingAnimator:ValueAnimator? = null
     var isTransforming:Boolean = false
     fun expandOrContract() {
+        // If the settins menu is transformin, cancel the animation
         if (isTransforming) {
             return
         } else {
@@ -117,6 +131,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             }
         }
         AudioController.gearSpinning()
+        // Open or close the settings menu
         if (isExpanded) {
             transformingAnimator = ValueAnimator.ofInt((menuView!!.layoutParams as LayoutParams).
             width, contractedParams!!.width)
@@ -124,11 +139,11 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             transformingAnimator = ValueAnimator.ofInt((menuView!!.layoutParams as LayoutParams).
             width, expandedParams!!.width)
         }
-
         transformingAnimator!!.addUpdateListener {
             menuView!!.layoutParams = LayoutParams((it.animatedValue as Int),
             expandedParams!!.height, expandedParams!!.x, expandedParams!!.y)
         }
+        // Setup the properties for the dilating animation
         transformingAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         transformingAnimator!!.duration = 1000
         transformingAnimator!!.start()
@@ -139,10 +154,14 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
     }
 
+    /*
+        Create the remove ads button
+     */
     private fun setupAdsButton() {
         adsButton = Ads(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
             getOriginalParams().y))
+        // Set the size of the button based on the aspect ratio
         if (MainActivity.dAspectRatio >= 2.09) {
             adsButton!!.getThis().scaleX = 0.55f
             adsButton!!.getThis().scaleY = 0.55f
@@ -163,6 +182,9 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         adsButton!!.getThis().alpha = 0f
     }
 
+    /*
+        Create the mouse coin button
+     */
     private fun setupMouseCoinButton() {
         mouseCoinButton = MouseCoin(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height,
@@ -177,6 +199,7 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
             getOriginalParams().y))
         mouseCoinButton!!.getThis().layoutParams = mouseCoinButton!!.getExpandedParams()
         mouseCoinButton!!.getThis().alpha = 0f
+        // Click the mouse coin button and show the coins the player has earned
         mouseCoinButton!!.getThis().setOnClickListener {
             AudioController.coinEarned()
             if (MainActivity.dAspectRatio < 1.8) {
@@ -190,10 +213,14 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
     }
 
+    /*
+        Create the leader board button
+     */
     private fun setupLeaderBoardButton() {
         leaderBoardButton = LeaderBoard(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
+        // Update the size of the button based on the aspect ratio of the screen
         if (MainActivity.dAspectRatio >= 2.09) {
             leaderBoardButton!!.getThis().scaleX = 0.55f
             leaderBoardButton!!.getThis().scaleY = 0.55f
@@ -214,10 +241,14 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         leaderBoardButton!!.getThis().alpha = 0f
     }
 
+    /*
+        Create the volume button
+     */
     private fun setupVolumeButton() {
         volumeButton = Volume(imageButton = ImageButton(menuView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
+        // Set the size of the volume button based on the aspect ratio of the screen
         if (MainActivity.dAspectRatio >= 2.09) {
             volumeButton!!.getThis().scaleX = 0.55f
             volumeButton!!.getThis().scaleY = 0.55f
@@ -238,11 +269,14 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         volumeButton!!.getThis().alpha = 0f
     }
 
-
+    /*
+        Create the more cats button
+     */
     private fun setupMoreCatsButton() {
         moreCatsButton = MoreCats(imageButton = ImageButton(MainActivity.rootView!!.context), parentLayout = parentLayout!!,
             params = LayoutParams(expandedParams!!.height, expandedParams!!.height, 0,
                 getOriginalParams().y))
+        // Resize the more cats button based on the aspect ratio of the screen
         if (MainActivity.dAspectRatio >= 2.09) {
             moreCatsButton!!.getThis().scaleX = 0.55f
             moreCatsButton!!.getThis().scaleY = 0.55f
@@ -325,6 +359,10 @@ class SettingsMenu(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         menuView!!.setBackgroundColor(Color.WHITE)
     }
 
+    /*
+        Set the colors of the settings menu and components
+        based on the theme of the operating system
+     */
     fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()
