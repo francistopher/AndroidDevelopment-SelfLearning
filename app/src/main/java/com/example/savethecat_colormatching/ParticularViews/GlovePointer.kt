@@ -67,6 +67,9 @@ class GlovePointer (view: Button,
         gpView!!.alpha = 0f
     }
 
+    /*
+        Disappears and appears the glove pointer
+     */
     private var fadeInAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
@@ -77,6 +80,7 @@ class GlovePointer (view: Button,
                 fadeInAnimator = null
             }
         }
+        // Fades the glove pointer in or out
         if (In) {
             fadeInAnimator = ValueAnimator.ofFloat(0f, 1f)
         } else if (Out and !In) {
@@ -102,6 +106,10 @@ class GlovePointer (view: Button,
         this.translateInstead = true
     }
 
+    /*
+        Translates the glove pointer from one to position
+        to another back and forth
+     */
     private var swayAnimation:AnimatorSet? = null
     private var swayXAnimation:ValueAnimator? = null
     private var swayYAnimation:ValueAnimator? = null
@@ -110,6 +118,7 @@ class GlovePointer (view: Button,
     fun sway() {
         gpView!!.bringToFront()
         isSwayingAway = !isSwayingAway
+        // Change the translation vector position
         if (translateInstead) {
             swayXAnimation = ValueAnimator.ofInt(getOriginalParams().x, initX)
             swayYAnimation = ValueAnimator.ofInt(getOriginalParams().y, initY)
@@ -120,6 +129,7 @@ class GlovePointer (view: Button,
             swayXAnimation = ValueAnimator.ofInt(initX - translation, initX)
             swayYAnimation = ValueAnimator.ofInt( initY - translation, initY)
         }
+        // Translate the glove pointer
         swayXAnimation!!.addUpdateListener {
             gpView!!.layoutParams = LayoutParams(getOriginalParams().width, getOriginalParams().height,
             it.animatedValue as Int, (gpView!!.layoutParams as LayoutParams).y)
@@ -128,6 +138,7 @@ class GlovePointer (view: Button,
             gpView!!.layoutParams = LayoutParams(getOriginalParams().width, getOriginalParams().height,
                 (gpView!!.layoutParams as LayoutParams).x, it.animatedValue as Int)
         }
+        // Setup the animation properties
         swayAnimation = AnimatorSet()
         swayAnimation!!.play(swayXAnimation!!).with(swayYAnimation!!)
         swayAnimation!!.duration = 500
@@ -139,6 +150,7 @@ class GlovePointer (view: Button,
                 gpView!!.setBackgroundResource(lightGloveTapImage)
             }
         }
+        // Constantly update the color theme
         swayAnimation!!.doOnStart {
             Timer().schedule(object : TimerTask() {
                 override fun run() {
@@ -152,6 +164,7 @@ class GlovePointer (view: Button,
                 }
             }, 125)
         }
+        // To swing forever, repeat movement in the opposite direction
         swayAnimation!!.doOnEnd {
             if (translateInstead) {
                 translateInstead = false
