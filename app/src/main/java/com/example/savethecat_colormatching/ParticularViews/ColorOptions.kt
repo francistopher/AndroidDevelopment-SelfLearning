@@ -24,8 +24,8 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
     private var selectedColor:Int = Color.LTGRAY
 
     companion object {
+        // All the colors available for a cat button
         var selectionColors:MutableList<Int>? = null
-
         var green = Color.rgb(48, 209, 88)
         var yellow = Color.rgb(255, 214, 10)
         var orange = Color.rgb(255, 159, 10)
@@ -33,7 +33,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         var purple = Color.rgb(191, 90, 242)
         var blue = Color.rgb(10, 132, 255)
         var pink = Color.rgb(255, 55, 95)
-
+        // Selects the colors for the current round
         fun setSelectionColors() {
             selectionColors = mutableListOf(green, yellow,
                 orange, red, purple, blue)
@@ -78,6 +78,10 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         return this.view!!
     }
 
+    /*
+        Builds the buttons that are selected
+        to match the original colors of the cat buttons
+     */
     // Button parameters
     private var numOfUniqueColors:Int = 0
     private var columnGap:Float = 0f
@@ -103,11 +107,13 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         index = 0
         count = 0
         for ((color, colorCount) in MainActivity.boardGame!!.getGridColorsCount()) {
+            // Setup the selection colors
             if (setup) {
                 x += columnGap
-                button = CButton(button = Button(colorOptionsContext!!), parentLayout =
-                colorOptionsLayout!!, params = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(),
-                    x.toInt(), (originalParams!!.y + rowGap * 0.9).toInt()))
+                button = CButton(button = Button(colorOptionsContext!!), parentLayout = colorOptionsLayout!!,
+                        params = LayoutParams(buttonWidth.toInt(), buttonHeight.toInt(), x.toInt(),
+                                (originalParams!!.y + rowGap * 0.9).toInt()))
+                // Grow the buttons from no where
                 if (numOfUniqueColors != 1 || BoardGame.singlePlayerButton!!.getThis().alpha == 0f) {
                     button!!.shrunk()
                     button!!.grow(1f, 0.125f)
@@ -115,6 +121,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                 } else {
                     button!!.getThis().alpha = 1f
                 }
+                // Set the colors and style of the button
                 button!!.backgroundColor = color
                 button!!.setStyle()
                 button!!.setCornerRadiusAndBorderWidth((button!!.getOriginalParams().height / 5.0f).toInt(),
@@ -124,12 +131,12 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                 button!!.getThis().setOnClickListener {
                     colorOptionSelector(color = color)
                 }
-            } else {
+            } else { // Reset the position and update the color option buttons
                 button = selectionButtons!!.elementAt(index)
                 if (colorCount != 0) {
                     x += columnGap
+                    // Selected button, transform its frame
                     if (button!!.isSelected) {
-                        Log.i("Color $color", "Count $colorCount")
                         newParams = LayoutParams(buttonWidth.toInt(), (buttonHeight * 1.275).toInt(),
                             x.toInt(), (originalParams!!.y + (rowGap * 0.9) - (buttonHeight * 0.1375)).toInt())
                         button!!.setOriginalParams(newParams!!)
@@ -154,6 +161,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
                             }
                         }
                     }
+                    // Set the shrink type of the button with the color that has been cleared
                     this.count += 1
                     if (numOfUniqueColors + 1 == 1) {
                         button!!.shrinkType = ShrinkType.mid
@@ -179,6 +187,10 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         }
     }
 
+    /*
+        Unselect the currently selected button
+        Select one of the color option buttons
+     */
     private fun colorOptionSelector(color: Int) {
         val catButtonParams:LayoutParams = MainActivity.boardGame!!.getCatButtons().
         getCurrentCatButtons()[0].getOriginalParams()
@@ -186,6 +198,7 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         val y:Int = catButtonParams.y + (catButtonParams.height * 0.35).toInt()
         MainActivity.glovePointer!!.translate(x, y)
         clearBoardGameGridButtonsColorIndicator()
+        // Only select the button with the matching selected color
         if (color != selectedColor) {
             for (selectionButton in selectionButtons!!) {
                 if (color == selectionButton.backgroundColor) {
@@ -228,6 +241,10 @@ class ColorOptions(view: View, parentLayout: AbsoluteLayout, params: LayoutParam
         selectionButtons!!.clear()
     }
 
+    /*
+        Update the buttons appearance based off the theme
+        of the operating system
+     */
     fun setStyle() {
         for (selectionButton in selectionButtons!!) {
             selectionButton.setStyle()
