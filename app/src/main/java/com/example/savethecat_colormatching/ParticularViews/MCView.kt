@@ -45,9 +45,13 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
         fade(false, true, 1f, 0.125f)
     }
 
+    /*
+        Makes the mouse coin view appear or disappear
+     */
     private var fadeInAnimator: ValueAnimator? = null
     private var fadeAnimatorIsRunning:Boolean = false
     private fun fade(In:Boolean, Out:Boolean, Duration:Float, Delay:Float) {
+        // If the animation view is running, cancel it
         if (fadeInAnimator != null) {
             if (fadeAnimatorIsRunning) {
                 fadeInAnimator!!.cancel()
@@ -55,6 +59,7 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
                 fadeInAnimator = null
             }
         }
+        // Fade the animation view in, or out
         if (In) {
             fadeInAnimator = ValueAnimator.ofFloat(0f, 1f)
         } else if (Out and !In) {
@@ -63,6 +68,7 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
         fadeInAnimator!!.addUpdateListener {
             mouseCoinView!!.alpha = it.animatedValue as Float
         }
+        // Setup the animation properties
         fadeInAnimator!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
         fadeInAnimator!!.startDelay = (1000.0f * Delay).toLong()
         fadeInAnimator!!.duration = (1000.0f * Duration).toLong()
@@ -70,10 +76,14 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
         fadeAnimatorIsRunning = true
     }
 
+    /*
+        Draw the corner radius and the border of the view
+     */
     fun setCornerRadiusBorderWidth(removeBackground:Boolean) {
         shape = null
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
+        // Draw the backgound color
         if (removeBackground) {
             shape!!.setColor(Color.TRANSPARENT)
         } else {
@@ -83,9 +93,11 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
                 shape!!.setColor(Color.WHITE)
             }
         }
+        // Draw the border width
         if (borderWidth > 0) {
             shape!!.setStroke(borderWidth, Color.parseColor("#ffd60a"))
         }
+        // Draw the corner radius
         shape!!.cornerRadius = cornerRadius.toFloat()
         mouseCoinView!!.setBackgroundDrawable(shape)
     }
@@ -98,10 +110,12 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
         shape!!.setColor(Color.TRANSPARENT)
+        // Draw the border width
         if (borderWidth > 0) {
             this.borderWidth = borderWidth
             shape!!.setStroke(borderWidth, Color.parseColor("#ffd60a"))
         }
+        // Draw the corner radius
         cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()
         mouseCoinView!!.setBackgroundDrawable(shape)
@@ -117,6 +131,9 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
         MainActivity.gdController!!.uploadMouseCoinCount()
     }
 
+    /*
+        Updates the current mouse coins attained by the user
+     */
     fun updateCount(newMouseCoinCount:Int) {
         if (abs(newMouseCoinCount - mouseCoinCount) == 1) {
             setText(newMouseCoinCount.toString())
@@ -139,6 +156,7 @@ class MCView(textView: TextView, parentLayout: AbsoluteLayout,
         mouseCoinValueAnimator!!.start()
     }
 
+    // Updates the text of the number of mouse coins
     private fun setText(text:String) {
         mouseCoinView!!.text = text
         mouseCoinView!!.typeface = Typeface.createFromAsset(
