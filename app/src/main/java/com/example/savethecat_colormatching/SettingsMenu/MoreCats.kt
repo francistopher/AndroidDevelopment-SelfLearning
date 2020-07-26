@@ -60,6 +60,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var purchaseDialog:AlertDialog? = null
 
     companion object {
+        // Initialize the cats data
         var myCatsDict:MutableMap<Cat, Int> = mutableMapOf(Cat.STANDARD to 1, Cat.BREADING to 0,
             Cat.TACO to 0, Cat.EGYPTIAN to 0, Cat.SUPER to 0, Cat.CHICKEN to 0, Cat.COOL to 0,
             Cat.NINJA to 0, Cat.FAT to 0)
@@ -120,6 +121,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         translate(false, 0f)
     }
 
+    /*
+        Loads the player's cat data if there is any
+     */
     fun loadMyCatsData(myCatsString:String?) {
         if (myCatsString != null) {
             MoreCats.myCatsString = myCatsString
@@ -130,6 +134,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Updates the player's current cat data
+     */
     private var tempMyCatsDict:MutableMap<Cat, Int>? = null
     private var tempMyCats:String = ""
     private var sectionMyCats:String = ""
@@ -148,6 +155,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Updates the cat value to represent whether or not its selected
+     */
     private fun updateCatValue(cat:Cat, stringValue:String) {
         myCatsDict[cat] = stringValue.toInt()
         if (stringValue.toInt() > 0) {
@@ -167,6 +177,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         return presentationCat!!.cat
     }
 
+    /*
+        Returns the cat type based on a string snippet
+     */
     private var tempCatType:Cat = Cat.STANDARD
     private fun getCatType(catType:String):Cat {
         when (catType) {
@@ -201,6 +214,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         return tempCatType
     }
 
+    /*
+        Saves the player's current cat data, if unsuccessful
+        sends a notification about the mishap
+     */
     private fun saveMyCatsData() {
         tempMyCats = ""
         sectionMyCats = ""
@@ -225,6 +242,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Displays a notification about the mishap
+     */
     private fun displayFailureReason() {
         if (!MainActivity.isGooglePlayGameServicesAvailable) {
             MainActivity.gameNotification!!.displayNoGooglePlayGameServices()
@@ -240,6 +260,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             MainActivity.signedInAccount!!)
     }
 
+    /*
+        Brings the more cats view and content infront of other
+        components of the game
+     */
     fun bringToFront() {
         Timer().schedule(object : TimerTask() {
             override fun run() {
@@ -261,10 +285,16 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         } , 10)
     }
 
+    /*
+        Updates the position of the content view
+        to show or hide the cats
+     */
     private fun translate(show:Boolean, duration:Float) {
+        // If the animation is running, cancel it
         if (translateAnimatorSet != null) {
             translateAnimatorSet!!.cancel()
         }
+        // Either show or hide the content view
         if (show) {
             bringToFront()
             infoClosePopupYAnimator = ValueAnimator.ofInt(infoClosePopupHiddenY, infoClosePopupShownY)
@@ -286,7 +316,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             controlButtonYAnimator = ValueAnimator.ofInt(controlButtonShownY, controlButtonHiddenY)
             mouseCoinYAnimator = ValueAnimator.ofInt(mouseCoinShownY, mouseCoinHiddenY)
         }
-
+        // Update the y position of the content view and all the sub content
         infoClosePopupYAnimator!!.addUpdateListener {
             infoButton!!.getThis().layoutParams = LayoutParams(
                 infoButton!!.getOriginalParams().width,
@@ -367,16 +397,19 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 (it.animatedValue as Int)
             )
         }
+        // Set the properties animation
         translateAnimatorSet = AnimatorSet()
         translateAnimatorSet!!.play(infoClosePopupYAnimator!!).with(previousNextButtonYAnimator!!)
             .with(presentationCatYAnimator!!).with(catHandlerYAnimator!!)
             .with(titleLabelYAnimator!!).with(controlButtonYAnimator!!).with(mouseCoinYAnimator!!)
         translateAnimatorSet!!.duration = (1000 * duration).toLong()
+        // Set the show and hide rates
         if (show) {
             translateAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN)
         } else {
             translateAnimatorSet!!.interpolator = EasingInterpolator(Ease.QUAD_OUT)
         }
+        // Remove view when it is hidden, and show view when its going to be shown
         translateAnimatorSet!!.doOnEnd {
             if (!show) {
                 MainActivity.rootLayout!!.removeView(memoriamMessage!!.getThis())
@@ -387,6 +420,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         translateAnimatorSet!!.start()
     }
 
+    /*
+        Selects a cat to be displayed to the player
+     */
     private fun selectCat() {
         // Loop for selecting cat for display
         var index = 0
@@ -401,6 +437,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setControlButtonAppearance()
     }
 
+    /*
+        Select a cat to be displayed and update
+        the text label with the cat's name
+     */
     private fun setCat() {
         presentationCat!!.cat = myCatsDict.keys.toTypedArray()[displayedCatIndex]
         catTitleLabel!!.setText(catNames[displayedCatIndex])
@@ -419,12 +459,16 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         layout.addView(this.moreCatsButton!!)
     }
 
+    /*
+        Draw the corner radius and the border width of the component
+     */
     private var shape: GradientDrawable? = null
     private var controlButtonColor:Int = ColorOptions.pink
     fun setCornerRadiusAndBorderWidth(radius: Int, borderWidth: Int, viewID:Int) {
         shape = null
         shape = GradientDrawable()
         shape!!.shape = GradientDrawable.RECTANGLE
+        // Draw the background based on the OS theme / component
         if (viewID == 1) {
             if (MainActivity.isThemeDark) {
                 shape!!.setColor(Color.BLACK)
@@ -446,6 +490,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         } else if (viewID == 7) {
             shape!!.setColor(controlButtonColor)
         }
+        // Draw the border
         if (borderWidth > 0) {
             if (MainActivity.isThemeDark) {
                 shape!!.setStroke(borderWidth, Color.WHITE)
@@ -453,6 +498,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 shape!!.setStroke(borderWidth, Color.BLACK)
             }
         }
+        // Draw the corner radius
         if (viewID == 1) {
             shape!!.cornerRadius = radius.toFloat()
             popupContainerView!!.setBackgroundDrawable(shape)
@@ -481,8 +527,13 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Create the button that houses the currently
+        selected cat
+     */
     private fun setupCatPresentation() {
         var sideLength:Int = 0
+        // Set the sidelength based on the screen aspect ratio
         if (MainActivity.dAspectRatio >= 1.8) {
             sideLength = (contentViewParams!!.width * 0.65).toInt()
         } else if (MainActivity.dAspectRatio >= 1.4) {
@@ -504,6 +555,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             MainActivity.rootView!!.context.assets, "SleepyFatCat.ttf")
     }
 
+    /*
+        Create the memoriam message label
+     */
     private fun setupMemoriamMessage() {
         memoriamMessage = CButton(button = Button(MainActivity.rootView!!.context),
             parentLayout = parentLayout!!, params = presentationCat!!.getOriginalParams())
@@ -515,6 +569,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         memoriamMessage!!.shrunk()
     }
 
+    /*
+        Create the title label that displays the
+        name of the currently selected cat
+     */
     private fun setupCatTitleLabel() {
         val width:Int = (presentationCat!!.getOriginalParams().width * 0.725).toInt()
         val height:Int = (infoButton!!.getOriginalParams().height * 0.75).toInt()
@@ -534,11 +592,13 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         } else {
             catTitleLabel!!.setTextSize(catTitleLabel!!.getOriginalParams().height * 0.225f)
         }
-
         titleLabelShownY = y
         titleLabelHiddenY = (titleLabelShownY + MainActivity.dHeight).toInt()
     }
 
+    /*
+        Setup the button for selecting/purchasing cats
+     */
     private fun setupControlButton() {
         val width:Int = (presentationCat!!.getOriginalParams().width * 0.8).toInt()
         val height:Int = (infoButton!!.getOriginalParams().height * 0.75).toInt()
@@ -556,6 +616,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         controlButton!!.getThis().alpha = 1f
         controlButton!!.setStyle()
         controlButton!!.setTextSize(height * 0.2f)
+        // Setup the mouse coin for the purchasing state of the button
         fun setupMouseCoin() {
             mouseCoin = Button(popupContainerView!!.context)
             var mouseCoinParams = LayoutParams(0,0,0,0)
@@ -593,6 +654,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         controlButtonHiddenY = (controlButtonShownY + MainActivity.dHeight).toInt()
     }
 
+    /*
+        Setup alert dialog to notify player about the cat purchase
+     */
     private fun setupAlertDialog() {
         val dialogBuilder = AlertDialog.Builder(MainActivity.staticSelf!!)
         val spannableString = SpannableString("Cat Purchase")
@@ -612,6 +676,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         purchaseDialog = dialogBuilder.create()
     }
 
+    /*
+        Purchases a cat button and reduces the amount
+        of mouse coins the user has obtained
+     */
     private fun purchaseCatButton() {
         if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
             myCatsDict[presentationCat!!.cat] = -1
@@ -624,6 +692,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Prizes the user with a reward based off the cat purchased
+     */
     private fun getAchievement(cat:Cat):String {
         var selectedAchievement = ""
         when (cat) {
@@ -655,6 +726,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         return selectedAchievement
     }
 
+    /*
+        Unlocks a specific acheivement
+     */
     private fun unlockAchievement(cat:Cat) {
         if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
             achievementsClient!!.unlock(getAchievement(cat))
@@ -663,7 +737,12 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Updates the text for the control button
+        based on the state of the cat selected
+     */
     private fun controlButtonSelector() {
+        // For purchasing, it displays an offer on the control button
         if (controlButton!!.getText()!!.contains("Get for")) {
             if (MainActivity.isInternetReachable && MainActivity.isGooglePlayGameServicesAvailable) {
                 if (MCView.mouseCoinCount < catPrices[displayedCatIndex]) {
@@ -700,6 +779,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Setup the container for the cat and the title label
+     */
     private fun setupCatHandler() {
         val color:Int = if (MainActivity.isThemeDark) {
             Color.WHITE
@@ -727,6 +809,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         catHandlerHiddenY = catHandlerShownY + (MainActivity.dHeight).toInt()
     }
 
+    /*
+        Setup the container view for the entire view
+     */
     private fun setupPopupView() {
         popupContainerView = Button(MainActivity.rootView!!.context)
         popupContainerView!!.setBackgroundColor(Color.BLUE)
@@ -740,6 +825,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         infoClosePopupHiddenY = (infoClosePopupShownY + MainActivity.dHeight).toInt()
     }
 
+    /*
+        Updates the style of the components based on
+        the theme of the operating system
+     */
     private fun setCompiledStyle() {
         memoriamMessage!!.setStyle()
         catTitleLabel!!.setStyle()
@@ -767,6 +856,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             0, 7)
     }
 
+    /*
+        Setup the info button that displays the memeoriam message
+     */
     private fun setupInfoButton() {
         infoButton = CButton(button = Button(MainActivity.rootView!!.context),
                             parentLayout = parentLayout!!,
@@ -787,6 +879,9 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Setup the close button that makes the more cats view disappear
+     */
     private fun setupCloseButton() {
         closeButton = CButton(button = Button(popupContainerView!!.context),
                             parentLayout = parentLayout!!,
@@ -809,6 +904,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Setup the previous button that changes to the
+        previous cat in the list
+     */
     private fun setupPreviousButton() {
         previousButton = CButton(button = Button(popupContainerView!!.context),
             parentLayout = parentLayout!!,
@@ -833,6 +932,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         previousNextHiddenY = (previousNextShownY + MainActivity.dHeight).toInt()
     }
 
+    /*
+        Setup the next button that selects the following
+        cat in the list
+     */
     private fun setupNextButton() {
         nextButton = CButton(button = Button(popupContainerView!!.context),
             parentLayout = parentLayout!!,
@@ -857,6 +960,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Updates the text of the control button based off the
+        selected cat button
+     */
     private fun setControlButtonAppearance() {
         if (myCatsDict[presentationCat!!.cat]!! > 0) {
             controlButton!!.setText("Selected", false)
@@ -875,6 +982,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             0, 7)
     }
 
+
     private fun setupContentViewParams() {
         contentViewParams = popupContainerView!!.layoutParams as LayoutParams
     }
@@ -890,6 +998,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         }
     }
 
+    /*
+        Transforms the more cats button to the expanded or contracted
+        state of the settings menu
+     */
     private var transformingSet: AnimatorSet? = null
     private var transformX: ValueAnimator? = null
     private var transformY: ValueAnimator? = null
@@ -901,6 +1013,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var width:Int = 0
     private var height:Int = 0
     fun expandOrContract() {
+        // If the transformation animation is running, cancel it
         if (isTransforming) {
             return
         } else {
@@ -909,6 +1022,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 transformingSet = null
             }
         }
+        // If the settings menu button is expanded, contract it, visa verse
         if (SettingsMenu.isExpanded) {
             transformX = ValueAnimator.ofInt(getExpandedParams().x,
                 getContractedParams().x)
@@ -928,6 +1042,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             transformHeight = ValueAnimator.ofInt(getContractedParams().height,
                 getExpandedParams().height)
         }
+        // Update the position and size of the more cats button
         transformX!!.addUpdateListener {
             x = it.animatedValue as Int
             moreCatsButton!!.layoutParams = LayoutParams(width, height, x, y)
@@ -944,6 +1059,7 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             height = it.animatedValue as Int
             moreCatsButton!!.layoutParams = LayoutParams(width, height, x, y)
         }
+        // Set the transformation properties
         transformingSet = AnimatorSet()
         transformingSet!!.play(transformX!!).with(transformY!!).with(transformWidth!!).with(transformHeight!!)
         transformingSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
@@ -983,6 +1099,10 @@ class MoreCats (imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         moreCatsButton!!.setBackgroundResource(R.drawable.darkmorecats)
     }
 
+    /*
+        Update the colors of the button based off
+        the theme of the operating system
+     */
     fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()
