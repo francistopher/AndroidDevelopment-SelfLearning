@@ -34,6 +34,9 @@ class TransitionPackage(spawnParams:LayoutParams,
         setupAnimationSet()
     }
 
+    /*
+        Setup x translation
+     */
     private fun setupAnimationX() {
         targetX = spawnParams!!.x
         xAnimation = ValueAnimator.ofInt(spawnParams!!.x , targetParams!!.x)
@@ -46,6 +49,9 @@ class TransitionPackage(spawnParams:LayoutParams,
         }
     }
 
+    /*
+        Setup y coordinate translation
+     */
     private fun setupAnimationY() {
         targetY = spawnParams!!.y
         yAnimation = ValueAnimator.ofInt(spawnParams!!.y, targetParams!!.y)
@@ -57,6 +63,9 @@ class TransitionPackage(spawnParams:LayoutParams,
         }
     }
 
+    /*
+        Setup both the x and y translation into one
+     */
     private fun setupAnimationSet() {
         animatorSet = AnimatorSet()
         animatorSet!!.play(xAnimation!!).with(yAnimation!!)
@@ -66,6 +75,7 @@ class TransitionPackage(spawnParams:LayoutParams,
         animatorSet!!.doOnEnd {
             if (!transitionedToBase) {
                 transitionedToBase = true
+                // Increment counter based on player
                 if (isOpponent) {
                     MainActivity.opponentLivesMeter!!.incrementLivesLeftCount()
                 } else {
@@ -77,6 +87,9 @@ class TransitionPackage(spawnParams:LayoutParams,
         }
     }
 
+    /*
+        Remove a heart, illusion
+     */
     fun drop() {
         if (transitionedToBase) {
             spawnParams = heartButton!!.layoutParams as LayoutParams
