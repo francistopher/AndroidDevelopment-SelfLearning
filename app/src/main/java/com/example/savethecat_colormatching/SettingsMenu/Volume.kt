@@ -38,6 +38,10 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
         setStyle()
     }
 
+    /*
+        Update the position and size of the volume button
+        based off the state of the settings menu
+     */
     private var transformingSet: AnimatorSet? = null
     private var transformX: ValueAnimator? = null
     private var transformY: ValueAnimator? = null
@@ -49,6 +53,7 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
     private var width:Int = 0
     private var height:Int = 0
     fun expandOrContract() {
+        // If the transformation animation is running, cancel it
         if (isTransforming) {
             return
         } else {
@@ -57,6 +62,7 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
                 transformingSet = null
             }
         }
+        // If the settings menu is expanded, contract the volume button, visa versa
         if (SettingsMenu.isExpanded) {
             transformX = ValueAnimator.ofInt(getExpandedParams().x,
                 getContractedParams().x)
@@ -76,6 +82,7 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
             transformHeight = ValueAnimator.ofInt(getContractedParams().height,
                 getExpandedParams().height)
         }
+        // Update the size and position of the volume button
         transformX!!.addUpdateListener {
             x = it.animatedValue as Int
             volumeButton!!.layoutParams = AbsoluteLayout.LayoutParams(width, height, x, y)
@@ -92,6 +99,7 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
             height = it.animatedValue as Int
             volumeButton!!.layoutParams = AbsoluteLayout.LayoutParams(width, height, x, y)
         }
+        // Setup the properties of the transformation animation
         transformingSet = AnimatorSet()
         transformingSet!!.play(transformX!!).with(transformY!!).with(transformWidth!!).with(transformHeight!!)
         transformingSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
@@ -123,22 +131,9 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
         return expandedParams!!
     }
 
-    private fun lightDominant() {
-        if (isVolumeOn) {
-            volumeButton!!.setBackgroundResource(R.drawable.lightmusicon)
-        } else {
-            volumeButton!!.setBackgroundResource(R.drawable.lightmusicoff)
-        }
-    }
-
-    private fun darkDominant() {
-        if (isVolumeOn) {
-            volumeButton!!.setBackgroundResource(R.drawable.darkmusicon)
-        } else {
-            volumeButton!!.setBackgroundResource(R.drawable.darkmusicoff)
-        }
-    }
-
+    /*
+        Allows the user to turn off/on the volume of the game
+     */
     private fun setupSelector() {
         loadData()
         this.volumeButton!!.setOnClickListener {
@@ -148,12 +143,18 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
         }
     }
 
+    /*
+        Save the volume of the game
+     */
     private fun saveData() {
         isVolumeOn = !isVolumeOn
         sharedPrefsEditor!!.putBoolean("stcVolume", isVolumeOn)
         sharedPrefsEditor!!.apply()
     }
 
+    /*
+        Load data about the volume of the game
+     */
     private fun loadData() {
         sharedPrefs = MainActivity.staticSelf!!.getSharedPreferences("saveTheCatColorMatching", Context.MODE_PRIVATE)
         sharedPrefsEditor = sharedPrefs!!.edit()
@@ -161,7 +162,25 @@ class Volume(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: Abs
         setStyle()
     }
 
+    /*
+        Update the colors of the volume button
+        based of the theme of the OS
+     */
     fun setStyle() {
+        fun lightDominant() {
+            if (isVolumeOn) {
+                volumeButton!!.setBackgroundResource(R.drawable.lightmusicon)
+            } else {
+                volumeButton!!.setBackgroundResource(R.drawable.lightmusicoff)
+            }
+        }
+        fun darkDominant() {
+            if (isVolumeOn) {
+                volumeButton!!.setBackgroundResource(R.drawable.darkmusicon)
+            } else {
+                volumeButton!!.setBackgroundResource(R.drawable.darkmusicoff)
+            }
+        }
         if (MainActivity.isThemeDark) {
             lightDominant()
         } else {
