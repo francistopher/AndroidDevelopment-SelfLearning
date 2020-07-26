@@ -25,6 +25,10 @@ class MouseCoin(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         setStyle()
     }
 
+    /*
+        Transforms the mouse coin button based off the
+        state of the settings menu
+     */
     private var transformingSet: AnimatorSet? = null
     private var transformX: ValueAnimator? = null
     private var transformY: ValueAnimator? = null
@@ -36,6 +40,7 @@ class MouseCoin(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
     private var width:Int = 0
     private var height:Int = 0
     fun expandOrContract() {
+        // If the transformation animation is running, cancel it
         if (isTransforming) {
             return
         } else {
@@ -44,6 +49,7 @@ class MouseCoin(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
                 transformingSet = null
             }
         }
+        // If the settings menu is expanded, contract the mouse coin button, visa versa
         if (SettingsMenu.isExpanded) {
             transformX = ValueAnimator.ofInt(getExpandedParams().x,
                 getContractedParams().x)
@@ -63,6 +69,7 @@ class MouseCoin(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             transformHeight = ValueAnimator.ofInt(getContractedParams().height,
                 getExpandedParams().height)
         }
+        // Update the position and size of the mouse coin button
         transformX!!.addUpdateListener {
             x = it.animatedValue as Int
             mouseCoinButton!!.layoutParams = LayoutParams(width, height, x, y)
@@ -79,6 +86,7 @@ class MouseCoin(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
             height = it.animatedValue as Int
             mouseCoinButton!!.layoutParams = LayoutParams(width, height, x, y)
         }
+        // Setup the properties of the transformation animation
         transformingSet = AnimatorSet()
         transformingSet!!.play(transformX!!).with(transformY!!).with(transformWidth!!).with(transformHeight!!)
         transformingSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
@@ -110,6 +118,9 @@ class MouseCoin(imageButton: ImageButton, parentLayout: AbsoluteLayout, params: 
         return expandedParams!!
     }
 
+    /*
+        Draw the image of the mouse coin
+     */
     fun setStyle() {
         mouseCoinButton!!.setBackgroundResource(R.drawable.mousecoin)
     }
