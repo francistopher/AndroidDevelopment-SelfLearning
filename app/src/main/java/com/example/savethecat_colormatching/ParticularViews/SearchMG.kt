@@ -61,15 +61,21 @@ class SearchMG(button: Button,
         fade(true)
     }
 
+    /*
+        Animation that rotates text around the magnifying glass
+     */
     private var rotationAnimation: ValueAnimator? = null
     private fun setupRotationAnimation() {
+        // If the rotation animation is running, cancel it
         if (rotationAnimation != null) {
             rotationAnimation!!.cancel()
         }
+        // Move the text clockwise
         rotationAnimation = ValueAnimator.ofFloat(textButton!!.rotation, textButton!!.rotation + 90f)
         rotationAnimation!!.addUpdateListener {
             textButton!!.rotation = (it.animatedValue as Float)
         }
+        // Setup the rotation animation text properties
         rotationAnimation!!.interpolator = EasingInterpolator(Ease.LINEAR)
         rotationAnimation!!.startDelay = 0
         rotationAnimation!!.duration = 1000
@@ -79,16 +85,22 @@ class SearchMG(button: Button,
         }
     }
 
+    /*
+        Update the transparency of the searching magnifying glass
+     */
     private var fadeAnimator: ValueAnimator? = null
     private fun fade(out:Boolean) {
+        // If the fading animation is running, cancel it
         if (fadeAnimator != null) {
             fadeAnimator!!.cancel()
         }
+        // Fade the magnifying glass in or out
         fadeAnimator = if (out) {
             ValueAnimator.ofFloat(buttonMG!!.alpha, 0f)
         } else {
             ValueAnimator.ofFloat(buttonMG!!.alpha, 1f)
         }
+        // Set the fading animation properties
         fadeAnimator!!.addUpdateListener {
             buttonMG!!.alpha = (it.animatedValue as Float)
             textButton!!.alpha = (it.animatedValue as Float)
@@ -115,6 +127,10 @@ class SearchMG(button: Button,
         }
     }
 
+    /*
+        Update the style of the magnifying glass based off the
+        theme of the operating system
+     */
     fun setStyle() {
         fun lightDominant() {
             buttonMG!!.setBackgroundResource(R.drawable.lightmagnify)
