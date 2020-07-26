@@ -64,6 +64,11 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         return originalParams!!
     }
 
+    /*
+        Reset the cat buttons from the previous round
+        Build the grid buttons and the corresponding grid colors
+        Create the search multiplayer game view
+     */
     var searchMGSideTemplateParams: LayoutParams? = null
     fun buildGame() {
         rowsAndColumns = getRowsAndColumns(currentStage = currentStage)
@@ -94,6 +99,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         return gridColorsCount!!
     }
 
+    /*
+        Returns the number of rows and columns of a game stage
+     */
     private var initialStage: Int = 0
     private var rows: Int = 0
     private var columns: Int = 0
@@ -112,26 +120,33 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         return Pair(rows, columns)
     }
 
+    /*
+        Randomly assigns grid colors to each future cat button
+     */
     var gridColorRowIndex: Int = 0
     var gridColorColumnIndex: Int = 0
     var randomGridColor: Int = 0
     var previousGridColumnColor: Int = 0
     var previousGridRowColor: Int = 0
     private fun buildGridColors() {
+        //Initialize empty 2 x 2 array
         gridColors = Array(rowsAndColumns.first) { IntArray(rowsAndColumns.second) }
         gridColorRowIndex = 0
+        // Iterate through the rows
         while (gridColorRowIndex < gridColors!!.size) {
             gridColorColumnIndex = 0
+            // Iterate through the columns
             while (gridColorColumnIndex < gridColors!![0].size) {
                 randomGridColor = ColorOptions.selectionColors!!.random()
                 if (gridColorRowIndex > 0) {
-                    previousGridColumnColor =
-                        gridColors!![gridColorRowIndex - 1][gridColorColumnIndex]
+                    previousGridColumnColor = gridColors!![gridColorRowIndex - 1][gridColorColumnIndex]
+                    // Skip assigned color if it is repeated in the previous row
                     if (previousGridColumnColor == randomGridColor) {
                         gridColorRowIndex -= 1
                     }
                 }
                 if (gridColorColumnIndex > 0) {
+                    // Randomly skip assigned color if it is repeated in the previous column
                     previousGridRowColor = gridColors!![gridColorRowIndex][gridColorColumnIndex - 1]
                     if (previousGridRowColor == randomGridColor && (0..1).random() == 0) {
                         gridColorColumnIndex -= 1
@@ -158,20 +173,20 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         // Sizes
         gridButtonHeight = originalParams!!.width * 0.9f / rowsAndColumns.first.toFloat()
         gridButtonWidth = originalParams!!.height * 0.9f / rowsAndColumns.second.toFloat()
-        // Points
+        // Locations
         gridButtonX = 0.0f
         gridButtonY = 0.0f
         // Build the cat buttons
         viewToCatButton = mutableMapOf()
+        // Iterate through the rows
         for (rowIndex in (0 until rowsAndColumns.first)) {
             gridButtonY += gridButtonRowGap
             gridButtonX = 0.0f
+            // Iterate through the columns
             for (columnIndex in (0 until rowsAndColumns.second)) {
                 gridButtonX += gridButtonColumnGap
-                catButton = catButtons!!.buildCatButton(
-                    imageButton = ImageButton(boardGameContext!!),
-                    parentLayout = MainActivity.rootLayout!!, params = LayoutParams(
-                        gridButtonWidth.toInt(),
+                catButton = catButtons!!.buildCatButton(imageButton = ImageButton(boardGameContext!!),
+                    parentLayout = MainActivity.rootLayout!!, params = LayoutParams(gridButtonWidth.toInt(),
                         gridButtonHeight.toInt(), (gridButtonX + originalParams!!.x).toInt(),
                         (gridButtonY + originalParams!!.y).toInt()
                     ),
@@ -186,8 +201,8 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         val catButton = viewToCatButton!![it]
                         // The button is found and colors match
                         if (!catButton!!.isPodded) {
-                            if (MainActivity.colorOptions!!.getSelectedColor() ==
-                                catButton.getOriginalBackgroundColor()) {
+                            if (MainActivity.colorOptions!!.getSelectedColor() == catButton.getOriginalBackgroundColor()) {
+                                // Tranform the cat button as a matched cat button
                                 catButton.transitionColor(catButton.getOriginalBackgroundColor())
                                 gridColorsCount!![catButton.getOriginalBackgroundColor()] =
                                     gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
@@ -208,6 +223,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                         }
                     }
                 }
+                // Have the cat buttons appear from no where
                 catButton!!.shrunk()
                 catButton!!.grow()
                 catButton!!.fade(true, false, 0.5f, 0.125f)
@@ -218,14 +234,20 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         SettingsMenu.moreCatsButton!!.bringToFront()
     }
 
+    /*
+        Kills a cat button and disposes it from the grid
+     */
     fun attackCatButton(catButton: CatButton) {
+        // Reduce next attack delay
         MainActivity.attackMeter!!.updateDuration(-0.75f)
+        // Remove a life
         MainActivity.myLivesMeter!!.dropLivesLeftHeart()
-        MainActivity.mpController!!.setMyLivesLeft(
-            MainActivity.myLivesMeter!!.getLivesLeftCount().toLong()
-        )
+        MainActivity.mpController!!.setMyLivesLeft(MainActivity.myLivesMeter!!.getLivesLeftCount().toLong())
+        // Reset hairball
         MainActivity.enemies!!.translateToCatAndBack(catButton)
+        // Cat button flies away
         catButton.disperseRadially()
+        // Update the selection grid colors
         gridColorsCount!![catButton.getOriginalBackgroundColor()] =
             gridColorsCount!![catButton.getOriginalBackgroundColor()]!!.minus(1)
         MainActivity.colorOptions!!.buildColorOptionButtons(setup = false)
@@ -233,6 +255,11 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         verifyRemainingCatsArePodded(catButton = catButton)
     }
 
+    /*
+        If all cat buttons survive promote the player to the next round
+        Demote the player if the player has run out of lives
+        Maintain the player in the current round if the player has saved the remaining cats
+     */
     private fun verifyRemainingCatsArePodded(catButton: CatButton) {
         MainActivity.attackMeter!!.sendEnemyToStart()
         if (catButtons!!.allSurvived()) {
@@ -246,6 +273,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
+    /*
+        The player won the multiplayer match
+        Display the succes screen
+     */
     fun wonMultiPlayer() {
         MainActivity.settingsButton!!.forceSettingsMenuExpansion()
         MPController.isPlaying = false
@@ -318,6 +349,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }, 500)
     }
 
+    /*
+        The player has lost, show the game over screen
+     */
     private fun gameOver() {
         MainActivity.settingsButton!!.forceSettingsMenuExpansion()
         MPController.isPlaying = false
@@ -397,6 +431,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         MainActivity.successGradientView!!.alpha = 1f
     }
 
+    /*
+        Fills in the gaps where cat buttons once lived
+     */
     private var rowOfAliveCats: MutableList<CatButton>? = null
     private fun displaceArea(catButton: CatButton) {
         rowOfAliveCats = catButtons!!.getRowOfAliveCats(rowIndex = catButton.rowIndex)
@@ -408,6 +445,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
+    /*
+        Fills in the rows where cat buttons once lived
+        Just share the height of the game board equally (vertical)
+     */
     private var x: Float = 0f
     private var y: Float = 0f
     private var columnGap: Float = 0f
@@ -425,6 +466,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
+    /*
+        Fill in the columns where the cat buttons once lived
+        Share the width of the game board equally (horizontal)
+     */
     private var rowIndexCatAliveCount: MutableMap<Int, Int>? = null
     private var rowsLeftCount: Int = 0
     private var maxCatsInRowCount: Int = 0
@@ -449,7 +494,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             }
             y += gridButtonHeight
         }
-
+        // Share the space or update the dimensions to share the space
         if (maxCatsInRowCount <= rowsLeftCount) {
             for (rowIndex in rowIndexCatAliveCount!!.keys.sorted()) {
                 resetCatButtonsPosition(rowIndex)
@@ -463,11 +508,16 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
+    /*
+        Keep the player at an obtainable grid level
+        if the user doesn't loose and fails to save all the cats
+     */
     private var countOfAliveCatButtons: Int = 0
     private var newRound: Int = 0
     private var product: Int = 0
     private var newRowsAndColumns: Pair<Int, Int>? = null
     private fun maintain() {
+        // Update attack meter, and Game Stats
         MainActivity.attackMeter!!.updateDuration(0.025f)
         AttackMeter.didNotInvokeRelease = true
         unveilHeaven()
@@ -475,6 +525,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         countOfAliveCatButtons = catButtons!!.aliveCount()
         GameResults.savedCatButtonsCount += catButtons!!.aliveCount()
         GameResults.deadCatButtonsCount += catButtons!!.deadCount()
+        // Select a grid complexity that is adequite for the player
         newRound = 1
         while (true) {
             newRowsAndColumns = getRowsAndColumns(newRound)
@@ -486,8 +537,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
             newRound += 1
         }
         reset(true)
+        // Clear the color selection buttons
         MainActivity.colorOptions!!.shrinkAllColorOptionButtons()
         MainActivity.colorOptions!!.loadSelectionToSelectedButtons()
+        // Build the next round
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 MainActivity.staticSelf!!.runOnUiThread {
@@ -505,7 +558,11 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }, 1250)
     }
 
+    /*
+        Advances the player to the next stage (with an extra row or column)
+     */
     private fun promote(catButton: CatButton) {
+        // Update attack meter, and Game Stats
         MainActivity.glovePointer!!.hide()
         GameResults.savedCatButtonsCount += catButtons!!.aliveCount()
         MainActivity.myLivesMeter!!.incrementLivesLeftCount(
@@ -515,8 +572,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         unveilHeaven()
         MainActivity.colorOptions!!.resetSelectedColor()
         reset(true)
+        // Clear the color selection buttons
         MainActivity.colorOptions!!.shrinkAllColorOptionButtons()
         MainActivity.colorOptions!!.loadSelectionToSelectedButtons()
+        // Build the next round
         Timer().schedule(object : TimerTask() {
             override fun run() {
                 MainActivity.staticSelf!!.runOnUiThread {
@@ -535,6 +594,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }, 1250)
     }
 
+    /*
+        Translates all the cats to heaven and/or
+        removes them from the list they were stored
+     */
     private fun reset(allSurvived: Boolean) {
         if (allSurvived) {
             catButtons!!.disperseVertically()
@@ -547,13 +610,18 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         return this.catButtons!!
     }
 
+    /*
+        Updates the grid colors used for each match
+     */
     private var recordedColor: Int = 0
     private fun recordGridColorsUsed() {
+        // Create a list (storage) to save the colors used
         if (gridColorsCount == null) {
             gridColorsCount = mutableMapOf()
         } else {
             gridColorsCount!!.clear()
         }
+        // Iterate through each cat button to record colors used up
         for (catButton in catButtons!!.getCurrentCatButtons()) {
             recordedColor = catButton.getOriginalBackgroundColor()
             if (gridColorsCount!![recordedColor] == null) {
@@ -564,19 +632,21 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
+    /*
+        Creates the single player button that starts the game
+     */
     fun setupSinglePlayerButton() {
-        singlePlayerButton = CButton(
-            button = Button(boardGameContext), parentLayout = boardGameLayout!!,
+        singlePlayerButton = CButton(button = Button(boardGameContext), parentLayout = boardGameLayout!!,
             params = LayoutParams((originalParams!!.width * 0.425).toInt(), (MainActivity.dUnitHeight
                     * 1.5 * 0.8).toInt(), (originalParams!!.x + (originalParams!!.width * 0.05)).toInt(),
                 (originalParams!!.y + originalParams!!.height + (-MainActivity.dUnitHeight * 1.5 * 0.475)
                         + (originalParams!!.height * 0.1)).toInt()))
         singlePlayerButton!!.setCornerRadiusAndBorderWidth(
-            (singlePlayerButton!!.getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(
-                singlePlayerButton!!.getOriginalParams().width * 0.01
-            ) * 10.0) * 0.65).toInt())
+                (singlePlayerButton!!.getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(
+                singlePlayerButton!!.getOriginalParams().width * 0.01) * 10.0) * 0.65).toInt())
         singlePlayerButton!!.setTextSize((singlePlayerButton!!.getOriginalParams().height * 0.175).toFloat())
         singlePlayerButton!!.setText("Single Player", false)
+        // When the button is clicked, start the game
         singlePlayerButton!!.getThis().setOnClickListener {
             if (!singlePlayerButton!!.growWidthAndChangeColorIsRunning) {
                 resetTopViews()
@@ -586,6 +656,7 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
                 singlePlayerButton!!.targetBackgroundColor = gridColors!![0][0]
                 singlePlayerButton!!.growWidth((originalParams!!.width * 0.9).toFloat())
                 twoPlayerButton!!.shrink()
+                // Just show the game board, settings menu, ad, and selection colors
                 Timer().schedule(object : TimerTask() {
                     override fun run() {
                         MainActivity.staticSelf!!.runOnUiThread {
@@ -644,31 +715,28 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         MainActivity.attackMeter!!.invokeRelease()
     }
 
+    /*
+        Create the multiplayer button that start the 2 player match
+     */
     fun setupTwoPlayerButton() {
-        twoPlayerButton = CButton(
-            button = Button(boardGameContext), parentLayout = boardGameLayout!!,
-            params = LayoutParams(
-                (originalParams!!.width * 0.425).toInt(),
-                (MainActivity.dUnitHeight
-                        * 1.5 * 0.8).toInt(),
+        twoPlayerButton = CButton(button = Button(boardGameContext), parentLayout = boardGameLayout!!,
+            params = LayoutParams((originalParams!!.width * 0.425).toInt(),
+                    (MainActivity.dUnitHeight * 1.5 * 0.8).toInt(),
                 (originalParams!!.x + (originalParams!!.width * 0.525)).toInt(),
-                (originalParams!!.y + (-MainActivity.dUnitHeight * 1.5 * 0.475) + originalParams!!.height + (originalParams!!.height * 0.1)).toInt()
-            )
-        )
+                    (originalParams!!.y + (-MainActivity.dUnitHeight * 1.5 * 0.475) +
+                        originalParams!!.height + (originalParams!!.height * 0.1)).toInt()))
         twoPlayerButton!!.setCornerRadiusAndBorderWidth(
             (twoPlayerButton!!.getOriginalParams().height / 5.0).toInt(), ((kotlin.math.sqrt(
                 twoPlayerButton!!.getOriginalParams().width * 0.01
-            ) * 10.0) * 0.65).toInt()
-        )
-        twoPlayerButton!!.setTextSize(
-            (twoPlayerButton!!.getOriginalParams().height * 0.175).toFloat()
-        )
+            ) * 10.0) * 0.65).toInt())
+        twoPlayerButton!!.setTextSize((twoPlayerButton!!.getOriginalParams().height * 0.175).toFloat())
         twoPlayerButton!!.isTwoPlayerButton = true
         twoPlayerButton!!.shrinkType = ShrinkType.right
         twoPlayerButton!!.setText("Multi Player", false)
         twoPlayerButton!!.shrunk()
         twoPlayerButton!!.grow(1f, 0.125f)
         twoPlayerButton!!.fade(true, false, 0.5f, 0.125f)
+        // When the button is selected, display the start searching animation
         twoPlayerButton!!.getThis().setOnClickListener {
             if (MainActivity.mpController!!.didGetPlayerID()) {
                 searchMG!!.startSearchingAnimation()
@@ -679,6 +747,9 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
+    /*
+        Display the lives left meter for the opponent as well
+     */
     fun startTwoPlayerMatch() {
         if (!twoPlayerButton!!.growWidthAndChangeColorIsRunning) {
             resetTopViews()
@@ -703,7 +774,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         }
     }
 
-
+    /*
+        Returns count of grid colors that exist
+        and are not 0
+     */
     private var nonZeroCount: Int = 0
     fun nonZeroGridColorsCount(): Int {
         nonZeroCount = 0
@@ -719,6 +793,10 @@ class BoardGame(boardView: View, parentLayout: AbsoluteLayout, params: LayoutPar
         catButtons!!.setBackgroundTransparent()
     }
 
+    /*
+        Sets the style of the board game based on
+        the current theme of the operating system
+     */
     fun setStyle() {
         for (catButton in getCatButtons().getCurrentCatButtons()) {
             catButton.setStyle()
