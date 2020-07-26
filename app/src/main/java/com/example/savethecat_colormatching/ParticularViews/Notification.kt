@@ -1,5 +1,7 @@
 package com.example.savethecat_colormatching.ParticularViews
-
+/*
+    List all the notification types
+ */
 enum class Notification {
     NO_INTERNET,
     YES_INTERNET,
