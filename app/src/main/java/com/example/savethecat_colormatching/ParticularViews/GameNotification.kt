@@ -54,14 +54,19 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         imageButton!!.bringToFront()
     }
 
+    /*
+        Translate the game notification view down or up
+     */
     private var translationAnimatorSet:AnimatorSet? = null
     private var imageButtonYAnimator:ValueAnimator? = null
     private var viewMessageLabelYAnimator:ValueAnimator? = null
     private var toShow:Boolean = false
     private fun translate(show:Boolean, duration:Float, delay:Float) {
+        // If the translation animation is running, cancel it
         if (translationAnimatorSet != null) {
             translationAnimatorSet!!.cancel()
         }
+        // Show the notification or hide it
         if (show) {
             imageButtonYAnimator = ValueAnimator.ofInt((imageButton!!.layoutParams as LayoutParams).y,
                 imageButtonTargetY)
@@ -75,6 +80,7 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
                 spawnParams!!.y)
             toShow = false
         }
+        // Translate all the sub-components, including the view container
         imageButtonYAnimator!!.addUpdateListener {
             imageButton!!.layoutParams = LayoutParams(
                 (imageButton!!.layoutParams as LayoutParams).width,
@@ -107,16 +113,23 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         }
     }
 
+    /*
+        Start the timer that searches for any notifications
+        to be displayed to the player
+     */
     private var timerCount:Double = 0.0
     private fun startSearchingTimer() {
         val handler = Handler()
         handler.postDelayed(object : Runnable {
             override fun run() {
+                // Pull the notificiation in front of everything
                 bringToFront()
+                // Show a notification when there is one
                 if (notificationQueue.size > 0 && !toShow) {
                     setNotificationDisplayed()
                     translate(true, 0.5f, 0f)
                 }
+                // Start counting a timer for the notification to disappear
                 if (isShowing) {
                     timerCount += 0.125
                     if (timerCount > 3.25) {
@@ -175,6 +188,10 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         addToNotificationQueue(Notification.PLAYING_AGAINST)
     }
 
+    /*
+        Updates the message and the picture that is
+        displayed on the notification view
+     */
     var spannableString = SpannableString("")
     private fun setNotificationDisplayed() {
         if (notificationQueue[0] == Notification.YES_GOOGLE_PLAY_GAME) {
@@ -226,7 +243,6 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
                     MPController.opponent)
             imageButton!!.setBackgroundResource(R.drawable.firebase)
         }
-
         spannableString.setSpan(
             AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
             0, spannableString.length, 0
@@ -234,11 +250,16 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         messageLabel!!.text = spannableString
     }
 
+    /*
+        Adds a notification to a 'waiting line'
+     */
     private fun addToNotificationQueue(notification:Notification) {
         if (notificationQueue.size > 0) {
             var index = 0
             var remove = false
+            // Loop through each notification
             while (index < notificationQueue.size) {
+                // Clear repetitions and outdated notifications
                 remove = (notification == notificationQueue[index]) ||
                         ((notification == Notification.FIREBASE_CONNECTED) &&
                         (notificationQueue[index] == Notification.FIREBASE_TROUBLE)) ||
@@ -281,22 +302,31 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         this.parentLayout!!.addView(this.view!!)
     }
 
+    /*
+        Draw the borders and the corner radius
+        of the notification view
+     */
     private var shape: GradientDrawable? = null
     private var cornerRadius:Int = 0
     fun setCornerRadiusAndBorderWidth(radius: Int) {
         shape = null
         shape = GradientDrawable()
+        // Draw the button of the notification view
         shape!!.shape = GradientDrawable.RECTANGLE
         if (MainActivity.isThemeDark) {
             shape!!.setColor(Color.DKGRAY)
         } else {
             shape!!.setColor(Color.LTGRAY)
         }
+        // Draw the corner radius
         cornerRadius = radius
         shape!!.cornerRadius = radius.toFloat()
         view!!.setBackgroundDrawable(shape)
     }
 
+    /*
+        Creates the image view
+     */
     private var width:Int = 0
     private var height:Int = 0
     private var x:Int = 0
@@ -318,6 +348,9 @@ class GameNotification(view:Button, parentLayout: AbsoluteLayout, params: Layout
         }
     }
 
+    /*
+        Creates the message label
+     */
     private fun setupMessageLabel() {
         messageLabel = Button(view!!.context)
         messageLabel!!.layoutParams = LayoutParams((targetParams!!.width * 0.65).toInt(),
