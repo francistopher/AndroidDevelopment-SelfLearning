@@ -30,12 +30,14 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
         private var submitSingleGameScore:Boolean = false
         private var submitAllGamesScore:Boolean = false
 
+        // Create the leaderboard client and scores
         fun setupLeaderBoard() {
             leaderBoardsClient = Games.getLeaderboardsClient(MainActivity.staticSelf!!, MainActivity.signedInAccount!!)
             getSingleGameScore()
             getAllGamesScore()
         }
 
+        // Examine the new score
         fun examineScore(score: Long) {
             if (MainActivity.isGooglePlayGameServicesAvailable) {
                 if (submitSingleGameScore) {
@@ -49,6 +51,10 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
             }
         }
 
+        /*
+            Attempts to update single score, if it fails
+            it send a notification of the mishap
+         */
         private fun submitSingleGameScore(score: Long) {
             try {
                 if (singleGameScore < score) {
@@ -65,6 +71,10 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
             }
         }
 
+        /*
+            Attempts to update all games score, if it fails
+            it send a notification of the mishap
+         */
         private fun submitAllGamesScore(score: Long) {
             try {
                 allGamesScore += score
@@ -75,6 +85,9 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
             }
         }
 
+        /*
+            Returns the single game score if it is successful
+         */
         private fun getSingleGameScore() {
             leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(MainActivity.staticSelf!!.getString(R.string.single_leader_id),
                 LeaderboardVariant.TIME_SPAN_ALL_TIME,
@@ -88,6 +101,9 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
             }
         }
 
+        /*
+            Returns the all games score if it is successful
+         */
         private fun getAllGamesScore() {
             leaderBoardsClient!!.loadCurrentPlayerLeaderboardScore(
                 MainActivity.staticSelf!!.getString(R.string.all_leader_id),
@@ -112,6 +128,10 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
         setupSelector()
     }
 
+    /*
+        When the leader board button is clicked, it requests the leaderboards panel
+        to be displayed. If it fails it sends an in game notification about the mishap
+     */
     private fun setupSelector() {
         this.leaderBoardButton!!.setOnClickListener {
             if (MainActivity.isGooglePlayGameServicesAvailable) {
@@ -128,6 +148,10 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
         }
     }
 
+    /*
+        Transforms the leaderboard button to the expanded or contracted
+        state of the settings menu
+     */
     private var transformingSet: AnimatorSet? = null
     private var transformX: ValueAnimator? = null
     private var transformY: ValueAnimator? = null
@@ -139,6 +163,7 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
     private var width:Int = 0
     private var height:Int = 0
     fun expandOrContract() {
+        // If the leaderboard button transformation animation is running, cancel it
         if (isTransforming) {
             return
         } else {
@@ -147,6 +172,7 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
                 transformingSet = null
             }
         }
+        // If the settings menu is expanded contract the leaderboard button, visa versa
         if (SettingsMenu.isExpanded) {
             transformX = ValueAnimator.ofInt(getExpandedParams().x,
                 getContractedParams().x)
@@ -166,6 +192,7 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
             transformHeight = ValueAnimator.ofInt(getContractedParams().height,
                 getExpandedParams().height)
         }
+        // Update the size and position of the leaderboard
         transformX!!.addUpdateListener {
             x = it.animatedValue as Int
             leaderBoardButton!!.layoutParams = AbsoluteLayout.LayoutParams(width, height, x, y)
@@ -182,6 +209,7 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
             height = it.animatedValue as Int
             leaderBoardButton!!.layoutParams = AbsoluteLayout.LayoutParams(width, height, x, y)
         }
+        // Set the animation properties
         transformingSet = AnimatorSet()
         transformingSet!!.play(transformX!!).with(transformY!!).with(transformWidth!!).with(transformHeight!!)
         transformingSet!!.interpolator = EasingInterpolator(Ease.QUAD_IN_OUT)
@@ -221,6 +249,10 @@ class LeaderBoard (imageButton: ImageButton, parentLayout: AbsoluteLayout, param
         leaderBoardButton!!.setBackgroundResource(R.drawable.darkleaderboard)
     }
 
+    /*
+        Set the style of the leadboard button based
+        on the theme of the operating system
+     */
     fun setStyle() {
         if (MainActivity.isThemeDark) {
             lightDominant()
