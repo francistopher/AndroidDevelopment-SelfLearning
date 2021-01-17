@@ -1,11 +1,8 @@
-# Save The Cat Color Matching - Android
+# Save The Cat Color Matching Android
 
-A game that challenges your color memory matching skills by
-matching the original color of the button to save the cat
-from the hairball attack.
+• Made after dropping out of Computer Science
+• First ever Android app publiched to the Play Store
+• Multiplayer doesn't work due to a Firebase SSL Certificate mishap
+• Multiplayer doesn't work because Google can't make a Game Center
 
-The source code is located in the following directory:
-SaveTheCatColorMatching-Android >> app >> src >> main >>
-java >> com >> example >> savethecat_colormatching
-
-* Multi player doesn't work due to a SSL Certificate mishap. *
+https://play.google.com/store/apps/details?id=com.francistopher.savethecat_colormatching&hl=en_US&gl=US
