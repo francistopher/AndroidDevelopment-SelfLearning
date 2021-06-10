@@ -1,6 +1,6 @@
-# Save The Cat Color Matching Android!
+# Save The Cat! Color Matching - Android
 
-A repository of the source code of my first [Android](https://www.android.com/) App posted on the [Google Play Store](https://play.google.com/store) written in vanila [Kotlin](https://kotlinlang.org/) which I had to learn from scratch.
+A repository of the source code of my first [Android](https://www.android.com/) App posted on the [Google Play Store](https://play.google.com/store) written in vanila [Kotlin](https://kotlinlang.org/) which I had to teach myself and learn from scratch.
 
 ## Prologue
 
@@ -24,7 +24,7 @@ I previously made a similar game without the cats and the hairballs using [Java 
 
 ## Download
 
-[Save The Cat! Color Matching](https://play.google.com/store/apps/details?id=com.francistopher.savethecat_colormatching&hl=en_US&gl=US) has been removed from the Google Play Store after I deleted my gmail account. The apk file has been saved on [this website](https://androidappsapk.co/detail-save-the-cat-color-matching/). Scroll down to find the dowload apk button, and play for yourself.
+Save The Cat! Color Matching has been removed from the Google Play Store after I deleted my gmail account. The apk file has been saved on [this website](https://androidappsapk.co/detail-save-the-cat-color-matching/). Scroll down to find the dowload apk button, and play for yourself.
 
 ## Multiplayer
 
