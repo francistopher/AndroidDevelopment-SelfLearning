@@ -1,6 +1,6 @@
-# Android App Development Self Learned
+# Android App Development & Kotlin - Self Learned
 
-Self learned by making an app during the first wave of coronarona while I was a dropout, ain't gonna remember everything. 
+Self learned Android App Development and Kotlin by making an Android App. From project creation to app submission, a month, check the commits. I knew Java, made it easier to learn Kotlin. Haven't touched Android Development in a while so of course I don't remember everything.
 
 ## Prologue
 
